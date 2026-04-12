@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-- 阶段：产品定义 / brainstorming
+- 阶段：implementation planning
 - 仓库状态：初始化完成，但尚未开始实现代码
 - 已确认方向：
   - 先做 CLI，不做 GUI
@@ -27,4 +27,6 @@
 
 - 已确认 `v0` 产品边界与推荐方案
 - 已完成正式设计文档初稿
-- 下一步等待用户审阅 spec，然后再写 implementation plan
+- 用户已确认 spec
+- 已完成 implementation plan 初稿
+- 下一步等待选择执行方式，然后开始实现

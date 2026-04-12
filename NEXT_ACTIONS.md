@@ -11,5 +11,8 @@
 - [x] 基于澄清结果提出 2-3 种产品边界方案与推荐方案
 - [x] 输出第一版 SkillMux 信息架构与命令模型草案
 - [x] 完成 spec 自审
-- [ ] 请用户审阅 `docs/superpowers/specs/2026-04-12-skillmux-v0-design.md`
-- [ ] 用户确认后，进入 implementation plan 编写
+- [x] 请用户审阅 `docs/superpowers/specs/2026-04-12-skillmux-v0-design.md`
+- [x] 用户确认后，进入 implementation plan 编写
+- [x] 写出 implementation plan 初稿
+- [ ] 请用户选择执行方式：subagent-driven 或 inline execution
+- [ ] 进入 Task 1：bootstrap CLI workspace
