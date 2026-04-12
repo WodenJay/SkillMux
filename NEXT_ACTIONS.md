@@ -34,7 +34,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 
 ## Next
 
-- [ ] Re-align the canonical worktree to the root Task 7 accepted state
+- [x] Re-align the canonical worktree to the root Task 7 accepted state
 - [ ] Start Task 8: implement `enable` and `disable`
 - [ ] Write `tests/commands/enable-disable.test.ts` before production code
 - [ ] Add idempotent managed link activation behavior
