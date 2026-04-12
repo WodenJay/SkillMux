@@ -19,5 +19,8 @@
 - [x] 进入 Task 1：bootstrap CLI workspace
 - [x] 完成 Task 2 的 code quality review 并决定是否需要修复
 - [x] 将通过验收的 Task 2 代码同步回主目录
-- [ ] 进入 Task 3：Implement Manifest Read And Write Persistence
+- [x] 进入 Task 3：Implement Manifest Read And Write Persistence
+- [x] 完成 Task 3 的 spec review、code quality review 与主目录验证
+- [ ] 进入 Task 4：Add Path Resolution And Agent Discovery Rules
+- [ ] 为 Task 4 准备 discovery/config 测试夹具（临时 home、agent 目录 fixture、用户配置覆盖样例）
 - [ ] 在合适时机清理多余临时 worktree

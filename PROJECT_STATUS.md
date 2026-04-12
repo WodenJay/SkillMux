@@ -5,7 +5,7 @@
 ## 当前状态
 
 - 阶段：implementation execution
-- 仓库状态：主目录已同步通过验收的 Task 1 与 Task 2 代码
+- 仓库状态：主目录已同步通过验收的 Task 1、Task 2 与 Task 3 代码
 - 已确认方向：
   - 先做 CLI，不做 GUI
   - 通过 npm 分发
@@ -43,4 +43,15 @@
   - `npm test -- --run tests/manifest/manifest-schema.test.ts` 通过
   - `npm run typecheck` 通过
   - `npm run build` 通过
-- 下一步进入 Task 3：Implement Manifest Read And Write Persistence
+- 已完成并验收 Task 3：implement manifest read and write persistence
+- 主目录已同步 Task 3 稳定代码
+- Task 3 验证结果：
+  - `npm test` 通过
+  - `npm run typecheck` 通过
+  - `npm run build` 通过
+- Task 3 结果摘要：
+  - 新增 `readManifest` / `writeManifest`
+  - 缺失 manifest 时会自动创建并持久化空状态
+  - 读取时会拒绝 `skillmuxHome` 漂移的 manifest
+  - 写入时改为使用唯一临时文件路径，避免同毫秒 temp-file 冲突
+- 下一步进入 Task 4：Add Path Resolution And Agent Discovery Rules

@@ -104,3 +104,17 @@
 - 原因：
   - 如果 schema 允许非法 ID、缺失引用、重复 activation，Task 3 之后的问题会变成行为错误而不是验证错误
   - 提前在 schema 层拒绝不一致状态，可以降低后续 `list`、`enable/disable`、`doctor` 的复杂度
+
+### 决策：Task 3 读取 manifest 时额外校验 `skillmuxHome` 必须与当前 home 一致
+
+- 原因：
+  - 仅靠 schema 校验无法阻止 manifest 被移动、复制后产生的“路径漂移”
+  - 如果接受漂移状态，后续命令可能把受管技能写回错误的仓库位置
+  - 在持久化入口尽早拒绝，能把错误限制在最小范围内
+
+### 决策：Task 3 写入 manifest 时使用随机唯一 temp-file 名称
+
+- 原因：
+  - `process.pid + Date.now()` 在同进程同毫秒内不保证唯一
+  - manifest 写入是后续所有命令的公共基础，不能保留这种低概率数据竞争
+  - 用随机唯一临时路径可以保留原子 `rename` 语义，同时降低并发冲突风险
