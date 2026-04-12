@@ -49,9 +49,9 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Add README command docs and the final managed-flow verification pass
 - [x] Sync Task 10 accepted code back to the root repo
 - [x] Complete Task 10 fresh verification in the root repo
+- [x] Re-align the canonical worktree to the root Task 10 accepted state
 
 ## Next
 
-- [ ] Re-align the canonical worktree to the root Task 10 accepted state
 - [ ] Decide whether to keep or remove the canonical worktree now that v0 implementation is complete
 - [ ] Clean up extra temporary worktrees when it is safe
