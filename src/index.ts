@@ -1,4 +1,6 @@
 import { Command } from "commander";
+import { runConfig } from "./commands/config";
+import { runDoctor } from "./commands/doctor";
 import { runDisable } from "./commands/disable";
 import { runEnable } from "./commands/enable";
 import { runList } from "./commands/list";
@@ -25,6 +27,22 @@ export function buildCli(): Command {
         view: options.view,
         format: options.format
       });
+      process.stdout.write(result.output);
+    });
+
+  program
+    .command("doctor")
+    .option("--json", "Emit structured JSON output")
+    .action(async (options: { json?: boolean }) => {
+      const result = await runDoctor({ json: options.json === true });
+      process.stdout.write(result.output);
+    });
+
+  program
+    .command("config")
+    .option("--json", "Emit structured JSON output")
+    .action(async (options: { json?: boolean }) => {
+      const result = await runConfig({ json: options.json === true });
       process.stdout.write(result.output);
     });
 

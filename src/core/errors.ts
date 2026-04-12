@@ -19,3 +19,9 @@ export class ManifestValidationError extends SkillMuxError {
     super(message);
   }
 }
+
+export class UserConfigValidationError extends SkillMuxError {
+  constructor(message: string) {
+    super(message);
+  }
+}

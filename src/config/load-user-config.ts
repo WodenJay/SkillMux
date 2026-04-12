@@ -1,5 +1,6 @@
 import * as fs from "node:fs/promises";
 import { z } from "zod";
+import { UserConfigValidationError } from "../core/errors";
 import {
   supportedPlatforms,
   type SupportedPlatform
@@ -18,7 +19,7 @@ const agentOverrideSchema = z
   })
   .strict();
 
-const userConfigSchema = z
+export const userConfigSchema = z
   .object({
     version: z.literal(1),
     agents: z.record(z.string().min(1), agentOverrideSchema)
@@ -45,13 +46,30 @@ function createEmptyUserConfig(): UserConfig {
   };
 }
 
+function formatValidationIssues(error: { issues: Array<{ path: (string | number)[]; message: string }> }): string {
+  return error.issues
+    .map((issue) => {
+      const path = issue.path.length > 0 ? issue.path.join(".") : "<root>";
+      return `${path}: ${issue.message}`;
+    })
+    .join("; ");
+}
+
 export async function loadUserConfig(skillmuxHome: string): Promise<UserConfig> {
   const configPath = buildConfigPath(skillmuxHome);
 
   try {
     const contents = await fs.readFile(configPath, "utf8");
     const parsed = JSON.parse(contents) as unknown;
-    return userConfigSchema.parse(parsed);
+    const validated = userConfigSchema.safeParse(parsed);
+
+    if (!validated.success) {
+      throw new UserConfigValidationError(
+        `Invalid config at ${configPath}: ${formatValidationIssues(validated.error)}`
+      );
+    }
+
+    return validated.data;
   } catch (error) {
     if (
       typeof error === "object" &&
@@ -60,6 +78,12 @@ export async function loadUserConfig(skillmuxHome: string): Promise<UserConfig> 
       (error as NodeJS.ErrnoException).code === "ENOENT"
     ) {
       return createEmptyUserConfig();
+    }
+
+    if (error instanceof SyntaxError) {
+      throw new UserConfigValidationError(
+        `Invalid config at ${configPath}: malformed JSON`
+      );
     }
 
     throw error;
