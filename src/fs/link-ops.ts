@@ -33,12 +33,41 @@ export async function createManagedLink(
 
     throw new Error(`Refusing to replace link at ${resolvedLinkPath}`);
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
+    if (
+      (error as NodeJS.ErrnoException).code === "ENOENT" &&
+      (await fs
+        .lstat(resolvedLinkPath)
+        .then((entry) => entry.isSymbolicLink())
+        .catch(() => false))
+    ) {
+      await fs.rm(resolvedLinkPath, { recursive: true, force: false });
+    } else if ((error as NodeJS.ErrnoException).code !== "ENOENT") {
       throw error;
     }
   }
 
   await fs.symlink(resolvedTargetPath, resolvedLinkPath, directoryLinkType);
+}
+
+export async function isLinkPointingToTarget(
+  linkPath: string,
+  targetPath: string
+): Promise<boolean> {
+  try {
+    const entry = await fs.lstat(linkPath);
+    if (!entry.isSymbolicLink()) {
+      return false;
+    }
+
+    const resolvedTargetPath = await fs.realpath(linkPath);
+    return pathsAreEqual(resolvedTargetPath, targetPath);
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return false;
+    }
+
+    throw error;
+  }
 }
 
 export async function isManagedLinkTarget(

@@ -1,4 +1,6 @@
 import { Command } from "commander";
+import { runDisable } from "./commands/disable";
+import { runEnable } from "./commands/enable";
 import { runList } from "./commands/list";
 import { runScan } from "./commands/scan";
 
@@ -22,6 +24,30 @@ export function buildCli(): Command {
       const result = await runList({
         view: options.view,
         format: options.format
+      });
+      process.stdout.write(result.output);
+    });
+
+  program
+    .command("enable")
+    .requiredOption("--skill <skill>", "Managed skill name or id")
+    .requiredOption("--agent <agent>", "Target agent id")
+    .action(async (options: { skill: string; agent: string }) => {
+      const result = await runEnable({
+        skill: options.skill,
+        agent: options.agent
+      });
+      process.stdout.write(result.output);
+    });
+
+  program
+    .command("disable")
+    .requiredOption("--skill <skill>", "Managed skill name or id")
+    .requiredOption("--agent <agent>", "Target agent id")
+    .action(async (options: { skill: string; agent: string }) => {
+      const result = await runDisable({
+        skill: options.skill,
+        agent: options.agent
       });
       process.stdout.write(result.output);
     });
