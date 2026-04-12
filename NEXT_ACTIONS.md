@@ -43,10 +43,10 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Add doctor issue reporting and minimal config inspection
 - [x] Sync Task 9 accepted code back to the root repo
 - [x] Complete Task 9 fresh verification in the root repo
+- [x] Re-align the canonical worktree to the root Task 9 accepted state
 
 ## Next
 
-- [ ] Re-align the canonical worktree to the root Task 9 accepted state
 - [ ] Start Task 10: finalize packaging, docs, and end-to-end verification
 - [ ] Write `tests/e2e/managed-flow.test.ts` before production code
 - [ ] Add README command docs and the final managed-flow verification pass
