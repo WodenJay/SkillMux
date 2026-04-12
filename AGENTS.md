@@ -13,6 +13,7 @@
   - `NEXT_ACTIONS.md`：记录每个agent/session下一步行动计划, 完成了就打勾`[x]`
   - `DECISIONS.md`：记录关键决策，避免忘记为什么要这样做
 - 合理使用skills，如果还没有安装合适的skills，你可以通过`find-skills`这个技能来查找适合的技能。
+- 有一些命令在sandbox里面运行不了，直接找我提权
 
 ## Current Direction
 
