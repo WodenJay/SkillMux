@@ -37,10 +37,10 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Add idempotent managed link activation behavior
 - [x] Sync Task 8 accepted code back to the root repo
 - [x] Complete Task 8 fresh verification in the root repo
+- [x] Re-align the canonical worktree to the root Task 8 accepted state
 
 ## Next
 
-- [ ] Re-align the canonical worktree to the root Task 8 accepted state
 - [ ] Start Task 9: implement `doctor` and `config`
 - [ ] Write `tests/commands/doctor.test.ts` before production code
 - [ ] Add doctor issue reporting and minimal config inspection
