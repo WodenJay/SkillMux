@@ -4,7 +4,7 @@
 
 ## 当前状态
 
-- 阶段：implementation planning
+- 阶段：implementation execution
 - 仓库状态：初始化完成，但尚未开始实现代码
 - 已确认方向：
   - 先做 CLI，不做 GUI
@@ -29,4 +29,5 @@
 - 已完成正式设计文档初稿
 - 用户已确认 spec
 - 已完成 implementation plan 初稿
-- 下一步等待选择执行方式，然后开始实现
+- 用户已选择 `Subagent-Driven` 执行方式
+- 下一步创建 `.worktrees/` 隔离工作区，并从 Task 1 开始实现
