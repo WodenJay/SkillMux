@@ -493,7 +493,7 @@ git commit -m "feat: add scan and list commands"
 - Modify: `src/manifest/write-manifest.ts`
 - Test: `tests/commands/import.test.ts`
 
-- [ ] **Step 1: Write the failing import tests**
+- [x] **Step 1: Write the failing import tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -510,12 +510,12 @@ describe("runImport", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- --run tests/commands/import.test.ts`
 Expected: FAIL because import behavior does not exist yet
 
-- [ ] **Step 3: Implement safe import**
+- [x] **Step 3: Implement safe import**
 
 `runImport` should:
 
@@ -531,12 +531,12 @@ Keep `v0` conservative:
 - do not delete the original source path
 - error on ambiguous source layouts
 
-- [ ] **Step 4: Run import tests**
+- [x] **Step 4: Run import tests**
 
 Run: `npm test -- --run tests/commands/import.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/commands/import.ts src/fs/safe-copy.ts src/manifest/read-manifest.ts src/manifest/write-manifest.ts tests/commands/import.test.ts

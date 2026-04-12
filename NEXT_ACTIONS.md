@@ -26,10 +26,16 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Sync Task 6 accepted code back to the root repo
 - [x] Complete Task 6 fresh verification in the root repo
 - [x] Re-align the canonical worktree to the root Task 6 accepted state
+- [x] Start Task 7: implement the import command
+- [x] Write `tests/commands/import.test.ts` before production code
+- [x] Add conservative managed-store copy behavior for import
+- [x] Sync Task 7 accepted code back to the root repo
+- [x] Complete Task 7 fresh verification in the root repo
 
 ## Next
 
-- [ ] Start Task 7: implement the import command
-- [ ] Write `tests/commands/import.test.ts` before production code
-- [ ] Add conservative managed-store copy behavior for import
+- [ ] Re-align the canonical worktree to the root Task 7 accepted state
+- [ ] Start Task 8: implement `enable` and `disable`
+- [ ] Write `tests/commands/enable-disable.test.ts` before production code
+- [ ] Add idempotent managed link activation behavior
 - [ ] Clean up extra temporary worktrees when it is safe

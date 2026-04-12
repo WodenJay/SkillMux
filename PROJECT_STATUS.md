@@ -13,6 +13,7 @@ Canonical worktree: `.worktrees/task1-bootstrap-cli`
 - Task 4: add agent discovery and config loading
 - Task 5: add filesystem safety and link helpers
 - Task 6: add scan and list commands
+- Task 7: add managed skill import
 
 ## Accepted Root Commits
 
@@ -22,6 +23,7 @@ Canonical worktree: `.worktrees/task1-bootstrap-cli`
 - `abaf9c6` `feat: add agent discovery and config loading`
 - `84ea69c` `feat: add filesystem safety and link helpers`
 - `2abe430` `feat: add scan and list commands`
+- `2ce2f04` `feat: add managed skill import`
 
 ## Current Product Direction
 
@@ -33,32 +35,27 @@ Canonical worktree: `.worktrees/task1-bootstrap-cli`
 - agent discovery uses built-in rules plus user config overrides
 - real skill content should be gathered into SkillMux-managed storage
 
-## Task 6 Outcome
+## Task 7 Outcome
 
-- Added `runScan` to discover agents, classify skill entries, update manifest agent records, and persist `lastScan`
-- Added `runList` with `records`, `agents`, and `skills` views
-- Added scan helpers:
-  - `src/discovery/infer-skill-entry.ts`
-  - `src/discovery/scan-agent-skills.ts`
-- Added output helpers:
-  - `src/output/print-json.ts`
-  - `src/output/print-table.ts`
-  - `src/output/format-issue.ts`
-- Added Task 6 tests:
-  - `tests/helpers/create-agent-fixture.ts`
-  - `tests/commands/scan.test.ts`
+- Added `runImport` to copy one local skill into the managed store and persist a managed skill record
+- Import now validates a conservative source layout before copying:
+  - source must be a directory
+  - source must contain a root `SKILL.md`
+  - source copy still rejects symlink entries
+- Added Task 7 tests:
+  - `tests/commands/import.test.ts`
 
 ## Latest Verification
 
-Task 6 passed fresh in the root repo with:
+Task 7 passed fresh in the root repo with:
 
-- `npm test -- --run tests/commands/scan.test.ts`
+- `npm test -- --run tests/commands/import.test.ts`
 - `npm test`
 - `npm run typecheck`
 - `npm run build`
 
 ## Next Step
 
-- Start Task 7: implement `import`
-- Add import tests first, then implement managed store copy behavior
+- Start Task 8: implement `enable` and `disable`
+- Add activation tests first, then implement idempotent link management
 - Clean up extra temporary worktrees when there is a safe window

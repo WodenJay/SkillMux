@@ -53,3 +53,10 @@ Record key product and implementation decisions so later sessions do not lose th
 - links that point outside the managed store are treated as `unknown`
 - broken links are reported as scan issues
 - `list` is a live scan projection in `v0`; it does not depend on a separately persisted entry table
+
+### Task 7 import behavior
+
+- `import` is conservative in `v0`
+- importing copies source content into `<skillmux-home>/skills/<skill-id>` and leaves the source path untouched
+- import requires a root `SKILL.md` in the source directory before copying
+- import refuses to overwrite an existing managed skill for the same `skillId`
