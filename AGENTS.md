@@ -15,6 +15,7 @@
 - 合理使用skills，如果还没有安装合适的skills，你可以通过`find-skills`这个技能来查找适合的技能。
 - 有一些命令在sandbox里面运行不了，直接找我提权
 - 合理使用subagent，想想你自己是一个leader，把可切分的任务分配给subagent，自己专注于管理和协调，以避免上下文过长。
+- 当前目录才是主目录！把稳定版代码放到当前目录！.worktrees只是作为开发时期使用的
 
 ## Current Direction
 
@@ -30,3 +31,9 @@
 - agent 目录发现优先采用“**内置常见规则 + 用户配置覆盖**”的方式，并可参考 `npx skills add <owner/repo>` 已支持的安装目录集合。
 - 停用 skill 时，SkillMux 优先将真实 skill 内容收拢到自己托管的本地仓库中；agent 侧只保留或移除可重建的链接状态。
 - 当前开发环境是windows，使用的是PowerShell。
+
+## Execution Notes
+
+- 实现阶段只维护一个 **canonical worktree** 作为主执行目录；其他子代理产生的临时工作副本只作为中间产物，不作为最终事实来源。
+- 当前 canonical worktree 为 `.worktrees/task1-bootstrap-cli`。
+- 主目录 `C:\Users\wudon\Desktop\SkillMux\` 是稳定版与最终交付区；canonical worktree 用于开发执行，主目录文档必须及时同步。

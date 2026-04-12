@@ -5,7 +5,7 @@
 ## 当前状态
 
 - 阶段：implementation execution
-- 仓库状态：初始化完成，但尚未开始实现代码
+- 仓库状态：主目录已同步通过验收的 Task 1 代码；Task 2 正在 canonical worktree 中 review
 - 已确认方向：
   - 先做 CLI，不做 GUI
   - 通过 npm 分发
@@ -30,4 +30,11 @@
 - 用户已确认 spec
 - 已完成 implementation plan 初稿
 - 用户已选择 `Subagent-Driven` 执行方式
-- 下一步创建 `.worktrees/` 隔离工作区，并从 Task 1 开始实现
+- 已建立 canonical worktree `.worktrees/task1-bootstrap-cli`
+- 已完成并验收 Task 1：bootstrap CLI workspace
+- 主目录已同步 Task 1 稳定代码
+- Task 1 验证结果：
+  - `npm test -- tests/smoke/cli-smoke.test.ts` 通过
+  - `npm run typecheck` 通过
+  - `npm run build` 通过
+- Task 2 已完成 spec compliance review，正在进入 code quality review / 稳定化
