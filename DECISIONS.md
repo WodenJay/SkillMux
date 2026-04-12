@@ -118,3 +118,17 @@
   - `process.pid + Date.now()` 在同进程同毫秒内不保证唯一
   - manifest 写入是后续所有命令的公共基础，不能保留这种低概率数据竞争
   - 用随机唯一临时路径可以保留原子 `rename` 语义，同时降低并发冲突风险
+
+### 决策：SkillMux 托管目录固定解析为 `<user-home>/.skillmux`
+
+- 原因：
+  - `config.json`、manifest 与受管技能仓库都属于 SkillMux 自身状态，不应和 agent 目录发现共用同一个路径基线
+  - 固定放在用户 home 下的隐藏目录，能保持 v0 的跨平台一致性，并降低命令层的配置复杂度
+  - 先采用统一规则，后续如果需要再扩展环境变量或 CLI override，会更容易保持向后兼容
+
+### 决策：agent discovery 一律以用户 home 为根解析，`skillmuxHome` 只用于 SkillMux 自身配置
+
+- 原因：
+  - `.codex`、`.claude`、`.gemini` 等 agent 目录本质上属于用户环境，不属于 SkillMux 托管仓库
+  - 如果把 discovery 错挂到 `skillmuxHome` 下，会导致扫描、导入和启停都操作错误路径
+  - 将“用户环境路径”和“SkillMux 自身状态路径”分开，是后续 Task 5 及导入流程保持安全性的前提

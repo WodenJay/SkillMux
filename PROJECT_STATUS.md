@@ -5,8 +5,8 @@
 ## 当前状态
 
 - 阶段：implementation execution
-- 仓库状态：主目录已同步通过验收的 Task 1、Task 2 与 Task 3 代码
-- worktree 状态：canonical worktree 已清理到干净状态，但尚未同步 Task 3 accepted commits，进入 Task 4 前需要重新对齐
+- 仓库状态：主目录已同步通过验收的 Task 1、Task 2、Task 3 与 Task 4 代码
+- worktree 状态：canonical worktree 已在进入 Task 4 前重建并对齐基线；Task 4 验收后需要再次同步到最新 accepted state
 - 已确认方向：
   - 先做 CLI，不做 GUI
   - 通过 npm 分发
@@ -55,4 +55,16 @@
   - 缺失 manifest 时会自动创建并持久化空状态
   - 读取时会拒绝 `skillmuxHome` 漂移的 manifest
   - 写入时改为使用唯一临时文件路径，避免同毫秒 temp-file 冲突
-- 下一步进入 Task 4：Add Path Resolution And Agent Discovery Rules
+- 已完成并验收 Task 4：add path resolution and agent discovery rules
+- 主目录已同步 Task 4 稳定代码
+- Task 4 验证结果：
+  - `npm test -- --run tests/discovery/discover-agents.test.ts` 通过
+  - `npm test` 通过
+  - `npm run typecheck` 通过
+  - `npm run build` 通过
+- Task 4 结果摘要：
+  - 新增 `resolveSkillmuxHome`，统一将 SkillMux 托管目录解析为 `<user-home>/.skillmux`
+  - 新增 `<skillmux-home>/config.json` 加载逻辑，并支持内置 agent 规则的用户覆盖
+  - 新增 `discoverAgents`，按用户 home 解析 agent 目录，并返回绝对路径、存在状态与平台支持状态
+  - discovery 测试补齐了所有内置 agent 的路径断言，并覆盖了 `constructor` 这类原型链键名的自定义 agent 回归场景
+- 下一步进入 Task 5：Add Filesystem Safety And Link Operations
