@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidId } from "../core/ids";
 import type {
   ActivationRecord,
   AgentRecord,
@@ -6,6 +7,11 @@ import type {
   Manifest,
   ScanIssue
 } from "../core/types";
+
+const idSchema = z
+  .string()
+  .min(1)
+  .refine(isValidId, "Expected a canonical lowercase slug identifier");
 
 export const scanIssueSchema = z
   .object({
@@ -18,7 +24,7 @@ export const scanIssueSchema = z
 
 export const managedSkillSchema = z
   .object({
-    id: z.string().min(1),
+    id: idSchema,
     name: z.string().min(1),
     path: z.string().min(1),
     source: z
@@ -33,7 +39,7 @@ export const managedSkillSchema = z
 
 export const agentRecordSchema = z
   .object({
-    id: z.string().min(1),
+    id: idSchema,
     name: z.string().min(1),
     path: z.string().min(1),
     discovery: z.enum(["builtin", "custom"]),
@@ -44,8 +50,8 @@ export const agentRecordSchema = z
 
 export const activationRecordSchema = z
   .object({
-    skillId: z.string().min(1),
-    agentId: z.string().min(1),
+    skillId: idSchema,
+    agentId: idSchema,
     linkPath: z.string().min(1),
     state: z.enum(["enabled", "disabled"]),
     updatedAt: z.string().min(1)
@@ -66,6 +72,75 @@ export const manifestSchema = z
       })
       .strict()
   })
-  .strict();
+  .strict()
+  .superRefine((manifest, ctx) => {
+    for (const [skillId, skill] of Object.entries(manifest.skills)) {
+      if (!isValidId(skillId)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["skills", skillId],
+          message: `Invalid skill id key: ${skillId}`
+        });
+      }
+
+      if (skill.id !== skillId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["skills", skillId, "id"],
+          message: `Skill id must match its record key: ${skillId}`
+        });
+      }
+    }
+
+    for (const [agentId, agent] of Object.entries(manifest.agents)) {
+      if (!isValidId(agentId)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["agents", agentId],
+          message: `Invalid agent id key: ${agentId}`
+        });
+      }
+
+      if (agent.id !== agentId) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["agents", agentId, "id"],
+          message: `Agent id must match its record key: ${agentId}`
+        });
+      }
+    }
+
+    const activationPairs = new Set<string>();
+
+    manifest.activations.forEach((activation, index) => {
+      if (!(activation.skillId in manifest.skills)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["activations", index, "skillId"],
+          message: `Unknown skill reference: ${activation.skillId}`
+        });
+      }
+
+      if (!(activation.agentId in manifest.agents)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["activations", index, "agentId"],
+          message: `Unknown agent reference: ${activation.agentId}`
+        });
+      }
+
+      const pairKey = `${activation.skillId}:${activation.agentId}`;
+      if (activationPairs.has(pairKey)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["activations", index],
+          message: `Duplicate activation for ${pairKey}`
+        });
+        return;
+      }
+
+      activationPairs.add(pairKey);
+    });
+  });
 
 export type { ActivationRecord, AgentRecord, ManagedSkill, Manifest, ScanIssue };
