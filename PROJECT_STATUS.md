@@ -5,7 +5,7 @@
 ## 当前状态
 
 - 阶段：implementation execution
-- 仓库状态：主目录已同步通过验收的 Task 1 代码；Task 2 正在 canonical worktree 中 review
+- 仓库状态：主目录已同步通过验收的 Task 1 与 Task 2 代码
 - 已确认方向：
   - 先做 CLI，不做 GUI
   - 通过 npm 分发
@@ -37,4 +37,10 @@
   - `npm test -- tests/smoke/cli-smoke.test.ts` 通过
   - `npm run typecheck` 通过
   - `npm run build` 通过
-- Task 2 已完成 spec compliance review，正在进入 code quality review / 稳定化
+- 已完成并验收 Task 2：define manifest schema and domain types
+- 主目录已同步 Task 2 稳定代码
+- Task 2 验证结果：
+  - `npm test -- --run tests/manifest/manifest-schema.test.ts` 通过
+  - `npm run typecheck` 通过
+  - `npm run build` 通过
+- 下一步进入 Task 3：Implement Manifest Read And Write Persistence

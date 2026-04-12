@@ -98,3 +98,9 @@
   - `.worktrees/` 的价值在于隔离实现过程，而不是替代主目录
   - 主目录中的 `AGENTS.md` 和项目文档必须保持为最终权威版本
   - 只有通过验收的代码才应同步回主目录
+
+### 决策：manifest contract 在 Task 2 就收紧到可维护一致性的级别
+
+- 原因：
+  - 如果 schema 允许非法 ID、缺失引用、重复 activation，Task 3 之后的问题会变成行为错误而不是验证错误
+  - 提前在 schema 层拒绝不一致状态，可以降低后续 `list`、`enable/disable`、`doctor` 的复杂度

@@ -17,7 +17,7 @@
 - [x] 请用户选择执行方式：subagent-driven 或 inline execution
 - [x] 创建 `.worktrees/` 隔离工作区并验证基线
 - [x] 进入 Task 1：bootstrap CLI workspace
-- [ ] 完成 Task 2 的 code quality review 并决定是否需要修复
-- [ ] 将通过验收的 Task 2 代码同步回主目录
+- [x] 完成 Task 2 的 code quality review 并决定是否需要修复
+- [x] 将通过验收的 Task 2 代码同步回主目录
 - [ ] 进入 Task 3：Implement Manifest Read And Write Persistence
 - [ ] 在合适时机清理多余临时 worktree
