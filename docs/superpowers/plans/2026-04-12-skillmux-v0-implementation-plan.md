@@ -552,7 +552,7 @@ git commit -m "feat: add managed skill import"
 - Modify: `src/cli.ts`
 - Test: `tests/commands/enable-disable.test.ts`
 
-- [ ] **Step 1: Write the failing activation tests**
+- [x] **Step 1: Write the failing activation tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -569,12 +569,12 @@ describe("activation commands", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- --run tests/commands/enable-disable.test.ts`
 Expected: FAIL because activation handlers do not exist yet
 
-- [ ] **Step 3: Implement activation behavior**
+- [x] **Step 3: Implement activation behavior**
 
 `runEnable` should:
 
@@ -592,12 +592,12 @@ Expected: FAIL because activation handlers do not exist yet
 
 Both commands must be idempotent.
 
-- [ ] **Step 4: Run activation tests**
+- [x] **Step 4: Run activation tests**
 
 Run: `npm test -- --run tests/commands/enable-disable.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/commands/enable.ts src/commands/disable.ts src/fs/link-ops.ts src/cli.ts tests/commands/enable-disable.test.ts

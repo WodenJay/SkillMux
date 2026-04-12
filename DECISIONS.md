@@ -60,3 +60,10 @@ Record key product and implementation decisions so later sessions do not lose th
 - importing copies source content into `<skillmux-home>/skills/<skill-id>` and leaves the source path untouched
 - import requires a root `SKILL.md` in the source directory before copying
 - import refuses to overwrite an existing managed skill for the same `skillId`
+
+### Task 8 activation behavior
+
+- `enable` and `disable` are idempotent for one `skillId` and one `agentId`
+- activation state is persisted in `manifest.activations` instead of being inferred only from the live filesystem
+- `disable` only removes a link when that path points to the exact managed skill target
+- `enable` may replace a broken link at the target path before recreating the managed link

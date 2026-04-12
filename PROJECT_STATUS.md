@@ -14,6 +14,7 @@ Canonical worktree: `.worktrees/task1-bootstrap-cli`
 - Task 5: add filesystem safety and link helpers
 - Task 6: add scan and list commands
 - Task 7: add managed skill import
+- Task 8: add enable and disable commands
 
 ## Accepted Root Commits
 
@@ -24,6 +25,7 @@ Canonical worktree: `.worktrees/task1-bootstrap-cli`
 - `84ea69c` `feat: add filesystem safety and link helpers`
 - `2abe430` `feat: add scan and list commands`
 - `2ce2f04` `feat: add managed skill import`
+- `49a6d02` `feat: add enable and disable commands`
 
 ## Current Product Direction
 
@@ -35,27 +37,28 @@ Canonical worktree: `.worktrees/task1-bootstrap-cli`
 - agent discovery uses built-in rules plus user config overrides
 - real skill content should be gathered into SkillMux-managed storage
 
-## Task 7 Outcome
+## Task 8 Outcome
 
-- Added `runImport` to copy one local skill into the managed store and persist a managed skill record
-- Import now validates a conservative source layout before copying:
-  - source must be a directory
-  - source must contain a root `SKILL.md`
-  - source copy still rejects symlink entries
-- Added Task 7 tests:
-  - `tests/commands/import.test.ts`
+- Added `runEnable` and `runDisable` to manage one skill-agent activation pair directly from the manifest and local filesystem
+- Activation behavior is idempotent:
+  - repeated `enable` leaves an already-correct managed link unchanged
+  - repeated `disable` leaves an already-absent link unchanged
+- Added link-target checking so activation logic can distinguish the correct managed link from unsafe local entries
+- `createManagedLink` now replaces broken links at the target path before recreating the managed link
+- Added Task 8 tests:
+  - `tests/commands/enable-disable.test.ts`
 
 ## Latest Verification
 
-Task 7 passed fresh in the root repo with:
+Task 8 passed fresh in the root repo with:
 
-- `npm test -- --run tests/commands/import.test.ts`
+- `npm test -- --run tests/commands/enable-disable.test.ts`
 - `npm test`
 - `npm run typecheck`
 - `npm run build`
 
 ## Next Step
 
-- Start Task 8: implement `enable` and `disable`
-- Add activation tests first, then implement idempotent link management
+- Start Task 9: implement `doctor` and `config`
+- Add doctor tests first, then implement issue reporting and minimal config inspection
 - Clean up extra temporary worktrees when there is a safe window

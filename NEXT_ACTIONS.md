@@ -31,11 +31,17 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Add conservative managed-store copy behavior for import
 - [x] Sync Task 7 accepted code back to the root repo
 - [x] Complete Task 7 fresh verification in the root repo
+- [x] Re-align the canonical worktree to the root Task 7 accepted state
+- [x] Start Task 8: implement `enable` and `disable`
+- [x] Write `tests/commands/enable-disable.test.ts` before production code
+- [x] Add idempotent managed link activation behavior
+- [x] Sync Task 8 accepted code back to the root repo
+- [x] Complete Task 8 fresh verification in the root repo
 
 ## Next
 
-- [x] Re-align the canonical worktree to the root Task 7 accepted state
-- [ ] Start Task 8: implement `enable` and `disable`
-- [ ] Write `tests/commands/enable-disable.test.ts` before production code
-- [ ] Add idempotent managed link activation behavior
+- [ ] Re-align the canonical worktree to the root Task 8 accepted state
+- [ ] Start Task 9: implement `doctor` and `config`
+- [ ] Write `tests/commands/doctor.test.ts` before production code
+- [ ] Add doctor issue reporting and minimal config inspection
 - [ ] Clean up extra temporary worktrees when it is safe
