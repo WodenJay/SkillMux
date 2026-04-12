@@ -12,6 +12,7 @@
   - `PROJECT_STATUS.md`：记录当前项目的总进度总览
   - `NEXT_ACTIONS.md`：记录每个agent/session下一步行动计划, 完成了就打勾`[x]`
   - `DECISIONS.md`：记录关键决策，避免忘记为什么要这样做
+  注意，不要每次都重写这四个文件，最好是追加、修改。
 - 合理使用skills，如果还没有安装合适的skills，你可以通过`find-skills`这个技能来查找适合的技能。
 - 有一些命令在sandbox里面运行不了，直接找我提权
 - 合理使用subagent，想想你自己是一个leader，把可切分的任务分配给subagent，自己专注于管理和协调，以避免上下文过长。
