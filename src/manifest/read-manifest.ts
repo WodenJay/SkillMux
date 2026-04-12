@@ -1,5 +1,5 @@
 import * as fs from "node:fs/promises";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { ManifestValidationError } from "../core/errors";
 import type { Manifest } from "../core/types";
 import { buildEmptyManifest } from "./build-empty-manifest";
@@ -8,6 +8,13 @@ import { writeManifest } from "./write-manifest";
 
 function getManifestPath(home: string): string {
   return join(home, "manifest.json");
+}
+
+function normalizeHomePath(home: string): string {
+  const resolvedHome = resolve(home);
+  return process.platform === "win32"
+    ? resolvedHome.toLowerCase()
+    : resolvedHome;
 }
 
 function formatValidationIssues(error: { issues: Array<{ path: (string | number)[]; message: string }> }): string {
@@ -30,6 +37,15 @@ export async function readManifest(home: string): Promise<Manifest> {
     if (!parsedManifest.success) {
       throw new ManifestValidationError(
         `Invalid manifest at ${manifestPath}: ${formatValidationIssues(parsedManifest.error)}`
+      );
+    }
+
+    if (
+      normalizeHomePath(parsedManifest.data.skillmuxHome) !==
+      normalizeHomePath(home)
+    ) {
+      throw new ManifestValidationError(
+        `Invalid manifest at ${manifestPath}: skillmuxHome must match ${home}`
       );
     }
 

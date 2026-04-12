@@ -1,13 +1,20 @@
 import { mkdtempSync, rmSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { ManifestValidationError } from "../../src/core/errors";
 import { buildEmptyManifest } from "../../src/manifest/build-empty-manifest";
 import { readManifest } from "../../src/manifest/read-manifest";
-import { writeManifest } from "../../src/manifest/write-manifest";
+import {
+  createManifestTempPath,
+  writeManifest
+} from "../../src/manifest/write-manifest";
 
 describe("manifest persistence", () => {
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
   function createTempHome(): string {
     return mkdtempSync(join(tmpdir(), "skillmux-"));
   }
@@ -97,6 +104,44 @@ describe("manifest persistence", () => {
       await expect(readManifest(home)).rejects.toBeInstanceOf(
         ManifestValidationError
       );
+    } finally {
+      cleanupTempHome(home);
+    }
+  });
+
+  it("rejects a manifest whose skillmuxHome does not match the requested home", async () => {
+    const home = createTempHome();
+
+    try {
+      const manifest = buildEmptyManifest("C:/other-home");
+
+      writeFileSync(
+        join(home, "manifest.json"),
+        `${JSON.stringify(manifest, null, 2)}\n`,
+        "utf8"
+      );
+
+      await expect(readManifest(home)).rejects.toBeInstanceOf(
+        ManifestValidationError
+      );
+    } finally {
+      cleanupTempHome(home);
+    }
+  });
+
+  it("creates unique temp paths even within the same millisecond", () => {
+    const home = createTempHome();
+
+    vi.spyOn(Date, "now").mockReturnValue(1);
+
+    try {
+      const manifestPath = join(home, "manifest.json");
+      const firstTempPath = createManifestTempPath(manifestPath);
+      const secondTempPath = createManifestTempPath(manifestPath);
+
+      expect(firstTempPath).not.toBe(secondTempPath);
+      expect(firstTempPath).toMatch(/\.tmp$/);
+      expect(secondTempPath).toMatch(/\.tmp$/);
     } finally {
       cleanupTempHome(home);
     }
