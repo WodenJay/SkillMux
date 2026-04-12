@@ -15,6 +15,7 @@ Canonical worktree: `.worktrees/task1-bootstrap-cli`
 - Task 6: add scan and list commands
 - Task 7: add managed skill import
 - Task 8: add enable and disable commands
+- Task 9: add doctor and config commands
 
 ## Accepted Root Commits
 
@@ -26,6 +27,7 @@ Canonical worktree: `.worktrees/task1-bootstrap-cli`
 - `2abe430` `feat: add scan and list commands`
 - `2ce2f04` `feat: add managed skill import`
 - `49a6d02` `feat: add enable and disable commands`
+- `55f8d3a` `feat: add doctor and config commands`
 
 ## Current Product Direction
 
@@ -37,28 +39,31 @@ Canonical worktree: `.worktrees/task1-bootstrap-cli`
 - agent discovery uses built-in rules plus user config overrides
 - real skill content should be gathered into SkillMux-managed storage
 
-## Task 8 Outcome
+## Task 9 Outcome
 
-- Added `runEnable` and `runDisable` to manage one skill-agent activation pair directly from the manifest and local filesystem
-- Activation behavior is idempotent:
-  - repeated `enable` leaves an already-correct managed link unchanged
-  - repeated `disable` leaves an already-absent link unchanged
-- Added link-target checking so activation logic can distinguish the correct managed link from unsafe local entries
-- `createManagedLink` now replaces broken links at the target path before recreating the managed link
-- Added Task 8 tests:
-  - `tests/commands/enable-disable.test.ts`
+- Added `runDoctor` to inspect live agent directories and managed manifest state without mutating the environment
+- `doctor` now reports:
+  - broken links already found during scan-style inspection
+  - unmanaged directories that look like real skills because they contain `SKILL.md`
+  - managed skills recorded in the manifest whose managed-store path is now missing
+  - multiple agent ids that resolve to the same skills directory
+- Added `runConfig` to validate and display the resolved user config file
+- User config loading now raises a typed validation error with the config path for malformed JSON or schema drift
+- Wired `doctor` and `config` into the CLI command surface
+- Added Task 9 tests:
+  - `tests/commands/doctor.test.ts`
 
 ## Latest Verification
 
-Task 8 passed fresh in the root repo with:
+Task 9 passed fresh in the root repo with:
 
-- `npm test -- --run tests/commands/enable-disable.test.ts`
+- `npm test -- --run tests/commands/doctor.test.ts`
 - `npm test`
 - `npm run typecheck`
 - `npm run build`
 
 ## Next Step
 
-- Start Task 9: implement `doctor` and `config`
-- Add doctor tests first, then implement issue reporting and minimal config inspection
+- Start Task 10: finalize packaging, docs, and end-to-end verification
+- Write the end-to-end managed flow test first, then finish README and CLI verification
 - Clean up extra temporary worktrees when there is a safe window

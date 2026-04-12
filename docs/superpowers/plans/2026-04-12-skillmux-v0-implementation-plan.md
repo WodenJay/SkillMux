@@ -613,7 +613,7 @@ git commit -m "feat: add enable and disable commands"
 - Modify: `src/config/load-user-config.ts`
 - Test: `tests/commands/doctor.test.ts`
 
-- [ ] **Step 1: Write the failing doctor tests**
+- [x] **Step 1: Write the failing doctor tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -627,12 +627,12 @@ describe("runDoctor", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- --run tests/commands/doctor.test.ts`
 Expected: FAIL because doctor behavior does not exist yet
 
-- [ ] **Step 3: Implement doctor and config surfaces**
+- [x] **Step 3: Implement doctor and config surfaces**
 
 `runDoctor` should report:
 
@@ -648,12 +648,12 @@ Expected: FAIL because doctor behavior does not exist yet
 
 Do not add config mutation subcommands in `v0`.
 
-- [ ] **Step 4: Run doctor tests**
+- [x] **Step 4: Run doctor tests**
 
 Run: `npm test -- --run tests/commands/doctor.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/commands/doctor.ts src/commands/config.ts src/output/format-issue.ts src/config/load-user-config.ts tests/commands/doctor.test.ts

@@ -38,10 +38,16 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Sync Task 8 accepted code back to the root repo
 - [x] Complete Task 8 fresh verification in the root repo
 - [x] Re-align the canonical worktree to the root Task 8 accepted state
+- [x] Start Task 9: implement `doctor` and `config`
+- [x] Write `tests/commands/doctor.test.ts` before production code
+- [x] Add doctor issue reporting and minimal config inspection
+- [x] Sync Task 9 accepted code back to the root repo
+- [x] Complete Task 9 fresh verification in the root repo
 
 ## Next
 
-- [ ] Start Task 9: implement `doctor` and `config`
-- [ ] Write `tests/commands/doctor.test.ts` before production code
-- [ ] Add doctor issue reporting and minimal config inspection
+- [ ] Re-align the canonical worktree to the root Task 9 accepted state
+- [ ] Start Task 10: finalize packaging, docs, and end-to-end verification
+- [ ] Write `tests/e2e/managed-flow.test.ts` before production code
+- [ ] Add README command docs and the final managed-flow verification pass
 - [ ] Clean up extra temporary worktrees when it is safe

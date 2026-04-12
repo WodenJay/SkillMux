@@ -67,3 +67,10 @@ Record key product and implementation decisions so later sessions do not lose th
 - activation state is persisted in `manifest.activations` instead of being inferred only from the live filesystem
 - `disable` only removes a link when that path points to the exact managed skill target
 - `enable` may replace a broken link at the target path before recreating the managed link
+
+### Task 9 doctor and config behavior
+
+- `doctor` is a read-only inspection command in `v0`; it does not rewrite the manifest or mutate agent directories
+- unmanaged directories are only promoted to doctor issues when they look like real skills by containing a top-level `SKILL.md`
+- user config validation errors should name the resolved config path and normalize malformed JSON into a typed config-validation failure
+- conflicting agent path detection is based on the resolved absolute skills directory path, not only agent ids
