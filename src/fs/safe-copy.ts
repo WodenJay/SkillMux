@@ -13,6 +13,13 @@ async function assertDirectory(path: string): Promise<void> {
   }
 }
 
+async function assertRegularFile(path: string, label: string): Promise<void> {
+  const entry = await fs.lstat(path);
+  if (!entry.isFile()) {
+    throw new Error(`Expected ${label} to be a regular file at ${path}`);
+  }
+}
+
 async function assertTargetDoesNotExist(path: string): Promise<void> {
   try {
     await fs.lstat(path);
@@ -52,6 +59,24 @@ async function copyDirectoryContents(sourcePath: string, targetPath: string): Pr
   }
 }
 
+export async function assertSkillSourceLayout(sourcePath: string): Promise<void> {
+  const resolvedSourcePath = resolve(sourcePath);
+  const skillFilePath = join(resolvedSourcePath, "SKILL.md");
+
+  await assertNoSymlinkAncestors(resolvedSourcePath, { includeLeaf: true });
+  await assertDirectory(resolvedSourcePath);
+
+  try {
+    await assertRegularFile(skillFilePath, "SKILL.md");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      throw new Error(`Refusing to import ${resolvedSourcePath} without a root SKILL.md`);
+    }
+
+    throw error;
+  }
+}
+
 export async function copySkillContentsToManagedStore(
   sourcePath: string,
   targetPath: string
@@ -67,9 +92,8 @@ export async function copySkillContentsToManagedStore(
     throw new Error("Refusing to copy into a child of the source directory");
   }
 
-  await assertNoSymlinkAncestors(resolvedSourcePath, { includeLeaf: true });
+  await assertSkillSourceLayout(resolvedSourcePath);
   await assertNoSymlinkAncestors(resolvedTargetPath);
-  await assertDirectory(resolvedSourcePath);
   await assertTargetDoesNotExist(resolvedTargetPath);
   await copyDirectoryContents(resolvedSourcePath, resolvedTargetPath);
 }
