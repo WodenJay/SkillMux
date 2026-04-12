@@ -6,7 +6,7 @@
 
 - 阶段：implementation execution
 - 仓库状态：主目录已同步通过验收的 Task 1、Task 2、Task 3 与 Task 4 代码
-- worktree 状态：canonical worktree 已在进入 Task 4 前重建并对齐基线；Task 4 验收后需要再次同步到最新 accepted state
+- worktree 状态：canonical worktree 已重建并同步到 Task 4 accepted state
 - 已确认方向：
   - 先做 CLI，不做 GUI
   - 通过 npm 分发

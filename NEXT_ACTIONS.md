@@ -24,6 +24,6 @@
 - [x] 在进入 Task 4 前，将 canonical worktree 重新对齐到主目录 accepted state（必要时直接重建）
 - [x] 进入 Task 4：Add Path Resolution And Agent Discovery Rules
 - [x] 为 Task 4 准备 discovery/config 测试夹具（临时 home、agent 目录 fixture、用户配置覆盖样例）
-- [ ] 将 canonical worktree 重新同步到 Task 4 accepted state
+- [x] 将 canonical worktree 重新同步到 Task 4 accepted state
 - [ ] 进入 Task 5：Add Filesystem Safety And Link Operations
 - [ ] 在合适时机清理多余临时 worktree
