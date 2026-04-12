@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: implementation execution
+Phase: implementation complete
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `.worktrees/task1-bootstrap-cli`
 
@@ -16,6 +16,7 @@ Canonical worktree: `.worktrees/task1-bootstrap-cli`
 - Task 7: add managed skill import
 - Task 8: add enable and disable commands
 - Task 9: add doctor and config commands
+- Task 10: complete the managed CLI flow and packaging
 
 ## Accepted Root Commits
 
@@ -28,6 +29,7 @@ Canonical worktree: `.worktrees/task1-bootstrap-cli`
 - `2ce2f04` `feat: add managed skill import`
 - `49a6d02` `feat: add enable and disable commands`
 - `55f8d3a` `feat: add doctor and config commands`
+- `61b3ed1` `feat: complete skillmux v0 managed cli flow`
 
 ## Current Product Direction
 
@@ -39,31 +41,25 @@ Canonical worktree: `.worktrees/task1-bootstrap-cli`
 - agent discovery uses built-in rules plus user config overrides
 - real skill content should be gathered into SkillMux-managed storage
 
-## Task 9 Outcome
+## Task 10 Outcome
 
-- Added `runDoctor` to inspect live agent directories and managed manifest state without mutating the environment
-- `doctor` now reports:
-  - broken links already found during scan-style inspection
-  - unmanaged directories that look like real skills because they contain `SKILL.md`
-  - managed skills recorded in the manifest whose managed-store path is now missing
-  - multiple agent ids that resolve to the same skills directory
-- Added `runConfig` to validate and display the resolved user config file
-- User config loading now raises a typed validation error with the config path for malformed JSON or schema drift
-- Wired `doctor` and `config` into the CLI command surface
-- Added Task 9 tests:
-  - `tests/commands/doctor.test.ts`
+- Added `tests/e2e/managed-flow.test.ts` to verify the full `scan -> import -> enable -> list -> disable -> doctor` flow in one temporary environment
+- Exposed the missing CLI surfaces:
+  - `skillmux agents`
+  - `skillmux import --source <path> --name <name>`
+- Added `runAgents` for a live discovery view of supported agent directories
+- Switched the CLI entrypoint to `parseAsync` so async command failures propagate correctly from the real executable entrypoint
+- Added the first project `README.md` covering install/build, command usage, SkillMux home layout, and safe-usage notes
 
 ## Latest Verification
 
-Task 9 passed fresh in the root repo with:
+Task 10 passed fresh in the root repo with:
 
-- `npm test -- --run tests/commands/doctor.test.ts`
 - `npm test`
 - `npm run typecheck`
 - `npm run build`
 
 ## Next Step
 
-- Start Task 10: finalize packaging, docs, and end-to-end verification
-- Write the end-to-end managed flow test first, then finish README and CLI verification
+- Decide branch/worktree cleanup after the v0 implementation is complete
 - Clean up extra temporary worktrees when there is a safe window

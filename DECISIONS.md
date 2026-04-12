@@ -74,3 +74,9 @@ Record key product and implementation decisions so later sessions do not lose th
 - unmanaged directories are only promoted to doctor issues when they look like real skills by containing a top-level `SKILL.md`
 - user config validation errors should name the resolved config path and normalize malformed JSON into a typed config-validation failure
 - conflicting agent path detection is based on the resolved absolute skills directory path, not only agent ids
+
+### Task 10 CLI completion behavior
+
+- the real executable entrypoint must use `parseAsync`, not `parse`, because the command handlers are async
+- `v0` must expose `agents` and `import` on the public CLI surface, not just as internal command helpers
+- the end-to-end acceptance test for `v0` is one temporary-environment flow that proves one managed skill can be imported, linked into two agents, disabled for one agent, and then diagnosed safely

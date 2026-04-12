@@ -44,10 +44,14 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Sync Task 9 accepted code back to the root repo
 - [x] Complete Task 9 fresh verification in the root repo
 - [x] Re-align the canonical worktree to the root Task 9 accepted state
+- [x] Start Task 10: finalize packaging, docs, and end-to-end verification
+- [x] Write `tests/e2e/managed-flow.test.ts` before production code
+- [x] Add README command docs and the final managed-flow verification pass
+- [x] Sync Task 10 accepted code back to the root repo
+- [x] Complete Task 10 fresh verification in the root repo
 
 ## Next
 
-- [ ] Start Task 10: finalize packaging, docs, and end-to-end verification
-- [ ] Write `tests/e2e/managed-flow.test.ts` before production code
-- [ ] Add README command docs and the final managed-flow verification pass
+- [ ] Re-align the canonical worktree to the root Task 10 accepted state
+- [ ] Decide whether to keep or remove the canonical worktree now that v0 implementation is complete
 - [ ] Clean up extra temporary worktrees when it is safe

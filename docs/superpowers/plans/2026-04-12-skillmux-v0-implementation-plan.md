@@ -668,7 +668,7 @@ git commit -m "feat: add doctor and config commands"
 - Modify: `package.json`
 - Create: `tests/e2e/managed-flow.test.ts`
 
-- [ ] **Step 1: Write the failing end-to-end test**
+- [x] **Step 1: Write the failing end-to-end test**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -680,12 +680,12 @@ describe("managed flow", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- --run tests/e2e/managed-flow.test.ts`
 Expected: FAIL with the intentional false assertion
 
-- [ ] **Step 3: Replace the placeholder with the full end-to-end scenario**
+- [x] **Step 3: Replace the placeholder with the full end-to-end scenario**
 
 Cover this flow in one temporary test environment:
 
@@ -705,7 +705,7 @@ Update `README.md` with:
 - SkillMux home layout
 - safe usage notes
 
-- [ ] **Step 4: Run the full verification suite**
+- [x] **Step 4: Run the full verification suite**
 
 Run: `npm test`
 Expected: PASS
@@ -716,7 +716,7 @@ Expected: PASS
 Run: `npm run build`
 Expected: PASS and emit `dist/index.js`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/cli.ts README.md package.json tests/e2e/managed-flow.test.ts
