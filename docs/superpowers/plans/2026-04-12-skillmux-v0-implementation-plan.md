@@ -113,7 +113,7 @@ This order keeps the first executable vertical slice small and testable.
 - Create: `src/cli.ts`
 - Test: `tests/smoke/cli-smoke.test.ts`
 
-- [ ] **Step 1: Write the failing smoke test**
+- [x] **Step 1: Write the failing smoke test**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -128,12 +128,12 @@ describe("buildCli", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- --run tests/smoke/cli-smoke.test.ts`
 Expected: FAIL with module or symbol not found errors
 
-- [ ] **Step 3: Create the minimal package and CLI setup**
+- [x] **Step 3: Create the minimal package and CLI setup**
 
 ```json
 {
@@ -165,7 +165,7 @@ export function buildCli(): Command {
 }
 ```
 
-- [ ] **Step 4: Run the smoke test and typecheck**
+- [x] **Step 4: Run the smoke test and typecheck**
 
 Run: `npm test -- --run tests/smoke/cli-smoke.test.ts`
 Expected: PASS
@@ -173,7 +173,7 @@ Expected: PASS
 Run: `npm run lint`
 Expected: PASS with no TypeScript errors
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add package.json tsconfig.json tsup.config.ts vitest.config.ts .gitignore src/index.ts src/cli.ts tests/smoke/cli-smoke.test.ts
@@ -190,7 +190,7 @@ git commit -m "chore: bootstrap skillmux cli workspace"
 - Create: `src/manifest/build-empty-manifest.ts`
 - Test: `tests/manifest/manifest-schema.test.ts`
 
-- [ ] **Step 1: Write the failing schema tests**
+- [x] **Step 1: Write the failing schema tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -205,12 +205,12 @@ describe("manifestSchema", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- --run tests/manifest/manifest-schema.test.ts`
 Expected: FAIL because schema helpers do not exist yet
 
-- [ ] **Step 3: Implement the manifest model and helpers**
+- [x] **Step 3: Implement the manifest model and helpers**
 
 ```ts
 export type Manifest = {
@@ -228,7 +228,7 @@ export type Manifest = {
 
 Use Zod to validate the on-disk format and keep one builder for empty state.
 
-- [ ] **Step 4: Run schema tests and full typecheck**
+- [x] **Step 4: Run schema tests and full typecheck**
 
 Run: `npm test -- --run tests/manifest/manifest-schema.test.ts`
 Expected: PASS
@@ -236,7 +236,7 @@ Expected: PASS
 Run: `npm run lint`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/core/types.ts src/core/errors.ts src/core/ids.ts src/manifest/manifest-schema.ts src/manifest/build-empty-manifest.ts tests/manifest/manifest-schema.test.ts
@@ -251,7 +251,7 @@ git commit -m "feat: define manifest schema and domain types"
 - Modify: `src/manifest/build-empty-manifest.ts`
 - Test: `tests/manifest/read-write-manifest.test.ts`
 
-- [ ] **Step 1: Write the failing persistence test**
+- [x] **Step 1: Write the failing persistence test**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -273,12 +273,12 @@ describe("manifest persistence", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- --run tests/manifest/read-write-manifest.test.ts`
 Expected: FAIL because manifest persistence does not exist yet
 
-- [ ] **Step 3: Implement safe read and atomic write**
+- [x] **Step 3: Implement safe read and atomic write**
 
 ```ts
 export async function writeManifest(home: string, manifest: Manifest): Promise<void> {
@@ -296,12 +296,12 @@ export async function writeManifest(home: string, manifest: Manifest): Promise<v
 - validate the file with Zod
 - throw a typed error on invalid data
 
-- [ ] **Step 4: Run persistence tests**
+- [x] **Step 4: Run persistence tests**
 
 Run: `npm test -- --run tests/manifest/read-write-manifest.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/manifest/read-manifest.ts src/manifest/write-manifest.ts src/manifest/build-empty-manifest.ts tests/manifest/read-write-manifest.test.ts
@@ -318,7 +318,7 @@ git commit -m "feat: add manifest persistence"
 - Create: `tests/helpers/temp-env.ts`
 - Create: `tests/discovery/discover-agents.test.ts`
 
-- [ ] **Step 1: Write the failing discovery tests**
+- [x] **Step 1: Write the failing discovery tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -335,12 +335,12 @@ describe("discoverAgents", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- --run tests/discovery/discover-agents.test.ts`
 Expected: FAIL because discovery code does not exist yet
 
-- [ ] **Step 3: Implement built-in rules and user overrides**
+- [x] **Step 3: Implement built-in rules and user overrides**
 
 Define built-in agent rules for at least:
 
@@ -360,12 +360,12 @@ Model each rule with:
 
 `discoverAgents` should merge built-in rules with user overrides and return resolved absolute paths plus existence status.
 
-- [ ] **Step 4: Run discovery tests**
+- [x] **Step 4: Run discovery tests**
 
 Run: `npm test -- --run tests/discovery/discover-agents.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/config/default-agent-rules.ts src/config/load-user-config.ts src/config/resolve-skillmux-home.ts src/discovery/discover-agents.ts tests/helpers/temp-env.ts tests/discovery/discover-agents.test.ts
@@ -381,7 +381,7 @@ git commit -m "feat: add agent discovery and config loading"
 - Create: `src/fs/safe-remove-link.ts`
 - Test: `tests/fs/link-ops.test.ts`
 
-- [ ] **Step 1: Write the failing filesystem tests**
+- [x] **Step 1: Write the failing filesystem tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -395,12 +395,12 @@ describe("link-ops", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- --run tests/fs/link-ops.test.ts`
 Expected: FAIL because filesystem helpers do not exist yet
 
-- [ ] **Step 3: Implement safe filesystem primitives**
+- [x] **Step 3: Implement safe filesystem primitives**
 
 Implement helpers that:
 
@@ -412,12 +412,12 @@ Implement helpers that:
 
 Keep all platform branching inside `src/fs`.
 
-- [ ] **Step 4: Run filesystem tests**
+- [x] **Step 4: Run filesystem tests**
 
 Run: `npm test -- --run tests/fs/link-ops.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/fs/path-utils.ts src/fs/link-ops.ts src/fs/safe-copy.ts src/fs/safe-remove-link.ts tests/fs/link-ops.test.ts
@@ -438,7 +438,7 @@ git commit -m "feat: add filesystem safety and link helpers"
 - Test: `tests/helpers/create-agent-fixture.ts`
 - Test: `tests/commands/scan.test.ts`
 
-- [ ] **Step 1: Write the failing scan command tests**
+- [x] **Step 1: Write the failing scan command tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -452,12 +452,12 @@ describe("runScan", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- --run tests/commands/scan.test.ts`
 Expected: FAIL because scan and list command handlers do not exist yet
 
-- [ ] **Step 3: Implement scan and list**
+- [x] **Step 3: Implement scan and list**
 
 `runScan` should:
 
@@ -472,12 +472,12 @@ Expected: FAIL because scan and list command handlers do not exist yet
 - support all records, by agent, and by skill views
 - emit either table output or JSON
 
-- [ ] **Step 4: Run targeted tests**
+- [x] **Step 4: Run targeted tests**
 
 Run: `npm test -- --run tests/commands/scan.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/discovery/scan-agent-skills.ts src/discovery/infer-skill-entry.ts src/output/print-table.ts src/output/print-json.ts src/output/format-issue.ts src/commands/scan.ts src/commands/list.ts src/cli.ts tests/helpers/create-agent-fixture.ts tests/commands/scan.test.ts

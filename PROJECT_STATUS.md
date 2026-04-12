@@ -59,7 +59,6 @@ Task 6 passed fresh in the root repo with:
 
 ## Next Step
 
-- Re-align the canonical worktree to root `Task 6` accepted state
 - Start Task 7: implement `import`
 - Add import tests first, then implement managed store copy behavior
 - Clean up extra temporary worktrees when there is a safe window

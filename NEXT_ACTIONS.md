@@ -25,10 +25,10 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Complete Task 6: scan and list commands
 - [x] Sync Task 6 accepted code back to the root repo
 - [x] Complete Task 6 fresh verification in the root repo
+- [x] Re-align the canonical worktree to the root Task 6 accepted state
 
 ## Next
 
-- [ ] Re-align the canonical worktree to the root Task 6 accepted state
 - [ ] Start Task 7: implement the import command
 - [ ] Write `tests/commands/import.test.ts` before production code
 - [ ] Add conservative managed-store copy behavior for import
