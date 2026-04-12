@@ -1,8 +1,10 @@
 import { Command } from "commander";
+import { runAgents } from "./commands/agents";
 import { runConfig } from "./commands/config";
 import { runDoctor } from "./commands/doctor";
 import { runDisable } from "./commands/disable";
 import { runEnable } from "./commands/enable";
+import { runImport } from "./commands/import";
 import { runList } from "./commands/list";
 import { runScan } from "./commands/scan";
 
@@ -19,6 +21,14 @@ export function buildCli(): Command {
     });
 
   program
+    .command("agents")
+    .option("--json", "Emit structured JSON output")
+    .action(async (options: { json?: boolean }) => {
+      const result = await runAgents({ json: options.json === true });
+      process.stdout.write(result.output);
+    });
+
+  program
     .command("list")
     .option("--view <view>", "Select records, agents, or skills view", "records")
     .option("--format <format>", "Select table or json output", "table")
@@ -26,6 +36,18 @@ export function buildCli(): Command {
       const result = await runList({
         view: options.view,
         format: options.format
+      });
+      process.stdout.write(result.output);
+    });
+
+  program
+    .command("import")
+    .requiredOption("--source <path>", "Local skill source directory")
+    .requiredOption("--name <name>", "Managed skill name")
+    .action(async (options: { source: string; name: string }) => {
+      const result = await runImport({
+        sourcePath: options.source,
+        skillName: options.name
       });
       process.stdout.write(result.output);
     });

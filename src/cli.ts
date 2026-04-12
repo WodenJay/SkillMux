@@ -2,4 +2,4 @@
 
 import { buildCli } from "./index";
 
-buildCli().parse(process.argv);
+await buildCli().parseAsync(process.argv);

@@ -1,6 +1,7 @@
 {
   "name": "skillmux",
   "version": "0.1.0",
+  "description": "CLI for managing local agent skills from a shared SkillMux store",
   "type": "module",
   "bin": {
     "skillmux": "./dist/cli.js"
