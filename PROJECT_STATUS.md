@@ -6,6 +6,7 @@
 
 - 阶段：implementation execution
 - 仓库状态：主目录已同步通过验收的 Task 1、Task 2 与 Task 3 代码
+- worktree 状态：canonical worktree 已清理到干净状态，但尚未同步 Task 3 accepted commits，进入 Task 4 前需要重新对齐
 - 已确认方向：
   - 先做 CLI，不做 GUI
   - 通过 npm 分发

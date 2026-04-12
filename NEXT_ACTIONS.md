@@ -21,6 +21,7 @@
 - [x] 将通过验收的 Task 2 代码同步回主目录
 - [x] 进入 Task 3：Implement Manifest Read And Write Persistence
 - [x] 完成 Task 3 的 spec review、code quality review 与主目录验证
+- [ ] 在进入 Task 4 前，将 canonical worktree 重新对齐到主目录 accepted state（必要时直接重建）
 - [ ] 进入 Task 4：Add Path Resolution And Agent Discovery Rules
 - [ ] 为 Task 4 准备 discovery/config 测试夹具（临时 home、agent 目录 fixture、用户配置覆盖样例）
 - [ ] 在合适时机清理多余临时 worktree
