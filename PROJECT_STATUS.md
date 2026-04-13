@@ -62,11 +62,14 @@ Task 10 passed fresh in the root repo with:
 
 ## Release Status
 
-- `skillmux@0.1.0` has been published to npm
+- `skillmux@0.1.1` has been published to npm
 - package name on npm: `skillmux`
-- publish was verified with `npm view skillmux version` returning `0.1.0`
+- publish was verified with `npm view skillmux version` returning `0.1.1`
 - `README.md` has been rewritten as a user-facing and AI-friendly manual
 - the README now focuses on purpose, audience, installation, commands, and usage flow instead of internal version framing
+- the published package now includes:
+  - `skillmux config remove-agent`
+  - the README logo and centered README header polish
 
 ## Next Step
 

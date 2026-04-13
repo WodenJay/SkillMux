@@ -112,3 +112,8 @@ Record key product and implementation decisions so later sessions do not lose th
 - `config remove-agent` is the matching removal command for custom agent overrides
 - `config remove-agent` removes only the selected agent override from `~/.skillmux/config.json`
 - `config remove-agent` does not delete manifest state, managed skills, or any local symlink/junction entries
+
+### Release versioning
+
+- the post-`config remove-agent` release is published as `skillmux@0.1.1`
+- additive CLI features that remain backward-compatible should use a patch version bump unless a larger packaging change justifies otherwise

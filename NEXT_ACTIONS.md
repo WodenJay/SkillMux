@@ -68,5 +68,6 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Add the repository logo to `README.md`
 - [ ] Decide whether future config writes should preserve existing key order and formatting instead of rewriting normalized JSON
 - [ ] Publish the repository to GitHub with the refreshed README
-- [ ] Bump the package version before the next npm release
+- [x] Bump the package version before the next npm release
+- [x] Publish `skillmux@0.1.1` to npm
 - [ ] Optionally add post-v0 features such as remote install and update flows
