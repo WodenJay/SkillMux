@@ -30,8 +30,16 @@ function buildAgentsView(scanResult: RunScanResult) {
       agentId: string;
       agentName: string;
       entries: RunScanResult["entries"];
-    }
+      }
   >();
+
+  for (const agent of scanResult.agents) {
+    groups.set(agent.id, {
+      agentId: agent.id,
+      agentName: agent.stableName,
+      entries: []
+    });
+  }
 
   for (const entry of scanResult.entries) {
     const current = groups.get(entry.agentId) ?? {
@@ -58,8 +66,15 @@ function buildSkillsView(scanResult: RunScanResult) {
     {
       skillName: string;
       entries: RunScanResult["entries"];
-    }
+      }
   >();
+
+  for (const skill of Object.values(scanResult.manifest.skills)) {
+    groups.set(skill.id, {
+      skillName: skill.id,
+      entries: []
+    });
+  }
 
   for (const entry of scanResult.entries) {
     const current = groups.get(entry.skillName) ?? {

@@ -89,3 +89,9 @@ Record key product and implementation decisions so later sessions do not lose th
 - the README should speak to both humans and AI agents that may receive the repository link as setup context
 - the README should focus on purpose, target users, installation, commands, and usage flow
 - internal phase labels, roadmap language, and version-development framing do not belong in the README
+
+### Follow-up list behavior
+
+- `list --view agents` should include discovered agents even when they currently have zero live skill entries
+- `list --view skills` should include managed skills from the manifest even when they are currently disabled everywhere
+- `list` may enrich the live scan projection with manifest state for agent/skill-oriented views without changing `records` view semantics

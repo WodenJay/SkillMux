@@ -1,4 +1,6 @@
 import { join } from "node:path";
+import { runDisable } from "../../src/commands/disable";
+import { runImport } from "../../src/commands/import";
 import { afterEach, describe, expect, it } from "vitest";
 import { readManifest } from "../../src/manifest/read-manifest";
 import { runList } from "../../src/commands/list";
@@ -135,6 +137,93 @@ describe("scan and list commands", () => {
               kind: "unmanaged-directory"
             })
           ])
+        })
+      ])
+    );
+  });
+
+  it("keeps discovered agents and managed skills visible in list views even without live entries", async () => {
+    const fixture = await createAgentFixture();
+    fixtures.push(fixture);
+
+    const sourcePath = join(fixture.homeDir, "skill-sources", "managed-only-skill");
+    await runScan({
+      homeDir: fixture.homeDir,
+      platform: "win32",
+      now: new Date("2026-04-12T09:00:00.000Z")
+    });
+
+    await import("node:fs/promises").then((fs) =>
+      fs.mkdir(sourcePath, { recursive: true }).then(async () => {
+        await fs.writeFile(join(sourcePath, "SKILL.md"), "# Managed Only Skill\n", "utf8");
+      })
+    );
+
+    await runImport({
+      homeDir: fixture.homeDir,
+      sourcePath,
+      skillName: "managed-only-skill",
+      now: new Date("2026-04-12T09:01:00.000Z")
+    });
+
+    await runDisable({
+      homeDir: fixture.homeDir,
+      skill: "managed-only-skill",
+      agent: "codex",
+      now: new Date("2026-04-12T09:02:00.000Z")
+    });
+
+    const agentsView = JSON.parse(
+      (
+        await runList({
+          homeDir: fixture.homeDir,
+          platform: "win32",
+          view: "agents",
+          format: "json",
+          now: new Date("2026-04-12T09:03:00.000Z")
+        })
+      ).output
+    ) as {
+      view: string;
+      agents: Array<{
+        agentId: string;
+        entries: Array<{ skillName: string }>;
+      }>;
+    };
+
+    const skillsView = JSON.parse(
+      (
+        await runList({
+          homeDir: fixture.homeDir,
+          platform: "win32",
+          view: "skills",
+          format: "json",
+          now: new Date("2026-04-12T09:04:00.000Z")
+        })
+      ).output
+    ) as {
+      view: string;
+      skills: Array<{
+        skillName: string;
+        entries: Array<{ agentId: string }>;
+      }>;
+    };
+
+    expect(agentsView.view).toBe("agents");
+    expect(agentsView.agents).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          agentId: "codex"
+        })
+      ])
+    );
+
+    expect(skillsView.view).toBe("skills");
+    expect(skillsView.skills).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          skillName: "managed-only-skill",
+          entries: []
         })
       ])
     );
