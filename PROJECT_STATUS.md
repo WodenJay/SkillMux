@@ -90,6 +90,7 @@ Task 10 passed fresh in the root repo with:
   - SkillMux is responsible for scanning, adopting, enabling, disabling, listing, and diagnosing locally present skills
   - future integration work should improve the handoff between those two tools, not replace `npx skills`
 - next approved design focus is CLI lifecycle closure in this order:
+- implementation planning for that phase is now complete
   - `remove skill`
   - better adoption of already-installed skills
   - `config` command-family expansion

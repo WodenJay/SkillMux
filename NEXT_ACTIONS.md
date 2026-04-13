@@ -76,7 +76,7 @@ Track the next concrete actions. Mark done items with `[x]`.
   - `config` expansion
   - batch operations
 - [ ] Improve the handoff from `npx skills` to SkillMux so newly installed skills are easier to adopt and manage
-- [ ] Write the lifecycle-closure spec and get user review
-- [ ] Write the lifecycle-closure implementation plan after the spec is approved
+- [x] Write the lifecycle-closure spec and get user review
+- [x] Write the lifecycle-closure implementation plan after the spec is approved
 - [ ] Implement `skillmux remove --skill <skill>` as the first lifecycle-closure command
 - [ ] Document the intended workflow boundary between `npx skills` and SkillMux in the user-facing README once matching UX/code changes exist
