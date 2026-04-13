@@ -95,3 +95,9 @@ Record key product and implementation decisions so later sessions do not lose th
 - `list --view agents` should include discovered agents even when they currently have zero live skill entries
 - `list --view skills` should include managed skills from the manifest even when they are currently disabled everywhere
 - `list` may enrich the live scan projection with manifest state for agent/skill-oriented views without changing `records` view semantics
+
+### Real-world CLI bugfixes
+
+- `~/.skillmux/config.json` should accept UTF-8 BOM-prefixed JSON because PowerShell and some editors may emit it by default on Windows
+- first-time `disable --skill <name> --agent <id>` should be able to adopt an existing external skill link into SkillMux management instead of forcing the user to import, manually delete the old link, and then retry
+- auto-adoption during `disable` is currently limited to existing linked skill entries with a valid root `SKILL.md`; this keeps the behavior safe while matching the real-world `skills.sh` symlink/junction case

@@ -100,4 +100,54 @@ describe("activation commands", () => {
     expect(secondDisable.changed).toBe(false);
     expect(secondDisable.manifest.activations).toEqual(firstDisable.manifest.activations);
   });
+
+  it("adopts an existing external skill link on first disable and can re-enable it later", async () => {
+    const homeDir = createTempHomeDir();
+    homesToCleanup.push(homeDir);
+    const sourcePath = await createLocalSkillSource(homeDir, "ui-ux-pro-max");
+    const agentLinkPath = join(homeDir, ".codex", "skills", "ui-ux-pro-max");
+
+    await fs.mkdir(join(homeDir, ".codex", "skills"), { recursive: true });
+    await fs.symlink(sourcePath, agentLinkPath, process.platform === "win32" ? "junction" : "dir");
+
+    const disabled = await runDisable({
+      homeDir,
+      skill: "ui-ux-pro-max",
+      agent: "codex",
+      now: new Date("2026-04-12T10:20:00.000Z")
+    });
+
+    expect(disabled.changed).toBe(true);
+    expect(disabled.skill.id).toBe("ui-ux-pro-max");
+    expect(disabled.skill.source).toEqual({
+      kind: "imported",
+      path: sourcePath
+    });
+    expect(await fs.readFile(join(disabled.skill.path, "SKILL.md"), "utf8")).toContain(
+      "ui-ux-pro-max"
+    );
+    await expect(fs.lstat(agentLinkPath)).rejects.toMatchObject({ code: "ENOENT" });
+
+    const manifestAfterDisable = await readManifest(disabled.manifest.skillmuxHome);
+    expect(manifestAfterDisable.skills["ui-ux-pro-max"]).toEqual(disabled.skill);
+    expect(manifestAfterDisable.activations).toEqual([
+      {
+        skillId: "ui-ux-pro-max",
+        agentId: "codex",
+        linkPath: agentLinkPath,
+        state: "disabled",
+        updatedAt: "2026-04-12T10:20:00.000Z"
+      }
+    ]);
+
+    const enabled = await runEnable({
+      homeDir,
+      skill: "ui-ux-pro-max",
+      agent: "codex",
+      now: new Date("2026-04-12T10:21:00.000Z")
+    });
+
+    expect(enabled.changed).toBe(true);
+    expect(await fs.realpath(agentLinkPath)).toBe(disabled.skill.path);
+  });
 });

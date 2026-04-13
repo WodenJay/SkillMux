@@ -71,6 +71,8 @@ Task 10 passed fresh in the root repo with:
 ## Next Step
 
 - small follow-up completed: `list` now keeps discovered agents visible with zero live entries and keeps manifest-managed skills visible even when they are currently disabled everywhere
-- current bugfix pass is focused on real-world usage gaps: UTF-8 BOM config parsing and first-time adoption of externally linked skills during `disable`
+- real-world bugfix pass completed:
+  - `config` now accepts UTF-8 BOM-prefixed `~/.skillmux/config.json`
+  - first-time `disable` can adopt an existing external skill link into `~/.skillmux/skills/` and then disable it cleanly
 - v0 implementation is complete and the repo root is now the only active workspace
-- next optional work is GitHub publication and post-v0 feature development
+- next planned feature is a CLI write path for custom agent registration, such as `config add-agent`

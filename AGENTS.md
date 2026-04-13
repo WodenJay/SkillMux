@@ -38,7 +38,6 @@
 
 ## Execution Notes
 
-- 实现阶段只维护一个 **canonical worktree** 作为主执行目录；其他子代理产生的临时工作副本只作为中间产物，不作为最终事实来源。
-- 当前 canonical worktree 为 `.worktrees/task1-bootstrap-cli`。
-- 主目录 `C:\Users\wudon\Desktop\SkillMux\` 是稳定版与最终交付区；canonical worktree 用于开发执行，主目录文档必须及时同步。
+- 当前仓库已回到 **root-only** 工作状态，`.worktrees/` 已清理；主目录 `C:\Users\wudon\Desktop\SkillMux\` 是唯一稳定版与最终交付区。
+- 如果后续需要重新使用 worktree 做隔离开发，可以再创建，但 accepted state 仍然只以主目录验证通过后的代码为准。
 - 子代理产出的代码只有在主目录完成验证后，才算 accepted state。

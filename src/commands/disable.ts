@@ -1,6 +1,6 @@
 import * as fs from "node:fs/promises";
 import { homedir } from "node:os";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import type {
   ActivationRecord,
   AgentRecord,
@@ -13,6 +13,10 @@ import {
   discoverAgents,
   type DiscoveredAgent
 } from "../discovery/discover-agents";
+import {
+  assertSkillSourceLayout,
+  copySkillContentsToManagedStore
+} from "../fs/safe-copy";
 import { isLinkPointingToTarget } from "../fs/link-ops";
 import { safeRemoveLink } from "../fs/safe-remove-link";
 import { readManifest } from "../manifest/read-manifest";
@@ -78,6 +82,53 @@ function upsertActivation(
   manifest.activations[index] = activation;
 }
 
+function buildManagedSkillPath(skillmuxHome: string, skillId: string): string {
+  return resolve(skillmuxHome, "skills", skillId);
+}
+
+async function tryAdoptManagedSkill(
+  manifest: Manifest,
+  skillmuxHome: string,
+  skillId: string,
+  skillName: string,
+  linkPath: string,
+  timestamp: string
+): Promise<{ skill: ManagedSkill; sourcePath: string } | undefined> {
+  try {
+    const entry = await fs.lstat(linkPath);
+
+    if (!entry.isSymbolicLink()) {
+      return undefined;
+    }
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return undefined;
+    }
+
+    throw error;
+  }
+
+  const sourcePath = await fs.realpath(linkPath);
+  await assertSkillSourceLayout(sourcePath);
+
+  const managedSkillPath = buildManagedSkillPath(skillmuxHome, skillId);
+  await copySkillContentsToManagedStore(sourcePath, managedSkillPath);
+
+  const skill: ManagedSkill = {
+    id: skillId,
+    name: skillName,
+    path: managedSkillPath,
+    source: {
+      kind: "imported",
+      path: sourcePath
+    },
+    importedAt: timestamp
+  };
+
+  manifest.skills[skillId] = skill;
+  return { skill, sourcePath };
+}
+
 async function resolveTargetAgent(
   homeDir: string,
   skillmuxHome: string,
@@ -120,29 +171,50 @@ export async function runDisable(
   const timestamp = (options.now ?? new Date()).toISOString();
   const manifest = await readManifest(skillmuxHome);
   const skillId = normalizeId(options.skill);
-  const skill = manifest.skills[skillId];
+  const agent = await resolveTargetAgent(homeDir, skillmuxHome, options.agent);
+  const linkPath = join(agent.absoluteSkillsDirectoryPath, skillId);
+  const adoption = manifest.skills[skillId]
+    ? undefined
+    : await tryAdoptManagedSkill(
+        manifest,
+        skillmuxHome,
+        skillId,
+        options.skill,
+        linkPath,
+        timestamp
+      );
+  const skill = manifest.skills[skillId] ?? adoption?.skill;
 
   if (skill === undefined) {
     throw new Error(`Managed skill not found: ${skillId}`);
   }
 
-  const agent = await resolveTargetAgent(homeDir, skillmuxHome, options.agent);
   const currentActivation = manifest.activations.find(
     (entry) => entry.skillId === skill.id && entry.agentId === agent.id
   );
-  const linkPath =
-    currentActivation?.linkPath ?? join(agent.absoluteSkillsDirectoryPath, skill.id);
+  const activationLinkPath = currentActivation?.linkPath ?? linkPath;
   const agentRecord = buildAgentRecord(agent, timestamp);
   manifest.agents[agent.id] = agentRecord;
 
-  const linkMatchesSkill = await isLinkPointingToTarget(linkPath, skill.path);
-  if (!linkMatchesSkill && (await pathExists(linkPath))) {
+  const adoptedLinkRemoved =
+    adoption !== undefined ? await safeRemoveLink(linkPath) : false;
+
+  const linkMatchesSkill = adoption === undefined
+    ? await isLinkPointingToTarget(activationLinkPath, skill.path)
+    : false;
+  if (
+    adoption === undefined &&
+    !linkMatchesSkill &&
+    (await pathExists(activationLinkPath))
+  ) {
     throw new Error(`Refusing to disable non-managed entry at ${linkPath}`);
   }
 
-  const removedLink = linkMatchesSkill
-    ? await safeRemoveLink(linkPath)
-    : false;
+  const removedLink = adoptedLinkRemoved
+    ? true
+    : linkMatchesSkill
+      ? await safeRemoveLink(activationLinkPath)
+      : false;
 
   if (removedLink === false && currentActivation?.state !== "enabled") {
     return {

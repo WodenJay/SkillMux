@@ -138,4 +138,45 @@ describe("runConfig", () => {
       })
     ).rejects.toThrow(/Invalid config/);
   });
+
+  it("accepts a UTF-8 BOM prefixed config file", async () => {
+    const homeDir = createTempHomeDir();
+    tempHomeDirs.push(homeDir);
+
+    const configPath = join(homeDir, ".skillmux", "config.json");
+    await fs.mkdir(join(homeDir, ".skillmux"), { recursive: true });
+    await fs.writeFile(
+      configPath,
+      `\uFEFF${JSON.stringify(
+        {
+          version: 1,
+          agents: {
+            antigravity: {
+              stableName: "Gemini Antigravity",
+              homeRelativeRootPath: ".gemini/antigravity",
+              skillsDirectoryPath: "skills"
+            }
+          }
+        },
+        null,
+        2
+      )}\n`,
+      "utf8"
+    );
+
+    const result = await runConfig({
+      homeDir,
+      json: true
+    });
+
+    const parsed = JSON.parse(result.output) as {
+      config: {
+        agents: Record<string, { stableName: string }>;
+      };
+    };
+
+    expect(parsed.config.agents.antigravity.stableName).toBe(
+      "Gemini Antigravity"
+    );
+  });
 });

@@ -7,6 +7,8 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Triage the new README-linked follow-up task and identify the missing management view behavior
 - [x] Extend `list` so agent and skill views include manifest-backed state, not only live scanned entries
 - [x] Verify the new list behavior with a targeted Vitest run
+- [x] Fix the real-world BOM parsing bug for `~/.skillmux/config.json`
+- [x] Fix first-time `disable` so it can adopt an existing external skill link into SkillMux management
 - [x] Read and follow root `AGENTS.md`
 - [x] Confirm CLI-first direction
 - [x] Confirm npm distribution and cross-platform target
@@ -59,9 +61,9 @@ Track the next concrete actions. Mark done items with `[x]`.
 
 ## Next
 
-- [ ] Fix the real-world BOM parsing bug for `~/.skillmux/config.json`
-- [ ] Fix first-time `disable` so it can adopt an existing external skill link into SkillMux management
 - [ ] Add a CLI write path for custom agent registration, such as `config add-agent`
+- [ ] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
+- [ ] Add tests and implementation for `skillmux config add-agent`
 - [ ] Publish the repository to GitHub with the refreshed README
 - [ ] Bump the package version before the next npm release
 - [ ] Optionally add post-v0 features such as remote install and update flows

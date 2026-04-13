@@ -46,6 +46,10 @@ function createEmptyUserConfig(): UserConfig {
   };
 }
 
+function stripUtf8Bom(contents: string): string {
+  return contents.charCodeAt(0) === 0xfeff ? contents.slice(1) : contents;
+}
+
 function formatValidationIssues(error: { issues: Array<{ path: (string | number)[]; message: string }> }): string {
   return error.issues
     .map((issue) => {
@@ -60,7 +64,7 @@ export async function loadUserConfig(skillmuxHome: string): Promise<UserConfig> 
 
   try {
     const contents = await fs.readFile(configPath, "utf8");
-    const parsed = JSON.parse(contents) as unknown;
+    const parsed = JSON.parse(stripUtf8Bom(contents)) as unknown;
     const validated = userConfigSchema.safeParse(parsed);
 
     if (!validated.success) {
