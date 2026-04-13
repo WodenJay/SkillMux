@@ -58,8 +58,16 @@ Task 10 passed fresh in the root repo with:
 - `npm test`
 - `npm run typecheck`
 - `npm run build`
+- `npm publish --dry-run`
+
+## Release Status
+
+- `skillmux@0.1.0` is ready to publish from the repo root
+- npm publish is currently blocked by account policy:
+  - registry returned `E403`
+  - publishing requires a 2FA OTP or a granular access token with bypass-2fa enabled
 
 ## Next Step
 
 - v0 implementation is complete and the repo root is now the only active workspace
-- next active work is npm publication for the verified `0.1.0` CLI
+- next active work is retrying npm publication with `--otp`
