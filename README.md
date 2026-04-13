@@ -6,6 +6,8 @@ SkillMux 是一个用来管理本地 agent skills 的命令行工具。
 
 SkillMux 的作用就是把这件事接管下来：把 skill 收拢到统一位置，然后按 agent 启用、停用、扫描和检查状态。
 
+你完全可以让你的agent使用该软件来做管理 (大AI时代)，因此先开发了cli。后续会考虑集成skills安装、更新功能，以及UI界面。
+
 ## 适合谁
 
 如果你符合下面任意一种情况，SkillMux 就适合你：
