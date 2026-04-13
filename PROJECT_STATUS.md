@@ -62,4 +62,4 @@ Task 10 passed fresh in the root repo with:
 ## Next Step
 
 - v0 implementation is complete and the repo root is now the only active workspace
-- next optional work is packaging and npm publication
+- next active work is npm publication for the verified `0.1.0` CLI

@@ -4,7 +4,7 @@
   "description": "CLI for managing local agent skills from a shared SkillMux store",
   "type": "module",
   "bin": {
-    "skillmux": "./dist/cli.js"
+    "skillmux": "dist/cli.js"
   },
   "files": [
     "dist"

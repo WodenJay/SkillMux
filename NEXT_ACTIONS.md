@@ -55,5 +55,5 @@ Track the next concrete actions. Mark done items with `[x]`.
 
 ## Next
 
-- [ ] Decide whether to package and publish the CLI to npm
+- [ ] Publish the verified `skillmux@0.1.0` package to npm
 - [ ] Optionally add post-v0 features such as remote install and update flows
