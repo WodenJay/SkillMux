@@ -55,5 +55,5 @@ Track the next concrete actions. Mark done items with `[x]`.
 
 ## Next
 
-- [ ] Retry `npm publish` for `skillmux@0.1.0` with a valid npm 2FA OTP or a bypass-2fa publish token
+- [ ] Bump the package version before the next npm release
 - [ ] Optionally add post-v0 features such as remote install and update flows
