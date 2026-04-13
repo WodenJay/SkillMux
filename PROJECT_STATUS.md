@@ -89,4 +89,9 @@ Task 10 passed fresh in the root repo with:
   - `npx skills` is responsible for fetching and installing skills from remote sources
   - SkillMux is responsible for scanning, adopting, enabling, disabling, listing, and diagnosing locally present skills
   - future integration work should improve the handoff between those two tools, not replace `npx skills`
-- next likely follow-up is to decide whether config writes should preserve user formatting instead of rewriting normalized JSON
+- next approved design focus is CLI lifecycle closure in this order:
+  - `remove skill`
+  - better adoption of already-installed skills
+  - `config` command-family expansion
+  - batch operations
+  - TUI only after those command semantics are stable

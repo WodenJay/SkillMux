@@ -128,3 +128,16 @@ Record key product and implementation decisions so later sessions do not lose th
   - control visibility per agent
   - report local drift and local breakage
 - future work should focus on making SkillMux cooperate cleanly with `npx skills`, not on replacing it with a second installer
+
+### CLI lifecycle-closure order
+
+- the next major CLI phase should close the lifecycle in this order:
+  1. `remove skill`
+  2. adopt already-installed skills
+  3. `config` command-family expansion
+  4. batch operations
+- TUI should wait until those command semantics are stable
+- the ordering is intentional:
+  - `remove` closes the lifecycle endpoint first
+  - `adopt` closes the handoff from `npx skills`
+  - `config` and batch work should build on the stable lifecycle rules instead of inventing them

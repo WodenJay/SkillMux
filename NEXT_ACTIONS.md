@@ -70,5 +70,13 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [ ] Publish the repository to GitHub with the refreshed README
 - [x] Bump the package version before the next npm release
 - [x] Publish `skillmux@0.1.1` to npm
+- [x] Approve the next CLI lifecycle-closure direction:
+  - `remove skill`
+  - adopt already-installed skills
+  - `config` expansion
+  - batch operations
 - [ ] Improve the handoff from `npx skills` to SkillMux so newly installed skills are easier to adopt and manage
+- [ ] Write the lifecycle-closure spec and get user review
+- [ ] Write the lifecycle-closure implementation plan after the spec is approved
+- [ ] Implement `skillmux remove --skill <skill>` as the first lifecycle-closure command
 - [ ] Document the intended workflow boundary between `npx skills` and SkillMux in the user-facing README once matching UX/code changes exist
