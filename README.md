@@ -1,47 +1,20 @@
 # SkillMux
 
-SkillMux 是一个用于管理本地 agent skills 的 CLI 工具。
+SkillMux 是一个用来管理本地 agent skills 的命令行工具。
 
-它解决的是 `skills.sh` 这一类安装方式带来的管理问题：同一个 skill 的真实内容通常只有一份，但会通过 symlink 或 junction 暴露到多个 agent 目录里，比如 `.codex/skills`、`.claude/skills`、`.gemini/skills`。一旦你想精细地控制“哪个 agent 能看到哪个 skill”，手动操作这些目录会很麻烦，也容易弄乱。
+很多 skills 会通过 `skills.sh` 这类方式安装到多个 agent 目录里，例如 `.codex/skills`、`.claude/skills`、`.gemini/skills`。这些目录里通常不是多份独立文件，而是一份真实内容加上多处 symlink 或 junction。手动管理这些链接很麻烦，也容易弄乱。
 
-SkillMux 的目标是把这些零散的本地 skills 收拢到一个统一的托管目录里，然后按 agent 或按 skill 来启用、停用和检查状态。
+SkillMux 的作用就是把这件事接管下来：把 skill 收拢到统一位置，然后按 agent 启用、停用、扫描和检查状态。
 
-## `v0` 做什么
+## 适合谁
 
-`v0` 是一个本地优先的 CLI 版本，当前能力是：
+如果你符合下面任意一种情况，SkillMux 就适合你：
 
-- 管理本地已经存在的 skills
-- 把 skill 导入 SkillMux 自己的托管目录
-- 按 agent 启用或停用某个 skill
-- 扫描本地 agent skills 目录并输出状态
-- 检查坏链、冲突目录和异常状态
-
-`v0` 目前 **不负责**：
-
-- 从远端仓库下载 skill
-- 更新远端 skill
-- 图形界面
-
-## 适用场景
-
-如果你有下面这些需求，SkillMux 就是为它设计的：
-
-- 你已经通过 `skills.sh` 或类似方式装过一些 skills
-- 这些 skills 分散在多个 agent 目录里
-- 你想临时让某个 agent 看不到某个 skill，而不是重新下载或手动删目录
-- 你想把 skill 的真实内容统一收拢，避免本地目录越来越乱
-
-## 支持的内置 agent 目录
-
-`v0` 内置支持这些 skills 目录：
-
-- `.codex/skills`
-- `.claude/skills`
-- `.gemini/skills`
-- `.agents/skills`
-- `.openclaw/skills`
-
-另外也支持通过 `~/.skillmux/config.json` 自定义或覆盖 agent 规则。
+- 你已经用过 `skills.sh` 或类似方式安装过 skills
+- 你同时在用 Codex、Claude、Gemini 等多个 agent
+- 你想让某个 skill 只对部分 agent 可见
+- 你不想每次停用后又重新下载一遍 skill
+- 你想把本地 skills 管理得更清楚，便于自己或 AI 代管
 
 ## 安装
 
@@ -51,40 +24,21 @@ SkillMux 的目标是把这些零散的本地 skills 收拢到一个统一的托
 npm install -g skillmux
 ```
 
-安装完成后可直接使用：
+安装后可直接查看帮助：
 
 ```bash
 skillmux --help
 ```
 
-## 卸载
-
-如果你需要频繁安装和测试，直接卸载 npm 全局包即可：
+卸载：
 
 ```bash
 npm uninstall -g skillmux
 ```
 
-这只会卸载 CLI 本身，不会自动删除你本地的 `~/.skillmux` 数据目录。
+这只会卸载 CLI，不会删除你本地的 `~/.skillmux` 数据目录。
 
-## 本地开发
-
-如果你是在仓库里本地开发或调试：
-
-```bash
-npm install
-npm run build
-npm test
-npm run typecheck
-```
-
-构建后 CLI 入口是：
-
-```text
-dist/cli.js
-```
-
-## SkillMux 的本地目录结构
+## SkillMux 会管理什么
 
 SkillMux 默认把自己的数据放在：
 
@@ -98,16 +52,69 @@ SkillMux 默认把自己的数据放在：
 
 含义如下：
 
-- `config.json`
-  用户自定义的 agent 发现规则
-- `manifest.json`
-  SkillMux 的状态清单，记录托管 skill、agent、activation 和最近一次扫描结果
-- `skills/<skill-id>/`
-  SkillMux 托管的真实 skill 内容
+- `config.json`：用户自定义的 agent 目录规则
+- `manifest.json`：SkillMux 记录的托管状态
+- `skills/<skill-id>/`：SkillMux 托管的真实 skill 内容
 
 agent 目录里通常只保留指向这里的链接。
 
-## 命令
+## 支持的 agent 目录
+
+内置支持这些常见目录：
+
+- `.codex/skills`
+- `.claude/skills`
+- `.gemini/skills`
+- `.agents/skills`
+- `.openclaw/skills`
+
+如果你的环境不在这些目录里，也可以通过 `~/.skillmux/config.json` 自定义或覆盖规则。
+
+## 快速开始
+
+先看 SkillMux 找到了哪些 agent：
+
+```bash
+skillmux agents
+```
+
+扫描本地 skills 状态：
+
+```bash
+skillmux scan
+```
+
+把一个本地 skill 纳入 SkillMux 托管：
+
+```bash
+skillmux import --source C:\path\to\find-skills --name find-skills
+```
+
+给某个 agent 启用这个 skill：
+
+```bash
+skillmux enable --skill find-skills --agent codex
+```
+
+如果之后想让另一个 agent 看不到它：
+
+```bash
+skillmux disable --skill find-skills --agent claude
+```
+
+查看当前状态：
+
+```bash
+skillmux list --view skills
+```
+
+检查坏链、冲突目录和异常状态：
+
+```bash
+skillmux doctor
+```
+
+## 常用命令
 
 ### `skillmux agents`
 
@@ -120,7 +127,7 @@ skillmux agents --json
 
 ### `skillmux scan`
 
-扫描本地 agent skills 目录，并刷新 manifest 中的扫描结果。
+扫描本地 agent skills 目录，并刷新 SkillMux 的扫描结果。
 
 ```bash
 skillmux scan
@@ -129,7 +136,7 @@ skillmux scan --json
 
 ### `skillmux list`
 
-查看当前扫描到的记录，可以按原始记录、按 agent、或按 skill 聚合。
+查看当前状态。
 
 ```bash
 skillmux list
@@ -140,23 +147,17 @@ skillmux list --view records --format json
 
 ### `skillmux import`
 
-把一个本地 skill 导入 SkillMux 的托管目录。
-
-```bash
-skillmux import --source /path/to/find-skills --name find-skills
-```
-
-Windows 示例：
+把一个已经存在于本地的 skill 导入 SkillMux 托管目录。
 
 ```bash
 skillmux import --source C:\path\to\find-skills --name find-skills
 ```
 
-说明：
+要求：
 
-- `--source` 指向本地已有的 skill 目录
-- 目录根下需要有 `SKILL.md`
-- `v0` 默认是复制，不会删除原目录
+- `--source` 必须指向一个本地 skill 目录
+- 目录根下必须有 `SKILL.md`
+- 导入时会复制到 SkillMux 托管目录，不会删除原目录
 
 ### `skillmux enable`
 
@@ -169,7 +170,7 @@ skillmux enable --skill find-skills --agent claude
 
 ### `skillmux disable`
 
-把某个托管 skill 从指定 agent 目录里移除。
+把某个托管 skill 从指定 agent 目录中移除。
 
 ```bash
 skillmux disable --skill find-skills --agent codex
@@ -180,8 +181,8 @@ skillmux disable --skill find-skills --agent codex
 检查异常状态，例如：
 
 - 坏链
-- 托管 skill 路径丢失
-- 看起来像 skill 的未托管目录
+- 托管目录缺失
+- 看起来像 skill 但未被托管的目录
 - 多个 agent 指向同一个 skills 目录
 
 ```bash
@@ -198,18 +199,7 @@ skillmux config
 skillmux config --json
 ```
 
-## 推荐使用流程
-
-第一次使用时，推荐按这个顺序：
-
-1. 先运行 `skillmux agents`，确认发现了哪些 agent 目录
-2. 运行 `skillmux scan`，查看当前本地 skills 状态
-3. 用 `skillmux import` 把想长期管理的 skill 导入托管目录
-4. 用 `skillmux enable` 给需要的 agent 启用
-5. 用 `skillmux disable` 从不需要的 agent 上停用
-6. 用 `skillmux doctor` 检查本地状态是否健康
-
-## 示例
+## 一个典型流程
 
 ```bash
 skillmux agents
@@ -224,18 +214,18 @@ skillmux doctor
 
 ## 使用注意
 
-- `scan`、`import`、`enable`、`disable` 都会直接修改本地环境或本地状态
+- `scan`、`import`、`enable`、`disable` 会直接修改本地状态
 - `disable` 只会移除受管链接，不会盲删普通目录
-- `import` 不会删除原始 skill 源目录
+- `import` 不会删除原始 skill 目录
 - Windows 下目录链接使用 junction 语义
-- 如果你手动改过 agent 目录，建议重新运行一次 `scan`
+- 如果你手动改过 agent 目录，建议重新执行一次 `skillmux scan`
 
-## 当前限制
+## 给 AI 使用时的建议
 
-`v0` 还没有这些能力：
+如果你把这个仓库链接发给 AI，让它帮你安装和使用 SkillMux，最有用的信息就是这几件事：
 
-- 远端安装和更新
-- `remove` / `uninstall` 某个已托管 skill
-- 图形界面
-
-如果你只需要稳定地管理本地已有 skills，`v0` 已经够用。
+- 安装命令是 `npm install -g skillmux`
+- 查看环境先用 `skillmux agents` 和 `skillmux scan`
+- 把本地 skill 纳入管理用 `skillmux import`
+- 控制某个 skill 对哪些 agent 可见，用 `skillmux enable` 和 `skillmux disable`
+- 检查异常状态用 `skillmux doctor`

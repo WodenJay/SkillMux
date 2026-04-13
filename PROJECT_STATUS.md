@@ -65,7 +65,8 @@ Task 10 passed fresh in the root repo with:
 - `skillmux@0.1.0` has been published to npm
 - package name on npm: `skillmux`
 - publish was verified with `npm view skillmux version` returning `0.1.0`
-- `README.md` has been refreshed for GitHub publication with clearer purpose, install, uninstall, command, and usage guidance
+- `README.md` has been rewritten as a user-facing and AI-friendly manual
+- the README now focuses on purpose, audience, installation, commands, and usage flow instead of internal version framing
 
 ## Next Step
 

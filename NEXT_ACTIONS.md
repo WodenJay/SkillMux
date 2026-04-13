@@ -52,6 +52,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Re-align the canonical worktree to the root Task 10 accepted state
 - [x] Remove the canonical worktree after confirming root and worktree HEAD matched
 - [x] Clean up extra temporary worktrees
+- [x] Rewrite `README.md` as a user-facing and AI-friendly manual
 
 ## Next
 

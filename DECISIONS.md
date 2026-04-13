@@ -80,3 +80,12 @@ Record key product and implementation decisions so later sessions do not lose th
 - the real executable entrypoint must use `parseAsync`, not `parse`, because the command handlers are async
 - `v0` must expose `agents` and `import` on the public CLI surface, not just as internal command helpers
 - the end-to-end acceptance test for `v0` is one temporary-environment flow that proves one managed skill can be imported, linked into two agents, disabled for one agent, and then diagnosed safely
+
+## 2026-04-13
+
+### README positioning
+
+- `README.md` should be written as a user manual, not as an internal engineering note
+- the README should speak to both humans and AI agents that may receive the repository link as setup context
+- the README should focus on purpose, target users, installation, commands, and usage flow
+- internal phase labels, roadmap language, and version-development framing do not belong in the README
