@@ -55,5 +55,6 @@ Track the next concrete actions. Mark done items with `[x]`.
 
 ## Next
 
+- [ ] Publish the repository to GitHub with the refreshed README
 - [ ] Bump the package version before the next npm release
 - [ ] Optionally add post-v0 features such as remote install and update flows

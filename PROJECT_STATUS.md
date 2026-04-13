@@ -65,8 +65,9 @@ Task 10 passed fresh in the root repo with:
 - `skillmux@0.1.0` has been published to npm
 - package name on npm: `skillmux`
 - publish was verified with `npm view skillmux version` returning `0.1.0`
+- `README.md` has been refreshed for GitHub publication with clearer purpose, install, uninstall, command, and usage guidance
 
 ## Next Step
 
 - v0 implementation is complete and the repo root is now the only active workspace
-- next optional work is post-v0 feature development
+- next optional work is GitHub publication and post-v0 feature development
