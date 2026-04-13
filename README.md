@@ -1,6 +1,8 @@
 # SkillMux
 
-<img src="assets/logo.png" alt="SkillMux logo" width="280" />
+<p align="center">
+  <img src="assets/logo.png" alt="SkillMux logo" width="280" />
+</p>
 
 SkillMux 是一个用来管理本地 agent skills 的命令行工具。
 
