@@ -10,6 +10,8 @@ SkillMux 是一个用来管理本地 agent skills 的命令行工具。
 
 SkillMux 的作用就是把这件事接管下来：把 skill 收拢到统一位置，然后按 agent 启用、停用、扫描和检查状态。它既适合人直接用，也适合把仓库链接发给 AI，让 AI 按文档自动安装和操作。
 
+目前适合让AI来使用该软件进行skills的管理，后续 (如果我有时间的话 O.o ) 会推出tui, web界面等更友好的交互方式。
+
 ## 适合谁
 
 如果你符合下面任意一种情况，SkillMux 就适合你：
@@ -245,6 +247,7 @@ skillmux config remove-agent --id antigravity --json
 ```
 
 说明：
+
 - 只会删除 `~/.skillmux/config.json` 里的该 agent override
 - 不会删除 `manifest.json`
 - 不会删除任何本地 skill、symlink 或 junction
