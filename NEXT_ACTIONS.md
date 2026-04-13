@@ -50,8 +50,10 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Sync Task 10 accepted code back to the root repo
 - [x] Complete Task 10 fresh verification in the root repo
 - [x] Re-align the canonical worktree to the root Task 10 accepted state
+- [x] Remove the canonical worktree after confirming root and worktree HEAD matched
+- [x] Clean up extra temporary worktrees
 
 ## Next
 
-- [ ] Decide whether to keep or remove the canonical worktree now that v0 implementation is complete
-- [ ] Clean up extra temporary worktrees when it is safe
+- [ ] Decide whether to package and publish the CLI to npm
+- [ ] Optionally add post-v0 features such as remote install and update flows

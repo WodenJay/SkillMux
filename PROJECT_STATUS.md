@@ -3,7 +3,7 @@
 Project: SkillMux
 Phase: implementation complete
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
-Canonical worktree: `.worktrees/task1-bootstrap-cli`
+Canonical worktree: `(none)`
 
 ## Accepted Tasks
 
@@ -61,5 +61,5 @@ Task 10 passed fresh in the root repo with:
 
 ## Next Step
 
-- Decide branch/worktree cleanup after the v0 implementation is complete
-- Clean up extra temporary worktrees when there is a safe window
+- v0 implementation is complete and the repo root is now the only active workspace
+- next optional work is packaging and npm publication
