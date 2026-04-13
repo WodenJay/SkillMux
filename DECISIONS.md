@@ -101,3 +101,11 @@ Record key product and implementation decisions so later sessions do not lose th
 - `~/.skillmux/config.json` should accept UTF-8 BOM-prefixed JSON because PowerShell and some editors may emit it by default on Windows
 - first-time `disable --skill <name> --agent <id>` should be able to adopt an existing external skill link into SkillMux management instead of forcing the user to import, manually delete the old link, and then retry
 - auto-adoption during `disable` is currently limited to existing linked skill entries with a valid root `SKILL.md`; this keeps the behavior safe while matching the real-world `skills.sh` symlink/junction case
+
+### Custom agent config writes
+
+- the first config mutation command is `skillmux config add-agent`
+- `config add-agent` writes a normalized `~/.skillmux/config.json` instead of trying to preserve arbitrary user formatting
+- `config add-agent` requires `--root` and `--skills` to stay relative; absolute paths and `..` escapes are rejected
+- `config add-agent` defaults `--skills` to `skills` and defaults `--platform` to the current platform
+- re-running `config add-agent` for the same agent id overwrites only that one override and preserves the other configured agents

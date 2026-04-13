@@ -74,5 +74,8 @@ Task 10 passed fresh in the root repo with:
 - real-world bugfix pass completed:
   - `config` now accepts UTF-8 BOM-prefixed `~/.skillmux/config.json`
   - first-time `disable` can adopt an existing external skill link into `~/.skillmux/skills/` and then disable it cleanly
+- custom agent configuration now has a CLI write path:
+  - `skillmux config add-agent --id <agent-id> --root <home-relative-root>`
+  - supports optional `--skills`, `--name`, repeated `--platform`, and `--disabled-by-default`
 - v0 implementation is complete and the repo root is now the only active workspace
-- next planned feature is a CLI write path for custom agent registration, such as `config add-agent`
+- next likely follow-up is to add complementary config mutation commands such as `config remove-agent`

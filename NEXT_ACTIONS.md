@@ -61,9 +61,11 @@ Track the next concrete actions. Mark done items with `[x]`.
 
 ## Next
 
-- [ ] Add a CLI write path for custom agent registration, such as `config add-agent`
-- [ ] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
-- [ ] Add tests and implementation for `skillmux config add-agent`
+- [x] Add a CLI write path for custom agent registration, such as `config add-agent`
+- [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
+- [x] Add tests and implementation for `skillmux config add-agent`
+- [ ] Add a complementary `config remove-agent` flow for removing stale custom overrides
+- [ ] Decide whether future config writes should preserve existing key order and formatting instead of rewriting normalized JSON
 - [ ] Publish the repository to GitHub with the refreshed README
 - [ ] Bump the package version before the next npm release
 - [ ] Optionally add post-v0 features such as remote install and update flows
