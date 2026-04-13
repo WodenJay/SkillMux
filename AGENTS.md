@@ -26,6 +26,7 @@
 - 当前优先目标是先做一个**CLI 工具**，暂不做图形界面。
 - 分发方式优先采用 **npm 包**，目标支持 Windows / Linux / macOS。
 - `v0` 只管理本地已安装 skills，不负责远端下载/更新。
+- `npx skills` / `https://skills.sh/` 继续作为远端安装入口；SkillMux 不重复实现远端安装器。
 - 工具需要同时支持：
   - 以 **agent** 为中心管理 skills
   - 以 **skill** 为中心管理其在不同 agent 中的启用状态
@@ -34,6 +35,7 @@
 - 需要尽可能覆盖常见 agent（如 `.gemini`、`.codex`、`.claude`、`.agents`、`.openclaw` 等），并尽量自动找对目录。
 - agent 目录发现优先采用“**内置常见规则 + 用户配置覆盖**”的方式，并可参考 `npx skills add <owner/repo>` 已支持的安装目录集合。
 - 停用 skill 时，SkillMux 优先将真实 skill 内容收拢到自己托管的本地仓库中；agent 侧只保留或移除可重建的链接状态。
+- 后续如扩展与 `npx skills` 的配合，重点是优化“安装后如何被 SkillMux 接管和管理”的衔接，不是替代 `npx skills` 的远端获取能力。
 - 现在已经支持通过 `skillmux config add-agent` 为自定义 agent 写入 `~/.skillmux/config.json`。
 - 现在已经支持通过 `skillmux config remove-agent` 删除自定义 agent 的配置覆盖项。
 - 当前开发环境是windows，使用的是PowerShell，不支持`&&`，因此使用命令的时候请不要使用`&&`。

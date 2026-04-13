@@ -117,3 +117,14 @@ Record key product and implementation decisions so later sessions do not lose th
 
 - the post-`config remove-agent` release is published as `skillmux@0.1.1`
 - additive CLI features that remain backward-compatible should use a patch version bump unless a larger packaging change justifies otherwise
+
+### Product boundary with `npx skills`
+
+- SkillMux should not reimplement remote fetching, remote source discovery, or remote update logic from `skills.sh`
+- `npx skills` remains the standard tool for installing skills from remote repositories
+- SkillMux owns the local-management layer after installation:
+  - discover locally present skills
+  - adopt them into managed storage when needed
+  - control visibility per agent
+  - report local drift and local breakage
+- future work should focus on making SkillMux cooperate cleanly with `npx skills`, not on replacing it with a second installer

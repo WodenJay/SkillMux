@@ -37,6 +37,7 @@ Canonical worktree: `(none)`
 - npm distribution
 - target platforms: Windows, Linux, macOS
 - `v0` manages only already-local skills
+- SkillMux does not own remote install or update flows; `npx skills` remains the install entrypoint
 - `v0` directly modifies the local environment
 - agent discovery uses built-in rules plus user config overrides
 - real skill content should be gathered into SkillMux-managed storage
@@ -84,4 +85,8 @@ Task 10 passed fresh in the root repo with:
   - `skillmux config remove-agent --id <agent-id>`
   - removes only the user override from `~/.skillmux/config.json`
 - v0 implementation is complete and the repo root is now the only active workspace
+- product boundary is now explicit:
+  - `npx skills` is responsible for fetching and installing skills from remote sources
+  - SkillMux is responsible for scanning, adopting, enabling, disabling, listing, and diagnosing locally present skills
+  - future integration work should improve the handoff between those two tools, not replace `npx skills`
 - next likely follow-up is to decide whether config writes should preserve user formatting instead of rewriting normalized JSON
