@@ -77,5 +77,8 @@ Task 10 passed fresh in the root repo with:
 - custom agent configuration now has a CLI write path:
   - `skillmux config add-agent --id <agent-id> --root <home-relative-root>`
   - supports optional `--skills`, `--name`, repeated `--platform`, and `--disabled-by-default`
+- custom agent configuration now also has a CLI removal path:
+  - `skillmux config remove-agent --id <agent-id>`
+  - removes only the user override from `~/.skillmux/config.json`
 - v0 implementation is complete and the repo root is now the only active workspace
-- next likely follow-up is to add complementary config mutation commands such as `config remove-agent`
+- next likely follow-up is to decide whether config writes should preserve user formatting instead of rewriting normalized JSON

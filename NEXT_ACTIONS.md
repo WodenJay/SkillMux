@@ -64,7 +64,8 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
 - [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
 - [x] Add tests and implementation for `skillmux config add-agent`
-- [ ] Add a complementary `config remove-agent` flow for removing stale custom overrides
+- [x] Add a complementary `config remove-agent` flow for removing stale custom overrides
+- [x] Add the repository logo to `README.md`
 - [ ] Decide whether future config writes should preserve existing key order and formatting instead of rewriting normalized JSON
 - [ ] Publish the repository to GitHub with the refreshed README
 - [ ] Bump the package version before the next npm release

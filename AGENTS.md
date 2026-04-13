@@ -35,6 +35,7 @@
 - agent 目录发现优先采用“**内置常见规则 + 用户配置覆盖**”的方式，并可参考 `npx skills add <owner/repo>` 已支持的安装目录集合。
 - 停用 skill 时，SkillMux 优先将真实 skill 内容收拢到自己托管的本地仓库中；agent 侧只保留或移除可重建的链接状态。
 - 现在已经支持通过 `skillmux config add-agent` 为自定义 agent 写入 `~/.skillmux/config.json`。
+- 现在已经支持通过 `skillmux config remove-agent` 删除自定义 agent 的配置覆盖项。
 - 当前开发环境是windows，使用的是PowerShell，不支持`&&`，因此使用命令的时候请不要使用`&&`。
 
 ## Execution Notes

@@ -109,3 +109,6 @@ Record key product and implementation decisions so later sessions do not lose th
 - `config add-agent` requires `--root` and `--skills` to stay relative; absolute paths and `..` escapes are rejected
 - `config add-agent` defaults `--skills` to `skills` and defaults `--platform` to the current platform
 - re-running `config add-agent` for the same agent id overwrites only that one override and preserves the other configured agents
+- `config remove-agent` is the matching removal command for custom agent overrides
+- `config remove-agent` removes only the selected agent override from `~/.skillmux/config.json`
+- `config remove-agent` does not delete manifest state, managed skills, or any local symlink/junction entries

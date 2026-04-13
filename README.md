@@ -1,5 +1,7 @@
 # SkillMux
 
+<img src="assets/logo.png" alt="SkillMux logo" width="280" />
+
 SkillMux 是一个用来管理本地 agent skills 的命令行工具。
 
 很多 skills 会通过 `skills.sh` 一类的方式安装到多个 agent 目录里，例如 `.codex/skills`、`.claude/skills`、`.gemini/skills`。这些目录里通常不是多份独立文件，而是一份真实内容加上多处 symlink 或 junction。手动管理这些链接很麻烦，也容易弄乱。
@@ -82,6 +84,12 @@ skillmux agents
 
 ```bash
 skillmux config add-agent --id antigravity --root .gemini/antigravity --name "Gemini Antigravity"
+```
+
+如果之后不再需要这个自定义 agent 规则，也可以删掉：
+
+```bash
+skillmux config remove-agent --id antigravity
 ```
 
 扫描本地 skills 状态：
@@ -225,6 +233,20 @@ skillmux config add-agent --id antigravity --root .gemini/antigravity --disabled
 - `--platform` 不传时默认写入当前平台
 - `--disabled-by-default` 会把该自定义 agent 标记为默认不启用
 
+### `skillmux config remove-agent`
+
+删除一个自定义 agent 规则。
+
+```bash
+skillmux config remove-agent --id antigravity
+skillmux config remove-agent --id antigravity --json
+```
+
+说明：
+- 只会删除 `~/.skillmux/config.json` 里的该 agent override
+- 不会删除 `manifest.json`
+- 不会删除任何本地 skill、symlink 或 junction
+
 ## 一个典型流程
 
 ```bash
@@ -254,6 +276,7 @@ skillmux doctor
 - 安装命令是 `npm install -g skillmux`
 - 查看环境先用 `skillmux agents` 和 `skillmux scan`
 - 自定义 agent 入口用 `skillmux config add-agent`
+- 删除自定义 agent 入口用 `skillmux config remove-agent`
 - 把本地 skill 纳入管理用 `skillmux import`
 - 控制某个 skill 对哪些 agent 可见，用 `skillmux enable` 和 `skillmux disable`
 - 检查异常状态用 `skillmux doctor`

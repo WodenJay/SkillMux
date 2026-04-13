@@ -2,6 +2,7 @@ import { Command } from "commander";
 import { supportedPlatforms } from "./config/default-agent-rules";
 import { runAgents } from "./commands/agents";
 import { runConfigAddAgent } from "./commands/config-add-agent";
+import { runConfigRemoveAgent } from "./commands/config-remove-agent";
 import { runConfig } from "./commands/config";
 import { runDoctor } from "./commands/doctor";
 import { runDisable } from "./commands/disable";
@@ -107,6 +108,18 @@ export function buildCli(): Command {
         process.stdout.write(result.output);
       }
     );
+
+  configCommand
+    .command("remove-agent")
+    .requiredOption("--id <id>", "Agent id")
+    .option("--json", "Emit structured JSON output")
+    .action(async (options: { id: string; json?: boolean }) => {
+      const result = await runConfigRemoveAgent({
+        id: options.id,
+        json: options.json === true
+      });
+      process.stdout.write(result.output);
+    });
 
   program
     .command("enable")
