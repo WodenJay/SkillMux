@@ -2,21 +2,19 @@
 
 SkillMux 是一个用来管理本地 agent skills 的命令行工具。
 
-很多 skills 会通过 `skills.sh` 这类方式安装到多个 agent 目录里，例如 `.codex/skills`、`.claude/skills`、`.gemini/skills`。这些目录里通常不是多份独立文件，而是一份真实内容加上多处 symlink 或 junction。手动管理这些链接很麻烦，也容易弄乱。
+很多 skills 会通过 `skills.sh` 一类的方式安装到多个 agent 目录里，例如 `.codex/skills`、`.claude/skills`、`.gemini/skills`。这些目录里通常不是多份独立文件，而是一份真实内容加上多处 symlink 或 junction。手动管理这些链接很麻烦，也容易弄乱。
 
-SkillMux 的作用就是把这件事接管下来：把 skill 收拢到统一位置，然后按 agent 启用、停用、扫描和检查状态。
-
-你完全可以让你的agent使用该软件来做管理 (大AI时代)，因此先开发了cli。后续会考虑集成skills安装、更新功能，以及UI界面。
+SkillMux 的作用就是把这件事接管下来：把 skill 收拢到统一位置，然后按 agent 启用、停用、扫描和检查状态。它既适合人直接用，也适合把仓库链接发给 AI，让 AI 按文档自动安装和操作。
 
 ## 适合谁
 
 如果你符合下面任意一种情况，SkillMux 就适合你：
 
-- 你已经用过 `skills.sh` 或类似方式安装过 skills
+- 你已经用过 `skills.sh` 或类似方式安装 skills
 - 你同时在用 Codex、Claude、Gemini 等多个 agent
 - 你想让某个 skill 只对部分 agent 可见
-- 你不想每次停用后又重新下载一遍 skill
-- 你想把本地 skills 管理得更清楚，便于自己或 AI 代管
+- 你不想每次停用后再重新下载同一个 skill
+- 你想把本地 skills 管理得更清楚，方便自己或 AI 代管
 
 ## 安装
 
@@ -38,7 +36,7 @@ skillmux --help
 npm uninstall -g skillmux
 ```
 
-这只会卸载 CLI，不会删除你本地的 `~/.skillmux` 数据目录。
+这只会卸载 CLI，不会删除本地的 `~/.skillmux` 数据目录。
 
 ## SkillMux 会管理什么
 
@@ -70,7 +68,7 @@ agent 目录里通常只保留指向这里的链接。
 - `.agents/skills`
 - `.openclaw/skills`
 
-如果你的环境不在这些目录里，也可以通过 `~/.skillmux/config.json` 自定义或覆盖规则。
+如果你的环境不在这些目录里，也可以通过 `skillmux config add-agent` 注册自定义 agent。
 
 ## 快速开始
 
@@ -78,6 +76,12 @@ agent 目录里通常只保留指向这里的链接。
 
 ```bash
 skillmux agents
+```
+
+如果你的 agent 不在内置列表里，先加进去：
+
+```bash
+skillmux config add-agent --id antigravity --root .gemini/antigravity --name "Gemini Antigravity"
 ```
 
 扫描本地 skills 状态：
@@ -201,16 +205,37 @@ skillmux config
 skillmux config --json
 ```
 
+### `skillmux config add-agent`
+
+添加或覆盖一个自定义 agent 规则。
+
+```bash
+skillmux config add-agent --id antigravity --root .gemini/antigravity
+skillmux config add-agent --id antigravity --root .gemini/antigravity --name "Gemini Antigravity"
+skillmux config add-agent --id antigravity --root .gemini/antigravity --skills skills
+skillmux config add-agent --id antigravity --root .gemini/antigravity --platform win32 --platform linux
+skillmux config add-agent --id antigravity --root .gemini/antigravity --disabled-by-default
+```
+
+说明：
+
+- `--id` 是 agent 的唯一标识
+- `--root` 是相对用户 home 的根目录
+- `--skills` 默认是 `skills`
+- `--platform` 不传时默认写入当前平台
+- `--disabled-by-default` 会把该自定义 agent 标记为默认不启用
+
 ## 一个典型流程
 
 ```bash
 skillmux agents
+skillmux config add-agent --id antigravity --root .gemini/antigravity
 skillmux scan
 skillmux import --source C:\skills\find-skills --name find-skills
 skillmux enable --skill find-skills --agent codex
-skillmux enable --skill find-skills --agent claude
+skillmux enable --skill find-skills --agent antigravity
 skillmux list --view skills
-skillmux disable --skill find-skills --agent claude
+skillmux disable --skill find-skills --agent antigravity
 skillmux doctor
 ```
 
@@ -228,6 +253,7 @@ skillmux doctor
 
 - 安装命令是 `npm install -g skillmux`
 - 查看环境先用 `skillmux agents` 和 `skillmux scan`
+- 自定义 agent 入口用 `skillmux config add-agent`
 - 把本地 skill 纳入管理用 `skillmux import`
 - 控制某个 skill 对哪些 agent 可见，用 `skillmux enable` 和 `skillmux disable`
 - 检查异常状态用 `skillmux doctor`

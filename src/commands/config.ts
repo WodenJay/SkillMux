@@ -1,4 +1,5 @@
 import { homedir } from "node:os";
+import { buildConfigPath } from "../config/resolve-skillmux-home";
 import { loadUserConfig, type UserConfig } from "../config/load-user-config";
 import { resolveSkillmuxHome } from "../config/resolve-skillmux-home";
 import { printJson } from "../output/print-json";
@@ -64,7 +65,7 @@ export async function runConfig(
 
   const resultWithoutOutput = {
     skillmuxHome,
-    configPath: resolvedPaths.configPath,
+    configPath: buildConfigPath(skillmuxHome),
     config
   };
 

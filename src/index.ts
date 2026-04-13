@@ -1,5 +1,7 @@
 import { Command } from "commander";
+import { supportedPlatforms } from "./config/default-agent-rules";
 import { runAgents } from "./commands/agents";
+import { runConfigAddAgent } from "./commands/config-add-agent";
 import { runConfig } from "./commands/config";
 import { runDoctor } from "./commands/doctor";
 import { runDisable } from "./commands/disable";
@@ -60,13 +62,51 @@ export function buildCli(): Command {
       process.stdout.write(result.output);
     });
 
-  program
-    .command("config")
+  const configCommand = program.command("config");
+
+  configCommand
     .option("--json", "Emit structured JSON output")
     .action(async (options: { json?: boolean }) => {
       const result = await runConfig({ json: options.json === true });
       process.stdout.write(result.output);
     });
+
+  configCommand
+    .command("add-agent")
+    .requiredOption("--id <id>", "Agent id")
+    .requiredOption("--root <path>", "Home-relative root path")
+    .option("--skills <path>", "Skills directory path relative to the agent root", "skills")
+    .option("--name <name>", "Stable display name")
+    .option(
+      "--platform <platform>",
+      `Supported platform (${supportedPlatforms.join(", ")})`,
+      (value: string, previous: string[] = []) => [...previous, value],
+      []
+    )
+    .option("--disabled-by-default", "Mark this custom agent as disabled by default")
+    .option("--json", "Emit structured JSON output")
+    .action(
+      async (options: {
+        id: string;
+        root: string;
+        skills?: string;
+        name?: string;
+        platform?: string[];
+        disabledByDefault?: boolean;
+        json?: boolean;
+      }) => {
+        const result = await runConfigAddAgent({
+          id: options.id,
+          root: options.root,
+          skills: options.skills,
+          name: options.name,
+          platforms: options.platform,
+          disabledByDefault: options.disabledByDefault === true,
+          json: options.json === true
+        });
+        process.stdout.write(result.output);
+      }
+    );
 
   program
     .command("enable")
