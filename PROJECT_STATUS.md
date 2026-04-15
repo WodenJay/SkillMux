@@ -3,7 +3,7 @@
 Project: SkillMux
 Phase: lifecycle-closure implementation in progress
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
-Canonical worktree: `.worktrees/lifecycle-adopt`
+Canonical worktree: `(none)`
 
 ## Accepted Tasks
 
@@ -18,6 +18,7 @@ Canonical worktree: `.worktrees/lifecycle-adopt`
 - Task 9: add doctor and config commands
 - Task 10: complete the managed CLI flow and packaging
 - Lifecycle Closure Task 1: add safe managed skill removal
+- Lifecycle Closure Task 2: add adoption flow for installed skills
 
 ## Accepted Root Commits
 
@@ -93,6 +94,14 @@ Task 10 passed fresh in the root repo with:
   - target command: `skillmux adopt --agent <agent> [--skill <skill>]`
   - baseline verification in the worktree passed with `npm test`, `npm run typecheck`, and `npm run build`
   - implementation will follow superpowers subagent-driven development with spec and code-quality review before root acceptance
+- lifecycle-closure Task 2 is accepted in the root repo:
+  - command added: `skillmux adopt --agent <agent> [--skill <skill>] [--json]`
+  - behavior: adopts one agent's eligible unmanaged links/directories with root `SKILL.md`, copies real content into SkillMux managed storage, replaces live entries with managed links, records imported provenance, and reconciles already-managed links into enabled manifest activations
+  - safety behavior: validates managed targets before replacing live entries and persists each completed adoption/reconciliation before moving to later entries
+  - root verification passed with `npm test -- --run tests/commands/adopt.test.ts`, `npm test`, `npm run typecheck`, and `npm run build`
+  - accepted root commit: `3f3c2ee` `feat: add adoption flow for installed skills`
+  - stale implementation worktree `.worktrees/lifecycle-adopt` has been removed after root acceptance
+  - next implementation slice: `skillmux config update-agent`
 - small follow-up completed: `list` now keeps discovered agents visible with zero live entries and keeps manifest-managed skills visible even when they are currently disabled everywhere
 - real-world bugfix pass completed:
   - `config` now accepts UTF-8 BOM-prefixed `~/.skillmux/config.json`

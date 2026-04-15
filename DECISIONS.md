@@ -166,3 +166,7 @@ Record key product and implementation decisions so later sessions do not lose th
 - `skillmux adopt` should remain a one-agent command in this slice; cross-agent and multi-skill batch orchestration belongs to the later batch task
 - adoption should treat only linked or directory entries with a root `SKILL.md` as eligible, then copy real content into `<skillmuxHome>/skills/<skill-id>` and replace the live agent entry with a SkillMux-managed link when needed
 - already-managed entries should be skipped cleanly instead of rewritten unnecessarily
+- adopted managed links should also reconcile manifest activation state so live managed links do not remain invisible or disabled in persisted state
+- adoption validates existing managed targets before replacing a working external live entry; stale manifest targets fail before link replacement
+- multi-entry `adopt --agent <agent>` persists each completed adoption or reconciliation before continuing, reducing the partial-failure window without adding a transaction journal
+- lifecycle-closure Task 2 was accepted only after worktree implementation, spec review, code-quality re-review, and fresh root verification; the accepted root commit is `3f3c2ee`
