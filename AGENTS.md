@@ -49,3 +49,4 @@
 - lifecycle-closure Task 1 已同步并提交到主目录；当前没有活跃开发 worktree，后续 Task 2 应从主目录 accepted state 重新创建隔离 worktree。
 - lifecycle-closure Task 2 (`skillmux adopt --agent <agent> [--skill <skill>]`) is accepted in root commit `3f3c2ee`; `.worktrees/lifecycle-adopt` has been removed, and the repo is back to root-only accepted state for the next slice.
 - lifecycle-closure Task 3 (`skillmux config update-agent`) is accepted in root commit `a645ade`; `.worktrees/lifecycle-config-update` has been removed, and the repo is back to root-only accepted state for the next slice.
+- lifecycle-closure Task 4 (`lifecycle batch operations`) has started from root commit `b233442` in `.worktrees/lifecycle-batch` on branch `lifecycle-batch`; accepted state still requires sync back to the root repo and fresh root verification.

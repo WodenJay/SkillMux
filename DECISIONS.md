@@ -180,3 +180,13 @@ Record key product and implementation decisions so later sessions do not lose th
 - updating a missing custom agent override is a config validation error instead of silently creating a new override; creation remains owned by `config add-agent`
 - shared custom-agent validation now lives in `src/config/agent-override-validation.ts` so `config add-agent` and `config update-agent` do not depend on each other as sibling command modules
 - lifecycle-closure Task 3 was accepted only after worktree implementation, spec review, code-quality re-review, and fresh root verification; the accepted root commit is `a645ade`
+
+### Batch operations execution
+
+- lifecycle-closure Task 4 starts from root commit `b233442` in `.worktrees/lifecycle-batch` on branch `lifecycle-batch`
+- batch operations should be thin orchestration over the already accepted single-item commands, not a parallel command model
+- initial batch shapes are intentionally constrained to avoid ambiguous mixed modes:
+  - enable or disable one skill for multiple agents
+  - adopt multiple skills under one agent
+  - remove multiple disabled skills
+- accepted state requires subagent implementation, spec review, code-quality review, sync back to the root repo, and fresh root verification
