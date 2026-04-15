@@ -96,11 +96,11 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Remove the stale Task 2 implementation worktree after root acceptance
 - [x] Create fresh lifecycle-closure Task 3 worktree `.worktrees/lifecycle-config-update` from root commit `eb412cf`
 - [x] Run Task 3 worktree baseline verification: `npm test`, `npm run typecheck`, `npm run build`
-- [ ] Implement `skillmux config update-agent`
-- [ ] Run Task 3 through subagent implementation, spec review, code quality review, and targeted/full verification
-- [ ] Sync Task 3 accepted code back to the root repo
-- [ ] Complete Task 3 fresh verification in the root repo
-- [ ] Mark Task 3 checklist items in `docs/superpowers/plans/2026-04-13-skillmux-cli-lifecycle-closure-implementation-plan.md` after acceptance
-- [ ] Remove the stale Task 3 implementation worktree after root acceptance
+- [x] Implement `skillmux config update-agent`
+- [x] Run Task 3 through subagent implementation, spec review, code quality review, and targeted/full verification
+- [x] Sync Task 3 accepted code back to the root repo
+- [x] Complete Task 3 fresh verification in the root repo
+- [x] Mark Task 3 checklist items in `docs/superpowers/plans/2026-04-13-skillmux-cli-lifecycle-closure-implementation-plan.md` after acceptance
+- [x] Remove the stale Task 3 implementation worktree after root acceptance
 - [ ] Implement lifecycle batch operations
 - [ ] Document the intended workflow boundary between `npx skills` and SkillMux in the user-facing README once matching UX/code changes exist

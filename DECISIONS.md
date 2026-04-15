@@ -176,4 +176,7 @@ Record key product and implementation decisions so later sessions do not lose th
 - lifecycle-closure Task 3 starts from root commit `eb412cf` in `.worktrees/lifecycle-config-update` on branch `lifecycle-config-update`
 - `skillmux config update-agent` should remain a narrow custom-agent override updater, not a generic config editor
 - updates should target one existing override, preserve unspecified fields, and reuse the same id/path/platform validation rules as `config add-agent`
-- root acceptance still requires worktree implementation, spec review, code-quality review, and fresh root verification
+- `config update-agent` exposes only existing override fields from `config add-agent`: `name`, `root`, `skills`, repeated `platform`, and enabled-by-default state toggles
+- updating a missing custom agent override is a config validation error instead of silently creating a new override; creation remains owned by `config add-agent`
+- shared custom-agent validation now lives in `src/config/agent-override-validation.ts` so `config add-agent` and `config update-agent` do not depend on each other as sibling command modules
+- lifecycle-closure Task 3 was accepted only after worktree implementation, spec review, code-quality re-review, and fresh root verification; the accepted root commit is `a645ade`
