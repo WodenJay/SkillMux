@@ -212,4 +212,5 @@ Record key product and implementation decisions so later sessions do not lose th
   - adopt multiple skills under one agent
   - remove multiple disabled managed skills
 - Release-readiness documentation may mention verification results, but it must not claim an npm publish unless publish actually happens
-- Task 5 final worktree verification passed with `npm test`, `npm run typecheck`, and `npm run build`; root acceptance still requires syncing these docs to the root checkout and rerunning that suite there
+- Task 5 was accepted in root commit `64a0d42` after worktree review, README revision based on user feedback, sync to the root checkout, and fresh root verification with `npm test`, `npm run typecheck`, and `npm run build`
+- `.worktrees/lifecycle-release-docs` was removed after root acceptance; the repository is back to root-only accepted state

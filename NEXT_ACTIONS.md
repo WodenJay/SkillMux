@@ -120,7 +120,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 
 ## After Task 5 Acceptance
 
-- [ ] Sync Task 5 accepted docs back to the root repo
-- [ ] Complete fresh root verification after sync: `npm test`, `npm run typecheck`, `npm run build`
-- [ ] Remove `.worktrees/lifecycle-release-docs` after root acceptance
+- [x] Sync Task 5 accepted docs back to the root repo
+- [x] Complete fresh root verification after sync: `npm test`, `npm run typecheck`, `npm run build`
+- [x] Remove `.worktrees/lifecycle-release-docs` after root acceptance
 - [ ] Decide whether to prepare a post-lifecycle npm release; do not claim publish until it is actually performed

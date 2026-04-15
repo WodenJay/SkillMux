@@ -1,10 +1,10 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: lifecycle-closure final documentation ready for root acceptance
+Phase: lifecycle-closure complete in root
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
-Active development worktree: `.worktrees/lifecycle-release-docs`
+Active development worktree: `(none)`
 
 ## Accepted Tasks
 
@@ -22,6 +22,7 @@ Active development worktree: `.worktrees/lifecycle-release-docs`
 - Lifecycle Closure Task 2: add adoption flow for installed skills
 - Lifecycle Closure Task 3: add config update-agent command
 - Lifecycle Closure Task 4: add batch lifecycle operations
+- Lifecycle Closure Task 5: final documentation and release readiness
 
 ## Accepted Root Commits
 
@@ -39,6 +40,7 @@ Active development worktree: `.worktrees/lifecycle-release-docs`
 - `3f3c2ee` `feat: add adoption flow for installed skills`
 - `a645ade` `feat: add config update-agent command`
 - `6fcaef7` `feat: add batch lifecycle operations`
+- `64a0d42` `docs: record lifecycle closure updates`
 
 ## Current Product Direction
 
@@ -83,26 +85,25 @@ Task 10 passed fresh in the root repo with:
 
 ## Lifecycle Closure Release-Docs Status
 
-- Active worktree: `.worktrees/lifecycle-release-docs`
-- Active branch: `lifecycle-release-docs`
-- Scope: documentation and release readiness only; command semantics should remain unchanged unless verification exposes a release-blocking issue
+- Status: accepted in the root repo; `.worktrees/lifecycle-release-docs` has been removed
+- Scope: documentation and release readiness only; command semantics were not changed
 - README now documents the completed lifecycle surface:
   - `skillmux adopt --agent <agent> [--skill <skill>]`
   - `skillmux remove --skill <skill>`
   - `skillmux config update-agent --id <agent>`
   - supported repeatable-flag batch shapes
   - the boundary where `npx skills` fetches remote skills and SkillMux manages local installed skills
-- Release readiness note: final worktree verification passed with `npm test`, `npm run typecheck`, and `npm run build`; npm publish has not been performed for this task.
+- Release readiness note: final worktree and root verification passed with `npm test`, `npm run typecheck`, and `npm run build`; npm publish has not been performed for this task.
 
 ## Current Lifecycle Status
 
 - lifecycle-closure implementation is using the approved docs:
   - spec: `docs/superpowers/specs/2026-04-13-skillmux-cli-lifecycle-closure-design.md`
   - plan: `docs/superpowers/plans/2026-04-13-skillmux-cli-lifecycle-closure-implementation-plan.md`
-- Lifecycle Closure Tasks 1-4 are accepted in the root repo.
-- Lifecycle Closure Task 5 is active in `.worktrees/lifecycle-release-docs` on branch `lifecycle-release-docs`.
-- Task 5 worktree verification has passed with `npm test`, `npm run typecheck`, and `npm run build`.
-- Accepted state still requires syncing the committed Task 5 docs back to the root repo and running fresh root verification there.
+- Lifecycle Closure Tasks 1-5 are accepted in the root repo.
+- Task 5 accepted root commit: `64a0d42` `docs: record lifecycle closure updates`.
+- Task 5 worktree and root verification passed with `npm test`, `npm run typecheck`, and `npm run build`.
+- The repository is back to root-only accepted state.
 - lifecycle-closure Task 1 is accepted in the root repo:
   - command added: `skillmux remove --skill <skill> [--json]`
   - safety behavior: refuses enabled skills, refuses non-canonical managed paths, refuses symlink/junction leaf or ancestor removal paths, and removes disabled manifest state only after checks
