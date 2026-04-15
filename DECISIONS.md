@@ -158,3 +158,4 @@ Record key product and implementation decisions so later sessions do not lose th
 - removal refuses symlink/junction leaf paths and symlink/junction ancestors before any recursive delete
 - if the managed skill directory is already absent but the skill is disabled everywhere, removal may still clean the manifest skill and activation records
 - removing by direct skill id is deterministic; removing by display name rejects ambiguous normalized-name matches
+- lifecycle-closure Task 1 was accepted only after worktree review and fresh root verification; the accepted root commit is `c12d1e3`

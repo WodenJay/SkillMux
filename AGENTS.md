@@ -46,4 +46,4 @@
 - 当前仓库已回到 **root-only** 工作状态，`.worktrees/` 已清理；主目录 `C:\Users\wudon\Desktop\SkillMux\` 是唯一稳定版与最终交付区。
 - 如果后续需要重新使用 worktree 做隔离开发，可以再创建，但 accepted state 仍然只以主目录验证通过后的代码为准。
 - 子代理产出的代码只有在主目录完成验证后，才算 accepted state。
-- 当前 lifecycle-closure 实现正在 `.worktrees/lifecycle-closure` 的 `lifecycle-closure` 分支中进行；完成切片后必须同步回主目录并在主目录重新验证。
+- lifecycle-closure Task 1 已同步并提交到主目录；当前没有活跃开发 worktree，后续 Task 2 应从主目录 accepted state 重新创建隔离 worktree。

@@ -83,7 +83,11 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Implement `skillmux remove --skill <skill>` as the first lifecycle-closure command
 - [x] Run Task 1 through subagent implementation, spec review, code quality review, and targeted/full verification
 - [x] Mark Task 1 checklist items in `docs/superpowers/plans/2026-04-13-skillmux-cli-lifecycle-closure-implementation-plan.md` after acceptance
+- [x] Sync Task 1 accepted code back to the root repo
+- [x] Complete Task 1 fresh verification in the root repo
+- [x] Remove the stale Task 1 implementation worktree after root acceptance
 - [ ] Implement `skillmux adopt --agent <agent> [--skill <skill>]`
+- [ ] Create a fresh worktree for lifecycle-closure Task 2 from root commit `c12d1e3`
 - [ ] Implement `skillmux config update-agent`
 - [ ] Implement lifecycle batch operations
 - [ ] Document the intended workflow boundary between `npx skills` and SkillMux in the user-facing README once matching UX/code changes exist

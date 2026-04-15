@@ -3,7 +3,7 @@
 Project: SkillMux
 Phase: lifecycle-closure implementation in progress
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
-Canonical worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\lifecycle-closure`
+Canonical worktree: `(none)`
 
 ## Accepted Tasks
 
@@ -85,6 +85,8 @@ Task 10 passed fresh in the root repo with:
   - command added: `skillmux remove --skill <skill> [--json]`
   - safety behavior: refuses enabled skills, refuses non-canonical managed paths, refuses symlink/junction leaf or ancestor removal paths, and removes disabled manifest state only after checks
   - root verification passed with `npm test -- --run tests/commands/remove.test.ts`, `npm test`, `npm run typecheck`, and `npm run build`
+  - accepted root commit: `c12d1e3` `feat: add managed skill removal`
+  - stale implementation worktree `.worktrees/lifecycle-closure` has been removed after root acceptance
   - next implementation slice: first-class `skillmux adopt --agent <agent> [--skill <skill>]`
 - small follow-up completed: `list` now keeps discovered agents visible with zero live entries and keeps manifest-managed skills visible even when they are currently disabled everywhere
 - real-world bugfix pass completed:
