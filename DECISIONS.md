@@ -190,3 +190,6 @@ Record key product and implementation decisions so later sessions do not lose th
   - adopt multiple skills under one agent
   - remove multiple disabled skills
 - accepted state requires subagent implementation, spec review, code-quality review, sync back to the root repo, and fresh root verification
+- lifecycle-closure Task 4 was accepted only after worktree implementation, spec review, code-quality re-review, and fresh root verification; the accepted root commit is `6fcaef7`
+- batch CLI flags are repeatable where they map to a supported batch shape, while existing single-item usage remains supported
+- batch partial failures throw `BatchOperationError` with the operation, failed item, completed item ids, and original cause; this avoids implying rollback when earlier single-item operations have already persisted

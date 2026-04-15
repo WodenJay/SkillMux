@@ -4,7 +4,7 @@ Project: SkillMux
 Phase: lifecycle-closure implementation in progress
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
-Active development worktree: `.worktrees/lifecycle-batch`
+Active development worktree: `(none)`
 
 ## Accepted Tasks
 
@@ -21,6 +21,7 @@ Active development worktree: `.worktrees/lifecycle-batch`
 - Lifecycle Closure Task 1: add safe managed skill removal
 - Lifecycle Closure Task 2: add adoption flow for installed skills
 - Lifecycle Closure Task 3: add config update-agent command
+- Lifecycle Closure Task 4: add batch lifecycle operations
 
 ## Accepted Root Commits
 
@@ -35,6 +36,7 @@ Active development worktree: `.worktrees/lifecycle-batch`
 - `55f8d3a` `feat: add doctor and config commands`
 - `61b3ed1` `feat: complete skillmux v0 managed cli flow`
 - `a645ade` `feat: add config update-agent command`
+- `6fcaef7` `feat: add batch lifecycle operations`
 
 ## Current Product Direction
 
@@ -123,6 +125,15 @@ Task 10 passed fresh in the root repo with:
   - target behavior: batch wrappers around stable single-item lifecycle commands
   - baseline verification in the worktree passed with `npm test`, `npm run typecheck`, and `npm run build`
   - implementation will follow superpowers subagent-driven development with TDD, spec review, and code-quality review before root acceptance
+- lifecycle-closure Task 4 is accepted in the root repo:
+  - commands extended: `enable --skill <skill> --agent <agent>...`, `disable --skill <skill> --agent <agent>...`, `adopt --agent <agent> --skill <skill>...`, and `remove --skill <skill>...`
+  - behavior: batch paths thinly call the existing single-item command logic and preserve single-item safety/idempotence rules
+  - partial failures now use `BatchOperationError` with operation, failed item, completed items, and cause so users can see already-applied writes
+  - review outcome: spec review passed; code-quality Important finding about partial failure reporting was fixed and re-reviewed
+  - root verification passed with `npm test -- --run tests/commands/batch-operations.test.ts`, `npm test`, `npm run typecheck`, and `npm run build`
+  - accepted root commit: `6fcaef7` `feat: add batch lifecycle operations`
+  - stale implementation worktree `.worktrees/lifecycle-batch` has been removed after root acceptance
+  - next implementation slice: final lifecycle docs and release readiness
 - small follow-up completed: `list` now keeps discovered agents visible with zero live entries and keeps manifest-managed skills visible even when they are currently disabled everywhere
 - real-world bugfix pass completed:
   - `config` now accepts UTF-8 BOM-prefixed `~/.skillmux/config.json`
