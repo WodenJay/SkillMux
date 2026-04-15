@@ -9,6 +9,7 @@ import { runDisable } from "./commands/disable";
 import { runEnable } from "./commands/enable";
 import { runImport } from "./commands/import";
 import { runList } from "./commands/list";
+import { runRemove } from "./commands/remove";
 import { runScan } from "./commands/scan";
 
 export function buildCli(): Command {
@@ -141,6 +142,18 @@ export function buildCli(): Command {
       const result = await runDisable({
         skill: options.skill,
         agent: options.agent
+      });
+      process.stdout.write(result.output);
+    });
+
+  program
+    .command("remove")
+    .requiredOption("--skill <skill>", "Managed skill name or id")
+    .option("--json", "Emit structured JSON output")
+    .action(async (options: { skill: string; json?: boolean }) => {
+      const result = await runRemove({
+        skill: options.skill,
+        json: options.json === true
       });
       process.stdout.write(result.output);
     });

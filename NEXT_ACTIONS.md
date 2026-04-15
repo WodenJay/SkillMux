@@ -4,6 +4,8 @@ Track the next concrete actions. Mark done items with `[x]`.
 
 ## Done
 
+- [x] Create lifecycle-closure implementation worktree at `.worktrees/lifecycle-closure`
+- [x] Run lifecycle-closure worktree baseline verification: `npm test`, `npm run typecheck`, `npm run build`
 - [x] Triage the new README-linked follow-up task and identify the missing management view behavior
 - [x] Extend `list` so agent and skill views include manifest-backed state, not only live scanned entries
 - [x] Verify the new list behavior with a targeted Vitest run
@@ -78,5 +80,10 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [ ] Improve the handoff from `npx skills` to SkillMux so newly installed skills are easier to adopt and manage
 - [x] Write the lifecycle-closure spec and get user review
 - [x] Write the lifecycle-closure implementation plan after the spec is approved
-- [ ] Implement `skillmux remove --skill <skill>` as the first lifecycle-closure command
+- [x] Implement `skillmux remove --skill <skill>` as the first lifecycle-closure command
+- [x] Run Task 1 through subagent implementation, spec review, code quality review, and targeted/full verification
+- [x] Mark Task 1 checklist items in `docs/superpowers/plans/2026-04-13-skillmux-cli-lifecycle-closure-implementation-plan.md` after acceptance
+- [ ] Implement `skillmux adopt --agent <agent> [--skill <skill>]`
+- [ ] Implement `skillmux config update-agent`
+- [ ] Implement lifecycle batch operations
 - [ ] Document the intended workflow boundary between `npx skills` and SkillMux in the user-facing README once matching UX/code changes exist

@@ -20,6 +20,7 @@
 - 当一个比较大的任务完成时，停下来提醒我`/compact`，以压缩上下文，避免后续的上下文过长导致性能问题。但你要整理好下一步需要做什么，避免compact后忘记了下一步要做什么。
 - 对于subagent，当执行完任务并且不再需要的时候，及时清理，不要堆积大量无用的subagent。
 - `docs/superpowers/plans`里面的任务每完成一个也要打勾`[x]`以保持同步。
+- subagent尽量不要使用太旧的模型(比如`GPT-5.2`)，非常简单、追求快速的任务可以使用`GPT-5.4-mini`，其他任务就用`GPT-5.4`(主agent的model)。
 
 ## Current Direction
 
@@ -45,3 +46,4 @@
 - 当前仓库已回到 **root-only** 工作状态，`.worktrees/` 已清理；主目录 `C:\Users\wudon\Desktop\SkillMux\` 是唯一稳定版与最终交付区。
 - 如果后续需要重新使用 worktree 做隔离开发，可以再创建，但 accepted state 仍然只以主目录验证通过后的代码为准。
 - 子代理产出的代码只有在主目录完成验证后，才算 accepted state。
+- 当前 lifecycle-closure 实现正在 `.worktrees/lifecycle-closure` 的 `lifecycle-closure` 分支中进行；完成切片后必须同步回主目录并在主目录重新验证。

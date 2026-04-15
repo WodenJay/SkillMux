@@ -73,7 +73,7 @@ Each slice should end with a full verification pass and a commit before the next
 - Modify: `src/core/errors.ts`
 - Test: `tests/commands/remove.test.ts`
 
-- [ ] **Step 1: Write the failing remove-command tests**
+- [x] **Step 1: Write the failing remove-command tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -99,12 +99,12 @@ describe("runRemove", () => {
 });
 ```
 
-- [ ] **Step 2: Run the remove tests to verify the red state**
+- [x] **Step 2: Run the remove tests to verify the red state**
 
 Run: `npm test -- --run tests/commands/remove.test.ts`  
 Expected: FAIL because `runRemove` does not exist yet
 
-- [ ] **Step 3: Implement the minimal safe remove behavior**
+- [x] **Step 3: Implement the minimal safe remove behavior**
 
 `runRemove` should:
 
@@ -117,7 +117,7 @@ Expected: FAIL because `runRemove` does not exist yet
 
 The initial implementation should not include `--force`.
 
-- [ ] **Step 4: Wire the CLI command**
+- [x] **Step 4: Wire the CLI command**
 
 Add:
 
@@ -128,12 +128,12 @@ program
   .option("--json", "Emit structured JSON output")
 ```
 
-- [ ] **Step 5: Run the targeted remove tests again**
+- [x] **Step 5: Run the targeted remove tests again**
 
 Run: `npm test -- --run tests/commands/remove.test.ts`  
 Expected: PASS
 
-- [ ] **Step 6: Run the full verification suite**
+- [x] **Step 6: Run the full verification suite**
 
 Run: `npm test`  
 Expected: PASS
@@ -144,7 +144,7 @@ Expected: PASS
 Run: `npm run build`  
 Expected: PASS
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/commands/remove.ts src/index.ts src/manifest/read-manifest.ts src/manifest/write-manifest.ts src/core/errors.ts tests/commands/remove.test.ts

@@ -141,3 +141,20 @@ Record key product and implementation decisions so later sessions do not lose th
   - `remove` closes the lifecycle endpoint first
   - `adopt` closes the handoff from `npx skills`
   - `config` and batch work should build on the stable lifecycle rules instead of inventing them
+
+### Lifecycle-closure execution
+
+- implementation uses the approved lifecycle-closure spec and plan from `docs/superpowers/`
+- development work starts in `.worktrees/lifecycle-closure` on branch `lifecycle-closure`
+- the root repository remains the stable delivery area; worktree code is accepted only after synchronization and fresh root verification
+- the worktree baseline passed `npm test`, `npm run typecheck`, and `npm run build` before Task 1 implementation started
+- on this Windows environment, Vitest and tsup may require elevated execution because sandboxing can block child process spawning with `EPERM`
+
+### Remove command safety
+
+- `skillmux remove` does not support `--force` in the initial lifecycle-closure implementation
+- removal is allowed only when no activation for the target skill is still `enabled`
+- removal refuses manifest paths that do not exactly match `<skillmuxHome>/skills/<skill-id>`
+- removal refuses symlink/junction leaf paths and symlink/junction ancestors before any recursive delete
+- if the managed skill directory is already absent but the skill is disabled everywhere, removal may still clean the manifest skill and activation records
+- removing by direct skill id is deterministic; removing by display name rejects ambiguous normalized-name matches
