@@ -86,8 +86,12 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Sync Task 1 accepted code back to the root repo
 - [x] Complete Task 1 fresh verification in the root repo
 - [x] Remove the stale Task 1 implementation worktree after root acceptance
+- [x] Create fresh lifecycle-closure Task 2 worktree `.worktrees/lifecycle-adopt` from root commit `8173a49`
+- [x] Run Task 2 worktree baseline verification: `npm test`, `npm run typecheck`, `npm run build`
 - [ ] Implement `skillmux adopt --agent <agent> [--skill <skill>]`
-- [ ] Create a fresh worktree for lifecycle-closure Task 2 from root commit `c12d1e3`
+- [ ] Run Task 2 through subagent implementation, spec review, code quality review, and targeted/full verification
+- [ ] Sync Task 2 accepted code back to the root repo
+- [ ] Complete Task 2 fresh verification in the root repo
 - [ ] Implement `skillmux config update-agent`
 - [ ] Implement lifecycle batch operations
 - [ ] Document the intended workflow boundary between `npx skills` and SkillMux in the user-facing README once matching UX/code changes exist

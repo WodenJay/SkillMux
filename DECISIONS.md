@@ -159,3 +159,10 @@ Record key product and implementation decisions so later sessions do not lose th
 - if the managed skill directory is already absent but the skill is disabled everywhere, removal may still clean the manifest skill and activation records
 - removing by direct skill id is deterministic; removing by display name rejects ambiguous normalized-name matches
 - lifecycle-closure Task 1 was accepted only after worktree review and fresh root verification; the accepted root commit is `c12d1e3`
+
+### Adopt command execution
+
+- lifecycle-closure Task 2 starts from accepted root commit `8173a49` in `.worktrees/lifecycle-adopt` on branch `lifecycle-adopt`
+- `skillmux adopt` should remain a one-agent command in this slice; cross-agent and multi-skill batch orchestration belongs to the later batch task
+- adoption should treat only linked or directory entries with a root `SKILL.md` as eligible, then copy real content into `<skillmuxHome>/skills/<skill-id>` and replace the live agent entry with a SkillMux-managed link when needed
+- already-managed entries should be skipped cleanly instead of rewritten unnecessarily
