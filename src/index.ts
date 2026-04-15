@@ -14,6 +14,26 @@ import { runList } from "./commands/list";
 import { runRemove } from "./commands/remove";
 import { runScan } from "./commands/scan";
 
+function collectValues(value: string, previous: string[] = []): string[] {
+  return [...previous, value];
+}
+
+function requireSingleValue(values: string[], label: string): string {
+  if (values.length !== 1) {
+    throw new Error(`Expected exactly one ${label}`);
+  }
+
+  return values[0] as string;
+}
+
+function requireAtLeastOneValue(values: string[], label: string): string[] {
+  if (values.length === 0) {
+    throw new Error(`Expected at least one ${label}`);
+  }
+
+  return values;
+}
+
 export function buildCli(): Command {
   const program = new Command();
   program.name("skillmux");
@@ -21,14 +41,25 @@ export function buildCli(): Command {
   program
     .command("adopt")
     .requiredOption("--agent <agent>", "Source agent id")
-    .option("--skill <skill>", "One installed skill to adopt")
+    .option("--skill <skill>", "Repeatable installed skill to adopt", collectValues, [])
     .option("--json", "Emit structured JSON output")
-    .action(async (options: { agent: string; skill?: string; json?: boolean }) => {
-      const result = await runAdopt({
-        agent: options.agent,
-        skill: options.skill,
-        json: options.json === true
-      });
+    .action(async (options: { agent: string; skill: string[]; json?: boolean }) => {
+      const result = options.skill.length === 0
+        ? await runAdopt({
+            agent: options.agent,
+            json: options.json === true
+          })
+        : options.skill.length === 1
+          ? await runAdopt({
+              agent: options.agent,
+              skill: options.skill[0] as string,
+              json: options.json === true
+            })
+          : await runAdopt({
+              agent: options.agent,
+              skills: options.skill,
+              json: options.json === true
+            });
       process.stdout.write(result.output);
     });
 
@@ -184,37 +215,43 @@ export function buildCli(): Command {
 
   program
     .command("enable")
-    .requiredOption("--skill <skill>", "Managed skill name or id")
-    .requiredOption("--agent <agent>", "Target agent id")
-    .action(async (options: { skill: string; agent: string }) => {
+    .requiredOption("--skill <skill>", "Managed skill name or id", collectValues, [])
+    .requiredOption("--agent <agent>", "Repeatable target agent", collectValues, [])
+    .action(async (options: { skill: string[]; agent: string[] }) => {
       const result = await runEnable({
-        skill: options.skill,
-        agent: options.agent
+        skill: requireSingleValue(options.skill, "skill"),
+        agents: requireAtLeastOneValue(options.agent, "agent")
       });
       process.stdout.write(result.output);
     });
 
   program
     .command("disable")
-    .requiredOption("--skill <skill>", "Managed skill name or id")
-    .requiredOption("--agent <agent>", "Target agent id")
-    .action(async (options: { skill: string; agent: string }) => {
+    .requiredOption("--skill <skill>", "Managed skill name or id", collectValues, [])
+    .requiredOption("--agent <agent>", "Repeatable target agent", collectValues, [])
+    .action(async (options: { skill: string[]; agent: string[] }) => {
       const result = await runDisable({
-        skill: options.skill,
-        agent: options.agent
+        skill: requireSingleValue(options.skill, "skill"),
+        agents: requireAtLeastOneValue(options.agent, "agent")
       });
       process.stdout.write(result.output);
     });
 
   program
     .command("remove")
-    .requiredOption("--skill <skill>", "Managed skill name or id")
+    .requiredOption("--skill <skill>", "Repeatable managed skill name or id", collectValues, [])
     .option("--json", "Emit structured JSON output")
-    .action(async (options: { skill: string; json?: boolean }) => {
-      const result = await runRemove({
-        skill: options.skill,
-        json: options.json === true
-      });
+    .action(async (options: { skill: string[]; json?: boolean }) => {
+      const skills = requireAtLeastOneValue(options.skill, "skill");
+      const result = skills.length === 1
+        ? await runRemove({
+            skill: skills[0] as string,
+            json: options.json === true
+          })
+        : await runRemove({
+            skills,
+            json: options.json === true
+          });
       process.stdout.write(result.output);
     });
 

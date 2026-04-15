@@ -7,6 +7,7 @@ import type {
   ManagedSkill,
   Manifest
 } from "../core/types";
+import { BatchOperationError } from "../core/batch-operation-error";
 import { normalizeId } from "../core/ids";
 import { resolveSkillmuxHome } from "../config/resolve-skillmux-home";
 import {
@@ -26,11 +27,12 @@ export type RunDisableOptions = {
   homeDir?: string;
   skillmuxHome?: string;
   skill: string;
-  agent: string;
+  agent?: string;
+  agents?: string[];
   now?: Date;
 };
 
-export type RunDisableResult = {
+export type RunDisableSingleResult = {
   changed: boolean;
   skill: ManagedSkill;
   agent: AgentRecord;
@@ -38,6 +40,17 @@ export type RunDisableResult = {
   manifest: Manifest;
   output: string;
 };
+
+export type RunDisableBatchResult = {
+  changed: boolean;
+  skill: ManagedSkill;
+  results: RunDisableSingleResult[];
+  changedAgents: string[];
+  manifest: Manifest;
+  output: string;
+};
+
+export type RunDisableResult = RunDisableSingleResult | RunDisableBatchResult;
 
 function buildAgentRecord(agent: DiscoveredAgent, timestamp: string): AgentRecord {
   return {
@@ -162,9 +175,13 @@ async function pathExists(path: string): Promise<boolean> {
   }
 }
 
-export async function runDisable(
+async function runDisableSingle(
   options: RunDisableOptions
-): Promise<RunDisableResult> {
+): Promise<RunDisableSingleResult> {
+  if (options.agent === undefined) {
+    throw new Error("Disable requires one target agent");
+  }
+
   const homeDir = options.homeDir ?? homedir();
   const { skillmuxHome: defaultSkillmuxHome } = resolveSkillmuxHome(homeDir);
   const skillmuxHome = options.skillmuxHome ?? defaultSkillmuxHome;
@@ -239,4 +256,51 @@ export async function runDisable(
     manifest,
     output: `Disabled ${skill.id} for ${agent.id}\n`
   };
+}
+
+export async function runDisable(
+  options: RunDisableOptions & { agents: string[] }
+): Promise<RunDisableBatchResult>;
+export async function runDisable(
+  options: RunDisableOptions & { agent: string }
+): Promise<RunDisableSingleResult>;
+export async function runDisable(
+  options: RunDisableOptions
+): Promise<RunDisableResult> {
+  if (options.agents !== undefined) {
+    const results: RunDisableSingleResult[] = [];
+
+    for (const agent of options.agents) {
+      try {
+        results.push(await runDisableSingle({ ...options, agent, agents: undefined }));
+      } catch (error) {
+        throw new BatchOperationError({
+          operation: "disable",
+          failedItem: agent,
+          failedAction: `disable ${options.skill} for ${agent}`,
+          completedAction: "disabling",
+          completedItems: results.map((result) => result.agent.id),
+          cause: error
+        });
+      }
+    }
+
+    if (results.length === 0) {
+      throw new Error("Disable requires at least one target agent");
+    }
+
+    const lastResult = results[results.length - 1] as RunDisableSingleResult;
+    return {
+      changed: results.some((result) => result.changed),
+      skill: lastResult.skill,
+      results,
+      changedAgents: results
+        .filter((result) => result.changed)
+        .map((result) => result.agent.id),
+      manifest: lastResult.manifest,
+      output: results.map((result) => result.output).join("")
+    };
+  }
+
+  return runDisableSingle(options);
 }

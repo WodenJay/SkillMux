@@ -337,7 +337,7 @@ git commit -m "feat: add config update-agent command"
 - Modify: `src/index.ts`
 - Test: `tests/commands/batch-operations.test.ts`
 
-- [ ] **Step 1: Write the failing batch-operation tests**
+- [x] **Step 1: Write the failing batch-operation tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -355,12 +355,12 @@ describe("batch operations", () => {
 });
 ```
 
-- [ ] **Step 2: Run the batch tests to verify the red state**
+- [x] **Step 2: Run the batch tests to verify the red state**
 
 Run: `npm test -- --run tests/commands/batch-operations.test.ts`  
 Expected: FAIL because batch inputs are not supported yet
 
-- [ ] **Step 3: Implement one batch shape at a time**
+- [x] **Step 3: Implement one batch shape at a time**
 
 Start with the smallest high-value shape:
 
@@ -374,7 +374,7 @@ After that passes, extend to:
 
 Each batch path should call the existing single-item logic instead of duplicating it.
 
-- [ ] **Step 4: Add CLI flags that map cleanly to batch semantics**
+- [x] **Step 4: Add CLI flags that map cleanly to batch semantics**
 
 Example shapes:
 
@@ -385,12 +385,12 @@ Example shapes:
 
 Do not overload one command with ambiguous mixed modes.
 
-- [ ] **Step 5: Run the targeted batch tests again**
+- [x] **Step 5: Run the targeted batch tests again**
 
 Run: `npm test -- --run tests/commands/batch-operations.test.ts`  
 Expected: PASS
 
-- [ ] **Step 6: Run the full verification suite**
+- [x] **Step 6: Run the full verification suite**
 
 Run: `npm test`  
 Expected: PASS
@@ -401,7 +401,7 @@ Expected: PASS
 Run: `npm run build`  
 Expected: PASS
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/commands/enable.ts src/commands/disable.ts src/commands/adopt.ts src/commands/remove.ts src/index.ts tests/commands/batch-operations.test.ts

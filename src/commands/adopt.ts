@@ -23,6 +23,7 @@ import {
   copySkillContentsToManagedStore,
   hasRootSkillFile
 } from "../fs/safe-copy";
+import { BatchOperationError } from "../core/batch-operation-error";
 import {
   isLinkPointingToTarget,
   replaceEntryWithManagedLink
@@ -57,17 +58,24 @@ export type RunAdoptOptions = {
   skillmuxHome?: string;
   agent: string;
   skill?: string;
+  skills?: string[];
   now?: Date;
   json?: boolean;
 };
 
-export type RunAdoptResult = {
+export type RunAdoptSingleResult = {
   agent: AgentRecord;
   adopted: AdoptedSkill[];
   skipped: SkippedAdoption[];
   manifest: Manifest;
   output: string;
 };
+
+export type RunAdoptBatchResult = RunAdoptSingleResult & {
+  results: RunAdoptSingleResult[];
+};
+
+export type RunAdoptResult = RunAdoptSingleResult | RunAdoptBatchResult;
 
 function buildManagedSkillPath(skillmuxHome: string, skillId: string): string {
   return resolve(skillmuxHome, "skills", skillId);
@@ -231,9 +239,9 @@ function buildOutput(result: Omit<RunAdoptResult, "output">, json: boolean): str
   return `Adopted ${adoptedSkills} for ${result.agent.id}\n`;
 }
 
-export async function runAdopt(
+async function runAdoptSingle(
   options: RunAdoptOptions
-): Promise<RunAdoptResult> {
+): Promise<RunAdoptSingleResult> {
   const homeDir = options.homeDir ?? homedir();
   const { skillmuxHome: defaultSkillmuxHome } = resolveSkillmuxHome(homeDir);
   const skillmuxHome = options.skillmuxHome ?? defaultSkillmuxHome;
@@ -349,4 +357,62 @@ export async function runAdopt(
     ...resultWithoutOutput,
     output: buildOutput(resultWithoutOutput, options.json === true)
   };
+}
+
+export async function runAdopt(
+  options: RunAdoptOptions & { skills: string[] }
+): Promise<RunAdoptBatchResult>;
+export async function runAdopt(
+  options: RunAdoptOptions
+): Promise<RunAdoptSingleResult>;
+export async function runAdopt(
+  options: RunAdoptOptions
+): Promise<RunAdoptResult> {
+  if (options.skills !== undefined) {
+    const results: RunAdoptSingleResult[] = [];
+    const completedSkills: string[] = [];
+
+    for (const skill of options.skills) {
+      try {
+        results.push(await runAdoptSingle({ ...options, skill, skills: undefined }));
+        completedSkills.push(skill);
+      } catch (error) {
+        throw new BatchOperationError({
+          operation: "adopt",
+          failedItem: skill,
+          failedAction: `adopt ${skill} for ${options.agent}`,
+          completedAction: "adopting",
+          completedItems: completedSkills,
+          cause: error
+        });
+      }
+    }
+
+    if (results.length === 0) {
+      throw new AdoptionError("Adopt requires at least one target skill");
+    }
+
+    const lastResult = results[results.length - 1] as RunAdoptSingleResult;
+    const resultWithoutOutput = {
+      agent: lastResult.agent,
+      adopted: results.flatMap((result) => result.adopted),
+      skipped: results.flatMap((result) => result.skipped),
+      manifest: lastResult.manifest,
+      results
+    };
+
+    return {
+      ...resultWithoutOutput,
+      output: options.json === true
+        ? printJson({
+            agent: resultWithoutOutput.agent,
+            adopted: resultWithoutOutput.adopted,
+            skipped: resultWithoutOutput.skipped,
+            results: resultWithoutOutput.results
+          })
+        : results.map((result) => result.output).join("")
+    };
+  }
+
+  return runAdoptSingle(options);
 }

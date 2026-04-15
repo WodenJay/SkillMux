@@ -2,6 +2,7 @@ import * as fs from "node:fs/promises";
 import { homedir } from "node:os";
 import { resolve } from "node:path";
 import type { ManagedSkill, Manifest } from "../core/types";
+import { BatchOperationError } from "../core/batch-operation-error";
 import { normalizeId } from "../core/ids";
 import { resolveSkillmuxHome } from "../config/resolve-skillmux-home";
 import { assertNoSymlinkAncestors, pathsAreEqual } from "../fs/path-utils";
@@ -12,11 +13,12 @@ import { printJson } from "../output/print-json";
 export type RunRemoveOptions = {
   homeDir?: string;
   skillmuxHome?: string;
-  skill: string;
+  skill?: string;
+  skills?: string[];
   json?: boolean;
 };
 
-export type RunRemoveResult = {
+export type RunRemoveSingleResult = {
   changed: boolean;
   removedSkillId: string;
   skill: ManagedSkill;
@@ -30,6 +32,16 @@ export type RunRemoveResult = {
   manifest: Manifest;
   output: string;
 };
+
+export type RunRemoveBatchResult = {
+  changed: boolean;
+  removedSkillIds: string[];
+  results: RunRemoveSingleResult[];
+  manifest: Manifest;
+  output: string;
+};
+
+export type RunRemoveResult = RunRemoveSingleResult | RunRemoveBatchResult;
 
 function buildManagedSkillPath(skillmuxHome: string, skillId: string): string {
   return resolve(skillmuxHome, "skills", skillId);
@@ -73,7 +85,7 @@ function buildHumanOutput(skill: ManagedSkill, managedSkillPath: string): string
   return `Removed ${skill.id} from ${managedSkillPath}\n`;
 }
 
-function buildJsonOutput(result: Omit<RunRemoveResult, "output">): string {
+function buildJsonOutput(result: Omit<RunRemoveSingleResult, "output">): string {
   return printJson({
     changed: result.changed,
     removedSkillId: result.removedSkillId,
@@ -124,9 +136,13 @@ async function assertManagedSkillRemovalSafety(
   }
 }
 
-export async function runRemove(
+async function runRemoveSingle(
   options: RunRemoveOptions
-): Promise<RunRemoveResult> {
+): Promise<RunRemoveSingleResult> {
+  if (options.skill === undefined) {
+    throw new Error("Remove requires one target skill");
+  }
+
   const homeDir = options.homeDir ?? homedir();
   const { skillmuxHome: defaultSkillmuxHome } = resolveSkillmuxHome(homeDir);
   const skillmuxHome = options.skillmuxHome ?? defaultSkillmuxHome;
@@ -182,4 +198,54 @@ export async function runRemove(
       ? buildJsonOutput(resultWithoutOutput)
       : buildHumanOutput(skill, managedSkillPath)
   };
+}
+
+export async function runRemove(
+  options: RunRemoveOptions & { skills: string[] }
+): Promise<RunRemoveBatchResult>;
+export async function runRemove(
+  options: RunRemoveOptions & { skill: string }
+): Promise<RunRemoveSingleResult>;
+export async function runRemove(
+  options: RunRemoveOptions
+): Promise<RunRemoveResult> {
+  if (options.skills !== undefined) {
+    const results: RunRemoveSingleResult[] = [];
+
+    for (const skill of options.skills) {
+      try {
+        results.push(await runRemoveSingle({ ...options, skill, skills: undefined }));
+      } catch (error) {
+        throw new BatchOperationError({
+          operation: "remove",
+          failedItem: skill,
+          failedAction: `remove ${skill}`,
+          completedAction: "removing",
+          completedItems: results.map((result) => result.removedSkillId),
+          cause: error
+        });
+      }
+    }
+
+    if (results.length === 0) {
+      throw new Error("Remove requires at least one target skill");
+    }
+
+    const lastResult = results[results.length - 1] as RunRemoveSingleResult;
+    const resultWithoutOutput = {
+      changed: results.some((result) => result.changed),
+      removedSkillIds: results.map((result) => result.removedSkillId),
+      results,
+      manifest: lastResult.manifest
+    };
+
+    return {
+      ...resultWithoutOutput,
+      output: options.json === true
+        ? printJson(resultWithoutOutput)
+        : results.map((result) => result.output).join("")
+    };
+  }
+
+  return runRemoveSingle(options);
 }

@@ -7,6 +7,7 @@ import type {
   ManagedSkill,
   Manifest
 } from "../core/types";
+import { BatchOperationError } from "../core/batch-operation-error";
 import { normalizeId } from "../core/ids";
 import { resolveSkillmuxHome } from "../config/resolve-skillmux-home";
 import {
@@ -21,11 +22,12 @@ export type RunEnableOptions = {
   homeDir?: string;
   skillmuxHome?: string;
   skill: string;
-  agent: string;
+  agent?: string;
+  agents?: string[];
   now?: Date;
 };
 
-export type RunEnableResult = {
+export type RunEnableSingleResult = {
   changed: boolean;
   skill: ManagedSkill;
   agent: AgentRecord;
@@ -33,6 +35,17 @@ export type RunEnableResult = {
   manifest: Manifest;
   output: string;
 };
+
+export type RunEnableBatchResult = {
+  changed: boolean;
+  skill: ManagedSkill;
+  results: RunEnableSingleResult[];
+  changedAgents: string[];
+  manifest: Manifest;
+  output: string;
+};
+
+export type RunEnableResult = RunEnableSingleResult | RunEnableBatchResult;
 
 function buildAgentRecord(agent: DiscoveredAgent, timestamp: string): AgentRecord {
   return {
@@ -98,9 +111,13 @@ async function resolveTargetAgent(
   return agent;
 }
 
-export async function runEnable(
+async function runEnableSingle(
   options: RunEnableOptions
-): Promise<RunEnableResult> {
+): Promise<RunEnableSingleResult> {
+  if (options.agent === undefined) {
+    throw new Error("Enable requires one target agent");
+  }
+
   const homeDir = options.homeDir ?? homedir();
   const { skillmuxHome: defaultSkillmuxHome } = resolveSkillmuxHome(homeDir);
   const skillmuxHome = options.skillmuxHome ?? defaultSkillmuxHome;
@@ -158,4 +175,51 @@ export async function runEnable(
     manifest,
     output: `Enabled ${skill.id} for ${agent.id}\n`
   };
+}
+
+export async function runEnable(
+  options: RunEnableOptions & { agents: string[] }
+): Promise<RunEnableBatchResult>;
+export async function runEnable(
+  options: RunEnableOptions & { agent: string }
+): Promise<RunEnableSingleResult>;
+export async function runEnable(
+  options: RunEnableOptions
+): Promise<RunEnableResult> {
+  if (options.agents !== undefined) {
+    const results: RunEnableSingleResult[] = [];
+
+    for (const agent of options.agents) {
+      try {
+        results.push(await runEnableSingle({ ...options, agent, agents: undefined }));
+      } catch (error) {
+        throw new BatchOperationError({
+          operation: "enable",
+          failedItem: agent,
+          failedAction: `enable ${options.skill} for ${agent}`,
+          completedAction: "enabling",
+          completedItems: results.map((result) => result.agent.id),
+          cause: error
+        });
+      }
+    }
+
+    if (results.length === 0) {
+      throw new Error("Enable requires at least one target agent");
+    }
+
+    const lastResult = results[results.length - 1] as RunEnableSingleResult;
+    return {
+      changed: results.some((result) => result.changed),
+      skill: lastResult.skill,
+      results,
+      changedAgents: results
+        .filter((result) => result.changed)
+        .map((result) => result.agent.id),
+      manifest: lastResult.manifest,
+      output: results.map((result) => result.output).join("")
+    };
+  }
+
+  return runEnableSingle(options);
 }
