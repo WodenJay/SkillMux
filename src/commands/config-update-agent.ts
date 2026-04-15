@@ -4,25 +4,27 @@ import {
   normalizePlatforms,
   normalizeRelativePath
 } from "../config/agent-override-validation";
+import { UserConfigValidationError } from "../core/errors";
 import { loadUserConfig, type AgentOverride, type UserConfig } from "../config/load-user-config";
 import { buildConfigPath, resolveSkillmuxHome } from "../config/resolve-skillmux-home";
 import { writeUserConfig } from "../config/write-user-config";
 import { printJson } from "../output/print-json";
 import { printTable } from "../output/print-table";
 
-export type RunConfigAddAgentOptions = {
+export type RunConfigUpdateAgentOptions = {
   homeDir?: string;
   skillmuxHome?: string;
   id: string;
-  root: string;
+  root?: string;
   skills?: string;
   name?: string;
   platforms?: string[];
+  enabledByDefault?: boolean;
   disabledByDefault?: boolean;
   json?: boolean;
 };
 
-export type RunConfigAddAgentResult = {
+export type RunConfigUpdateAgentResult = {
   skillmuxHome: string;
   configPath: string;
   agentId: string;
@@ -32,29 +34,43 @@ export type RunConfigAddAgentResult = {
   output: string;
 };
 
-function buildAgentOverride(options: RunConfigAddAgentOptions): {
-  agentId: string;
-  agent: AgentOverride;
-} {
-  const agentId = normalizeAgentId(options.id);
-  const agent: AgentOverride = {
-    supportedPlatforms: normalizePlatforms(options.platforms),
-    homeRelativeRootPath: normalizeRelativePath(options.root, "root"),
-    skillsDirectoryPath: normalizeRelativePath(options.skills ?? "skills", "skills")
-  };
+function buildAgentPatch(options: RunConfigUpdateAgentOptions): AgentOverride {
+  const patch: AgentOverride = {};
+
+  if (options.root !== undefined) {
+    patch.homeRelativeRootPath = normalizeRelativePath(options.root, "root");
+  }
+
+  if (options.skills !== undefined) {
+    patch.skillsDirectoryPath = normalizeRelativePath(options.skills, "skills");
+  }
 
   if (options.name !== undefined && options.name.trim().length > 0) {
-    agent.stableName = options.name.trim();
+    patch.stableName = options.name.trim();
+  }
+
+  if (options.platforms !== undefined) {
+    patch.supportedPlatforms = normalizePlatforms(options.platforms);
+  }
+
+  if (options.enabledByDefault !== undefined && options.disabledByDefault === true) {
+    throw new UserConfigValidationError(
+      "enabled-by-default and disabled-by-default cannot both be set"
+    );
+  }
+
+  if (options.enabledByDefault !== undefined) {
+    patch.enabledByDefault = options.enabledByDefault;
   }
 
   if (options.disabledByDefault === true) {
-    agent.enabledByDefault = false;
+    patch.enabledByDefault = false;
   }
 
-  return { agentId, agent };
+  return patch;
 }
 
-function buildTableOutput(result: Omit<RunConfigAddAgentResult, "output">): string {
+function buildTableOutput(result: Omit<RunConfigUpdateAgentResult, "output">): string {
   const summary = printTable(
     [
       {
@@ -95,17 +111,26 @@ function buildTableOutput(result: Omit<RunConfigAddAgentResult, "output">): stri
   return `${summary}${detail}`;
 }
 
-export async function runConfigAddAgent(
-  options: RunConfigAddAgentOptions
-): Promise<RunConfigAddAgentResult> {
+export async function runConfigUpdateAgent(
+  options: RunConfigUpdateAgentOptions
+): Promise<RunConfigUpdateAgentResult> {
   const homeDir = options.homeDir ?? homedir();
   const resolvedPaths = resolveSkillmuxHome(homeDir);
   const skillmuxHome = options.skillmuxHome ?? resolvedPaths.skillmuxHome;
   const configPath = buildConfigPath(skillmuxHome);
   const config = await loadUserConfig(skillmuxHome);
-  const { agentId, agent } = buildAgentOverride(options);
+  const agentId = normalizeAgentId(options.id);
   const previous = config.agents[agentId];
-  const changed = JSON.stringify(previous ?? null) !== JSON.stringify(agent);
+
+  if (previous === undefined) {
+    throw new UserConfigValidationError(`Agent override does not exist: ${agentId}`);
+  }
+
+  const agent: AgentOverride = {
+    ...previous,
+    ...buildAgentPatch(options)
+  };
+  const changed = JSON.stringify(previous) !== JSON.stringify(agent);
 
   const nextConfig: UserConfig = {
     ...config,
@@ -115,7 +140,9 @@ export async function runConfigAddAgent(
     }
   };
 
-  await writeUserConfig(skillmuxHome, nextConfig);
+  if (changed) {
+    await writeUserConfig(skillmuxHome, nextConfig);
+  }
 
   const resultWithoutOutput = {
     skillmuxHome,

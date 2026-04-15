@@ -4,6 +4,7 @@ import { runAdopt } from "./commands/adopt";
 import { runAgents } from "./commands/agents";
 import { runConfigAddAgent } from "./commands/config-add-agent";
 import { runConfigRemoveAgent } from "./commands/config-remove-agent";
+import { runConfigUpdateAgent } from "./commands/config-update-agent";
 import { runConfig } from "./commands/config";
 import { runDoctor } from "./commands/doctor";
 import { runDisable } from "./commands/disable";
@@ -136,6 +137,50 @@ export function buildCli(): Command {
       });
       process.stdout.write(result.output);
     });
+
+  configCommand
+    .command("update-agent")
+    .requiredOption("--id <id>", "Agent id")
+    .option("--root <path>", "Home-relative root path")
+    .option("--skills <path>", "Skills directory path relative to the agent root")
+    .option("--name <name>", "Stable display name")
+    .option(
+      "--platform <platform>",
+      `Supported platform (${supportedPlatforms.join(", ")})`,
+      (value: string, previous: string[] = []) => [...previous, value],
+      []
+    )
+    .option("--enabled-by-default", "Mark this custom agent as enabled by default")
+    .option("--disabled-by-default", "Mark this custom agent as disabled by default")
+    .option("--json", "Emit structured JSON output")
+    .action(
+      async (options: {
+        id: string;
+        root?: string;
+        skills?: string;
+        name?: string;
+        platform?: string[];
+        enabledByDefault?: boolean;
+        disabledByDefault?: boolean;
+        json?: boolean;
+      }) => {
+        const result = await runConfigUpdateAgent({
+          id: options.id,
+          root: options.root,
+          skills: options.skills,
+          name: options.name,
+          platforms:
+            options.platform !== undefined && options.platform.length > 0
+              ? options.platform
+              : undefined,
+          enabledByDefault:
+            options.enabledByDefault === true ? true : undefined,
+          disabledByDefault: options.disabledByDefault === true,
+          json: options.json === true
+        });
+        process.stdout.write(result.output);
+      }
+    );
 
   program
     .command("enable")

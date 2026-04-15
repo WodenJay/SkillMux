@@ -257,7 +257,7 @@ git commit -m "feat: add adoption flow for installed skills"
 - Modify: `src/config/write-user-config.ts`
 - Test: `tests/commands/config-update-agent.test.ts`
 
-- [ ] **Step 1: Write the failing config-update tests**
+- [x] **Step 1: Write the failing config-update tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -276,12 +276,12 @@ describe("runConfigUpdateAgent", () => {
 });
 ```
 
-- [ ] **Step 2: Run the config-update tests to verify the red state**
+- [x] **Step 2: Run the config-update tests to verify the red state**
 
 Run: `npm test -- --run tests/commands/config-update-agent.test.ts`  
 Expected: FAIL because `runConfigUpdateAgent` does not exist yet
 
-- [ ] **Step 3: Implement narrow update semantics**
+- [x] **Step 3: Implement narrow update semantics**
 
 `runConfigUpdateAgent` should:
 
@@ -292,7 +292,7 @@ Expected: FAIL because `runConfigUpdateAgent` does not exist yet
 
 This task should not create a general-purpose config editor.
 
-- [ ] **Step 4: Wire the CLI subcommand**
+- [x] **Step 4: Wire the CLI subcommand**
 
 Add:
 
@@ -304,12 +304,12 @@ configCommand
 
 Include only the flags that match supported fields.
 
-- [ ] **Step 5: Run the targeted config-update tests again**
+- [x] **Step 5: Run the targeted config-update tests again**
 
 Run: `npm test -- --run tests/commands/config-update-agent.test.ts`  
 Expected: PASS
 
-- [ ] **Step 6: Run the full verification suite**
+- [x] **Step 6: Run the full verification suite**
 
 Run: `npm test`  
 Expected: PASS
@@ -320,7 +320,7 @@ Expected: PASS
 Run: `npm run build`  
 Expected: PASS
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/commands/config-update-agent.ts src/index.ts src/config/load-user-config.ts src/config/write-user-config.ts tests/commands/config-update-agent.test.ts
