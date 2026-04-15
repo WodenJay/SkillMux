@@ -1,6 +1,7 @@
 import * as fs from "node:fs/promises";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
+import { runAdopt } from "../../src/commands/adopt";
 import { runDisable } from "../../src/commands/disable";
 import { runDoctor } from "../../src/commands/doctor";
 import { runEnable } from "../../src/commands/enable";
@@ -65,6 +66,7 @@ describe("managed flow", () => {
       expect.arrayContaining([
         "scan",
         "list",
+        "adopt",
         "import",
         "enable",
         "disable",
@@ -223,6 +225,53 @@ describe("managed flow", () => {
           state: "disabled"
         })
       ])
+    );
+  });
+
+  it("adopts a preinstalled npx skills-style link into the managed flow", async () => {
+    const homeDir = createTempHomeDir();
+    homesToCleanup.push(homeDir);
+    const sourcePath = await createSourceSkill(homeDir, "find-skills");
+    const agentLinkPath = join(homeDir, ".codex", "skills", "find-skills");
+
+    ensureDirectory(join(homeDir, ".codex", "skills"));
+    await fs.symlink(sourcePath, agentLinkPath, directoryLinkType);
+
+    const adopted = await runAdopt({
+      homeDir,
+      agent: "codex",
+      skill: "find-skills",
+      now: new Date("2026-04-12T13:00:00.000Z")
+    });
+
+    expect(adopted.adopted).toEqual([
+      expect.objectContaining({
+        skillId: "find-skills",
+        agentId: "codex",
+        sourcePath,
+        managedPath: join(homeDir, ".skillmux", "skills", "find-skills")
+      })
+    ]);
+    await expect(fs.realpath(agentLinkPath)).resolves.toBe(
+      join(homeDir, ".skillmux", "skills", "find-skills")
+    );
+
+    await runDisable({
+      homeDir,
+      skill: "find-skills",
+      agent: "codex",
+      now: new Date("2026-04-12T13:01:00.000Z")
+    });
+    await expect(fs.lstat(agentLinkPath)).rejects.toMatchObject({ code: "ENOENT" });
+
+    await runEnable({
+      homeDir,
+      skill: "find-skills",
+      agent: "codex",
+      now: new Date("2026-04-12T13:02:00.000Z")
+    });
+    await expect(fs.realpath(agentLinkPath)).resolves.toBe(
+      join(homeDir, ".skillmux", "skills", "find-skills")
     );
   });
 });

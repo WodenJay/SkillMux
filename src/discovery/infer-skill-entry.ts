@@ -5,6 +5,7 @@ import { isPathInside } from "../fs/path-utils";
 
 export type SkillEntryKind =
   | "managed-link"
+  | "unmanaged-link"
   | "unmanaged-directory"
   | "broken-link"
   | "unknown";
@@ -68,16 +69,10 @@ export async function inferSkillEntry(
           agentId: options.agentId,
           agentName: options.agentName,
           skillName,
-          kind: "unknown",
+          kind: "unmanaged-link",
           path: absolutePath,
           targetPath
-        },
-        issue: buildIssue(
-          "unknown-entry",
-          "warning",
-          "Skill entry is a link that points outside the SkillMux managed store",
-          absolutePath
-        )
+        }
       };
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "ENOENT") {

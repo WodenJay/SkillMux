@@ -77,6 +77,23 @@ export async function assertSkillSourceLayout(sourcePath: string): Promise<void>
   }
 }
 
+export async function hasRootSkillFile(sourcePath: string): Promise<boolean> {
+  const resolvedSourcePath = resolve(sourcePath);
+  const skillFilePath = join(resolvedSourcePath, "SKILL.md");
+
+  try {
+    await assertDirectory(resolvedSourcePath);
+    await assertRegularFile(skillFilePath, "SKILL.md");
+    return true;
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return false;
+    }
+
+    throw error;
+  }
+}
+
 export async function copySkillContentsToManagedStore(
   sourcePath: string,
   targetPath: string

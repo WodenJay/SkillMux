@@ -163,7 +163,7 @@ git commit -m "feat: add managed skill removal"
 - Modify: `src/core/errors.ts`
 - Test: `tests/commands/adopt.test.ts`
 
-- [ ] **Step 1: Write the failing adopt-command tests**
+- [x] **Step 1: Write the failing adopt-command tests**
 
 ```ts
 import { describe, expect, it } from "vitest";
@@ -190,12 +190,12 @@ describe("runAdopt", () => {
 });
 ```
 
-- [ ] **Step 2: Run the adopt tests to verify the red state**
+- [x] **Step 2: Run the adopt tests to verify the red state**
 
 Run: `npm test -- --run tests/commands/adopt.test.ts`  
 Expected: FAIL because `runAdopt` does not exist yet
 
-- [ ] **Step 3: Implement single-agent adoption**
+- [x] **Step 3: Implement single-agent adoption**
 
 `runAdopt` should:
 
@@ -209,7 +209,7 @@ Expected: FAIL because `runAdopt` does not exist yet
 
 Start with one-agent semantics. Do not add cross-agent batch support in this task.
 
-- [ ] **Step 4: Wire the CLI command**
+- [x] **Step 4: Wire the CLI command**
 
 Add:
 
@@ -221,16 +221,16 @@ program
   .option("--json", "Emit structured JSON output")
 ```
 
-- [ ] **Step 5: Run the targeted adopt tests again**
+- [x] **Step 5: Run the targeted adopt tests again**
 
 Run: `npm test -- --run tests/commands/adopt.test.ts`  
 Expected: PASS
 
-- [ ] **Step 6: Extend the managed-flow test if needed**
+- [x] **Step 6: Extend the managed-flow test if needed**
 
 Update `tests/e2e/managed-flow.test.ts` so at least one scenario covers `npx skills`-style preinstalled local state entering SkillMux through `adopt`.
 
-- [ ] **Step 7: Run the full verification suite**
+- [x] **Step 7: Run the full verification suite**
 
 Run: `npm test`  
 Expected: PASS
@@ -241,7 +241,7 @@ Expected: PASS
 Run: `npm run build`  
 Expected: PASS
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add src/commands/adopt.ts src/index.ts src/discovery/scan-agent-skills.ts src/discovery/infer-skill-entry.ts src/fs/safe-copy.ts src/fs/link-ops.ts src/core/errors.ts tests/commands/adopt.test.ts tests/e2e/managed-flow.test.ts

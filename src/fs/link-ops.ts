@@ -49,6 +49,51 @@ export async function createManagedLink(
   await fs.symlink(resolvedTargetPath, resolvedLinkPath, directoryLinkType);
 }
 
+export async function replaceEntryWithManagedLink(
+  linkPath: string,
+  targetPath: string,
+  expectedCurrentPath: string
+): Promise<boolean> {
+  const resolvedLinkPath = resolve(linkPath);
+  const resolvedTargetPath = resolve(targetPath);
+  const resolvedExpectedCurrentPath = resolve(expectedCurrentPath);
+
+  await assertNoSymlinkAncestors(resolvedLinkPath);
+  await assertNoSymlinkAncestors(resolvedTargetPath, { includeLeaf: true });
+  await fs.mkdir(dirname(resolvedLinkPath), { recursive: true });
+
+  const existingEntry = await fs.lstat(resolvedLinkPath);
+
+  if (existingEntry.isSymbolicLink()) {
+    const currentTargetPath = await fs.realpath(resolvedLinkPath);
+
+    if (pathsAreEqual(currentTargetPath, resolvedTargetPath)) {
+      return false;
+    }
+
+    if (!pathsAreEqual(currentTargetPath, resolvedExpectedCurrentPath)) {
+      throw new Error(`Refusing to replace unexpected link at ${resolvedLinkPath}`);
+    }
+
+    await fs.rm(resolvedLinkPath, { recursive: true, force: false });
+    await fs.symlink(resolvedTargetPath, resolvedLinkPath, directoryLinkType);
+    return true;
+  }
+
+  if (!existingEntry.isDirectory()) {
+    throw new Error(`Refusing to replace non-directory entry at ${resolvedLinkPath}`);
+  }
+
+  const currentPath = await fs.realpath(resolvedLinkPath);
+  if (!pathsAreEqual(currentPath, resolvedExpectedCurrentPath)) {
+    throw new Error(`Refusing to replace unexpected directory at ${resolvedLinkPath}`);
+  }
+
+  await fs.rm(resolvedLinkPath, { recursive: true, force: false });
+  await fs.symlink(resolvedTargetPath, resolvedLinkPath, directoryLinkType);
+  return true;
+}
+
 export async function isLinkPointingToTarget(
   linkPath: string,
   targetPath: string

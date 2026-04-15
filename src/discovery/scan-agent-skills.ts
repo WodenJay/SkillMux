@@ -1,4 +1,5 @@
 import * as fs from "node:fs/promises";
+import { join } from "node:path";
 import type { ScanIssue } from "../core/types";
 import type { DiscoveredAgent } from "./discover-agents";
 import {
@@ -36,7 +37,7 @@ export async function scanAgentSkills(
     const result = await inferSkillEntry({
       agentId: agent.id,
       agentName: agent.stableName,
-      path: `${agent.absoluteSkillsDirectoryPath}/${directoryEntry.name}`,
+      path: join(agent.absoluteSkillsDirectoryPath, directoryEntry.name),
       skillmuxHome
     });
 

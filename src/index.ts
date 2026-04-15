@@ -1,5 +1,6 @@
 import { Command } from "commander";
 import { supportedPlatforms } from "./config/default-agent-rules";
+import { runAdopt } from "./commands/adopt";
 import { runAgents } from "./commands/agents";
 import { runConfigAddAgent } from "./commands/config-add-agent";
 import { runConfigRemoveAgent } from "./commands/config-remove-agent";
@@ -15,6 +16,20 @@ import { runScan } from "./commands/scan";
 export function buildCli(): Command {
   const program = new Command();
   program.name("skillmux");
+
+  program
+    .command("adopt")
+    .requiredOption("--agent <agent>", "Source agent id")
+    .option("--skill <skill>", "One installed skill to adopt")
+    .option("--json", "Emit structured JSON output")
+    .action(async (options: { agent: string; skill?: string; json?: boolean }) => {
+      const result = await runAdopt({
+        agent: options.agent,
+        skill: options.skill,
+        json: options.json === true
+      });
+      process.stdout.write(result.output);
+    });
 
   program
     .command("scan")

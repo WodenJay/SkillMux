@@ -25,3 +25,9 @@ export class UserConfigValidationError extends SkillMuxError {
     super(message);
   }
 }
+
+export class AdoptionError extends SkillMuxError {
+  constructor(message: string) {
+    super(message);
+  }
+}

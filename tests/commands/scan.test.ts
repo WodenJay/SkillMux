@@ -48,7 +48,7 @@ describe("scan and list commands", () => {
         expect.objectContaining({
           agentId: "claude",
           skillName: "shared-skill",
-          kind: "unknown"
+          kind: "unmanaged-link"
         }),
         expect.objectContaining({
           agentId: "claude",
@@ -81,10 +81,6 @@ describe("scan and list commands", () => {
           code: "broken-link",
           path: join(fixture.homeDir, ".claude", "skills", "broken-skill")
         }),
-        expect.objectContaining({
-          code: "unknown-entry",
-          path: join(fixture.homeDir, ".claude", "skills", "shared-skill")
-        })
       ])
     );
 
