@@ -112,5 +112,15 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Remove the stale Task 4 implementation worktree after root acceptance
 - [x] Create fresh lifecycle-closure Task 5 worktree `.worktrees/lifecycle-release-docs` from root commit `476ef72`
 - [x] Run Task 5 worktree baseline verification: `npm test`, `npm run typecheck`, `npm run build`
-- [ ] Complete lifecycle Task 5 final documentation and release readiness
-- [ ] Document the intended workflow boundary between `npx skills` and SkillMux in the user-facing README once matching UX/code changes exist
+- [x] Document the intended workflow boundary between `npx skills` and SkillMux in the user-facing README once matching UX/code changes exist
+- [x] Document lifecycle commands in README: `adopt`, `remove`, `config update-agent`, and repeatable batch shapes
+- [x] Run Task 5 final verification: `npm test`, `npm run typecheck`, `npm run build`
+- [x] Commit Task 5 documentation updates with `docs: record lifecycle closure updates`
+- [x] Complete lifecycle Task 5 final documentation and release readiness in the worktree
+
+## After Task 5 Acceptance
+
+- [ ] Sync Task 5 accepted docs back to the root repo
+- [ ] Complete fresh root verification after sync: `npm test`, `npm run typecheck`, `npm run build`
+- [ ] Remove `.worktrees/lifecycle-release-docs` after root acceptance
+- [ ] Decide whether to prepare a post-lifecycle npm release; do not claim publish until it is actually performed

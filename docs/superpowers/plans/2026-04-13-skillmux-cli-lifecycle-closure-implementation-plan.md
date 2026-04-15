@@ -416,7 +416,7 @@ git commit -m "feat: add batch lifecycle operations"
 - Modify: `NEXT_ACTIONS.md`
 - Modify: `DECISIONS.md`
 
-- [ ] **Step 1: Update the README only after the new UX exists**
+- [x] **Step 1: Update the README only after the new UX exists**
 
 Document:
 
@@ -426,7 +426,7 @@ Document:
 - the intended workflow split between `npx skills` and SkillMux
 - the most useful batch operation shapes
 
-- [ ] **Step 2: Refresh the project state docs**
+- [x] **Step 2: Refresh the project state docs**
 
 Update:
 
@@ -434,7 +434,7 @@ Update:
 - completed tasks and next steps in `NEXT_ACTIONS.md`
 - any command-semantics decisions in `DECISIONS.md`
 
-- [ ] **Step 3: Run the full verification suite one last time**
+- [x] **Step 3: Run the full verification suite one last time**
 
 Run: `npm test`  
 Expected: PASS
@@ -445,7 +445,7 @@ Expected: PASS
 Run: `npm run build`  
 Expected: PASS
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add README.md PROJECT_STATUS.md NEXT_ACTIONS.md DECISIONS.md

@@ -200,3 +200,16 @@ Record key product and implementation decisions so later sessions do not lose th
 - Task 5 is documentation and release readiness only; it should not change command semantics unless verification exposes a release-blocking bug
 - README updates should document the now-existing lifecycle UX: `remove`, `adopt`, `config update-agent`, the `npx skills`/SkillMux boundary, and the supported batch shapes
 - accepted state still requires documentation review, sync back to the root repo, and fresh root verification
+
+### Lifecycle README command semantics
+
+- The README should describe `npx skills` as the remote fetch/install path and SkillMux as the local adoption and visibility-management path
+- `skillmux adopt --agent <agent>` is the handoff command for already-installed local skills; adding repeated `--skill` values narrows adoption to selected skills under that one agent
+- `skillmux remove --skill <skill>` is a managed-store cleanup command, not a remote uninstall command; it refuses skills that are still enabled for any agent
+- `skillmux config update-agent` updates existing custom overrides only; `config add-agent` remains the creation path
+- README batch examples should stay limited to accepted shapes:
+  - enable or disable one skill across multiple agents
+  - adopt multiple skills under one agent
+  - remove multiple disabled managed skills
+- Release-readiness documentation may mention verification results, but it must not claim an npm publish unless publish actually happens
+- Task 5 final worktree verification passed with `npm test`, `npm run typecheck`, and `npm run build`; root acceptance still requires syncing these docs to the root checkout and rerunning that suite there

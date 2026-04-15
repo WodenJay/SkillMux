@@ -39,6 +39,8 @@
 - 后续如扩展与 `npx skills` 的配合，重点是优化“安装后如何被 SkillMux 接管和管理”的衔接，不是替代 `npx skills` 的远端获取能力。
 - 现在已经支持通过 `skillmux config add-agent` 为自定义 agent 写入 `~/.skillmux/config.json`。
 - 现在已经支持通过 `skillmux config remove-agent` 删除自定义 agent 的配置覆盖项。
+- 现在已经支持通过 `skillmux config update-agent` 更新已有自定义 agent 配置覆盖项；新增仍然使用 `config add-agent`。
+- 现在已经支持 `skillmux adopt`、`skillmux remove` 和常用 repeatable flag 批量操作；README 需要保持这些命令的用户向说明。
 - 当前开发环境是windows，使用的是PowerShell，不支持`&&`，因此使用命令的时候请不要使用`&&`。
 
 ## Execution Notes
@@ -50,4 +52,4 @@
 - lifecycle-closure Task 2 (`skillmux adopt --agent <agent> [--skill <skill>]`) is accepted in root commit `3f3c2ee`; `.worktrees/lifecycle-adopt` has been removed, and the repo is back to root-only accepted state for the next slice.
 - lifecycle-closure Task 3 (`skillmux config update-agent`) is accepted in root commit `a645ade`; `.worktrees/lifecycle-config-update` has been removed, and the repo is back to root-only accepted state for the next slice.
 - lifecycle-closure Task 4 (`lifecycle batch operations`) is accepted in root commit `6fcaef7`; `.worktrees/lifecycle-batch` has been removed, and the repo is back to root-only accepted state for the next slice.
-- lifecycle-closure Task 5 (`final documentation and release readiness`) is active in `.worktrees/lifecycle-release-docs` on branch `lifecycle-release-docs`, created from root commit `476ef72`; accepted state still requires syncing back to the root repo and fresh root verification.
+- lifecycle-closure Task 5 (`final documentation and release readiness`) is active in `.worktrees/lifecycle-release-docs` on branch `lifecycle-release-docs`, created from root commit `476ef72`; README and state docs have been refreshed there, final worktree verification passed, and accepted state still requires syncing back to the root repo and fresh root verification.

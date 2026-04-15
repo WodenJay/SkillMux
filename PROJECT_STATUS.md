@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: lifecycle-closure implementation in progress
+Phase: lifecycle-closure final documentation ready for root acceptance
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `.worktrees/lifecycle-release-docs`
@@ -35,6 +35,8 @@ Active development worktree: `.worktrees/lifecycle-release-docs`
 - `49a6d02` `feat: add enable and disable commands`
 - `55f8d3a` `feat: add doctor and config commands`
 - `61b3ed1` `feat: complete skillmux v0 managed cli flow`
+- `c12d1e3` `feat: add managed skill removal`
+- `3f3c2ee` `feat: add adoption flow for installed skills`
 - `a645ade` `feat: add config update-agent command`
 - `6fcaef7` `feat: add batch lifecycle operations`
 
@@ -79,14 +81,28 @@ Task 10 passed fresh in the root repo with:
   - `skillmux config remove-agent`
   - the README logo and centered README header polish
 
-## Next Step
+## Lifecycle Closure Release-Docs Status
 
-- lifecycle-closure implementation has started from approved docs:
+- Active worktree: `.worktrees/lifecycle-release-docs`
+- Active branch: `lifecycle-release-docs`
+- Scope: documentation and release readiness only; command semantics should remain unchanged unless verification exposes a release-blocking issue
+- README now documents the completed lifecycle surface:
+  - `skillmux adopt --agent <agent> [--skill <skill>]`
+  - `skillmux remove --skill <skill>`
+  - `skillmux config update-agent --id <agent>`
+  - supported repeatable-flag batch shapes
+  - the boundary where `npx skills` fetches remote skills and SkillMux manages local installed skills
+- Release readiness note: final worktree verification passed with `npm test`, `npm run typecheck`, and `npm run build`; npm publish has not been performed for this task.
+
+## Current Lifecycle Status
+
+- lifecycle-closure implementation is using the approved docs:
   - spec: `docs/superpowers/specs/2026-04-13-skillmux-cli-lifecycle-closure-design.md`
   - plan: `docs/superpowers/plans/2026-04-13-skillmux-cli-lifecycle-closure-implementation-plan.md`
-  - active branch/worktree: `lifecycle-closure` at `.worktrees/lifecycle-closure`
-  - baseline verification in the worktree passed with `npm test`, `npm run typecheck`, and `npm run build`
-  - implementation is following superpowers subagent-driven development; accepted state still requires root repo verification before completion
+- Lifecycle Closure Tasks 1-4 are accepted in the root repo.
+- Lifecycle Closure Task 5 is active in `.worktrees/lifecycle-release-docs` on branch `lifecycle-release-docs`.
+- Task 5 worktree verification has passed with `npm test`, `npm run typecheck`, and `npm run build`.
+- Accepted state still requires syncing the committed Task 5 docs back to the root repo and running fresh root verification there.
 - lifecycle-closure Task 1 is accepted in the root repo:
   - command added: `skillmux remove --skill <skill> [--json]`
   - safety behavior: refuses enabled skills, refuses non-canonical managed paths, refuses symlink/junction leaf or ancestor removal paths, and removes disabled manifest state only after checks
@@ -138,7 +154,9 @@ Task 10 passed fresh in the root repo with:
   - active branch/worktree: `lifecycle-release-docs` at `.worktrees/lifecycle-release-docs`
   - target docs: `README.md`, `PROJECT_STATUS.md`, `NEXT_ACTIONS.md`, `DECISIONS.md`, plus required root tracking in `AGENTS.md`
   - baseline verification in the worktree passed with `npm test`, `npm run typecheck`, and `npm run build`
-  - implementation will follow superpowers subagent-driven development with documentation review before root acceptance
+  - README and state docs have been refreshed in the worktree
+  - final worktree verification passed with `npm test`, `npm run typecheck`, and `npm run build`
+  - next acceptance step: sync the committed docs back to the root repo and run fresh root verification
 - small follow-up completed: `list` now keeps discovered agents visible with zero live entries and keeps manifest-managed skills visible even when they are currently disabled everywhere
 - real-world bugfix pass completed:
   - `config` now accepts UTF-8 BOM-prefixed `~/.skillmux/config.json`
@@ -149,7 +167,7 @@ Task 10 passed fresh in the root repo with:
 - custom agent configuration now also has a CLI removal path:
   - `skillmux config remove-agent --id <agent-id>`
   - removes only the user override from `~/.skillmux/config.json`
-- v0 implementation is complete and the repo root is now the only active workspace
+- v0 implementation had returned to root-only status before lifecycle closure; the current Task 5 worktree status is recorded above.
 - product boundary is now explicit:
   - `npx skills` is responsible for fetching and installing skills from remote sources
   - SkillMux is responsible for scanning, adopting, enabling, disabling, listing, and diagnosing locally present skills
