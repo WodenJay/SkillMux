@@ -4,7 +4,7 @@ Project: SkillMux
 Phase: lifecycle-closure implementation in progress
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
-Active development worktree: `(none)`
+Active development worktree: `.worktrees/lifecycle-release-docs`
 
 ## Accepted Tasks
 
@@ -134,6 +134,11 @@ Task 10 passed fresh in the root repo with:
   - accepted root commit: `6fcaef7` `feat: add batch lifecycle operations`
   - stale implementation worktree `.worktrees/lifecycle-batch` has been removed after root acceptance
   - next implementation slice: final lifecycle docs and release readiness
+- lifecycle-closure Task 5 has started from current root commit `476ef72`:
+  - active branch/worktree: `lifecycle-release-docs` at `.worktrees/lifecycle-release-docs`
+  - target docs: `README.md`, `PROJECT_STATUS.md`, `NEXT_ACTIONS.md`, `DECISIONS.md`, plus required root tracking in `AGENTS.md`
+  - baseline verification in the worktree passed with `npm test`, `npm run typecheck`, and `npm run build`
+  - implementation will follow superpowers subagent-driven development with documentation review before root acceptance
 - small follow-up completed: `list` now keeps discovered agents visible with zero live entries and keeps manifest-managed skills visible even when they are currently disabled everywhere
 - real-world bugfix pass completed:
   - `config` now accepts UTF-8 BOM-prefixed `~/.skillmux/config.json`

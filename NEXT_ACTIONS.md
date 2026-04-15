@@ -110,5 +110,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Complete Task 4 fresh verification in the root repo
 - [x] Mark Task 4 checklist items in `docs/superpowers/plans/2026-04-13-skillmux-cli-lifecycle-closure-implementation-plan.md` after acceptance
 - [x] Remove the stale Task 4 implementation worktree after root acceptance
+- [x] Create fresh lifecycle-closure Task 5 worktree `.worktrees/lifecycle-release-docs` from root commit `476ef72`
+- [x] Run Task 5 worktree baseline verification: `npm test`, `npm run typecheck`, `npm run build`
 - [ ] Complete lifecycle Task 5 final documentation and release readiness
 - [ ] Document the intended workflow boundary between `npx skills` and SkillMux in the user-facing README once matching UX/code changes exist

@@ -193,3 +193,10 @@ Record key product and implementation decisions so later sessions do not lose th
 - lifecycle-closure Task 4 was accepted only after worktree implementation, spec review, code-quality re-review, and fresh root verification; the accepted root commit is `6fcaef7`
 - batch CLI flags are repeatable where they map to a supported batch shape, while existing single-item usage remains supported
 - batch partial failures throw `BatchOperationError` with the operation, failed item, completed item ids, and original cause; this avoids implying rollback when earlier single-item operations have already persisted
+
+### Final lifecycle documentation execution
+
+- lifecycle-closure Task 5 starts from root commit `476ef72` in `.worktrees/lifecycle-release-docs` on branch `lifecycle-release-docs`
+- Task 5 is documentation and release readiness only; it should not change command semantics unless verification exposes a release-blocking bug
+- README updates should document the now-existing lifecycle UX: `remove`, `adopt`, `config update-agent`, the `npx skills`/SkillMux boundary, and the supported batch shapes
+- accepted state still requires documentation review, sync back to the root repo, and fresh root verification

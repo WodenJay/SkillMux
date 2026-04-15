@@ -50,3 +50,4 @@
 - lifecycle-closure Task 2 (`skillmux adopt --agent <agent> [--skill <skill>]`) is accepted in root commit `3f3c2ee`; `.worktrees/lifecycle-adopt` has been removed, and the repo is back to root-only accepted state for the next slice.
 - lifecycle-closure Task 3 (`skillmux config update-agent`) is accepted in root commit `a645ade`; `.worktrees/lifecycle-config-update` has been removed, and the repo is back to root-only accepted state for the next slice.
 - lifecycle-closure Task 4 (`lifecycle batch operations`) is accepted in root commit `6fcaef7`; `.worktrees/lifecycle-batch` has been removed, and the repo is back to root-only accepted state for the next slice.
+- lifecycle-closure Task 5 (`final documentation and release readiness`) is active in `.worktrees/lifecycle-release-docs` on branch `lifecycle-release-docs`, created from root commit `476ef72`; accepted state still requires syncing back to the root repo and fresh root verification.
