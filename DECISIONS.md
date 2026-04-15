@@ -170,3 +170,10 @@ Record key product and implementation decisions so later sessions do not lose th
 - adoption validates existing managed targets before replacing a working external live entry; stale manifest targets fail before link replacement
 - multi-entry `adopt --agent <agent>` persists each completed adoption or reconciliation before continuing, reducing the partial-failure window without adding a transaction journal
 - lifecycle-closure Task 2 was accepted only after worktree implementation, spec review, code-quality re-review, and fresh root verification; the accepted root commit is `3f3c2ee`
+
+### Config update-agent execution
+
+- lifecycle-closure Task 3 starts from root commit `eb412cf` in `.worktrees/lifecycle-config-update` on branch `lifecycle-config-update`
+- `skillmux config update-agent` should remain a narrow custom-agent override updater, not a generic config editor
+- updates should target one existing override, preserve unspecified fields, and reuse the same id/path/platform validation rules as `config add-agent`
+- root acceptance still requires worktree implementation, spec review, code-quality review, and fresh root verification

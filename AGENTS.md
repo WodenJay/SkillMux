@@ -48,3 +48,4 @@
 - 子代理产出的代码只有在主目录完成验证后，才算 accepted state。
 - lifecycle-closure Task 1 已同步并提交到主目录；当前没有活跃开发 worktree，后续 Task 2 应从主目录 accepted state 重新创建隔离 worktree。
 - lifecycle-closure Task 2 (`skillmux adopt --agent <agent> [--skill <skill>]`) is accepted in root commit `3f3c2ee`; `.worktrees/lifecycle-adopt` has been removed, and the repo is back to root-only accepted state for the next slice.
+- lifecycle-closure Task 3 (`skillmux config update-agent`) is active in `.worktrees/lifecycle-config-update` on branch `lifecycle-config-update`, created from current root commit `eb412cf`; root remains the stable delivery area until Task 3 is synced back and verified there.
