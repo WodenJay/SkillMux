@@ -135,4 +135,6 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Sync accepted release-prep changes back to the root repo
 - [x] Complete fresh root release verification
 - [x] Remove `.worktrees/post-lifecycle-release` after root acceptance
-- [ ] Publish to npm only after explicit user approval
+- [x] Publish to npm only after explicit user approval
+- [x] Verify npm registry latest version returns `0.1.2`
+- [x] Confirm the temporary npm publish config was deleted
