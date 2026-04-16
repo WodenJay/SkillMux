@@ -21,7 +21,7 @@ Active development worktree: `(none)`
 - TUI design sections 1-5 are approved.
 - TUI design spec has been written and committed at `docs/superpowers/specs/2026-04-16-skillmux-tui-design.md`.
 - Spec review passed after clarifying read-only initial loading and disabled-row population.
-- Next required superpowers step: user reviews the written spec before implementation planning.
+- Next required superpowers step: wait for user approval of the written spec, then invoke `$writing-plans`.
 - Selected first-version layout: persistent multi-panel dashboard with agents, selected-agent skills, and detail/action context visible together.
 
 ## Accepted Tasks

@@ -59,5 +59,5 @@
 - post-lifecycle npm release prep is accepted in root commit `0f72701`; `.worktrees/post-lifecycle-release` has been removed; target `skillmux@0.1.2`; final root verification passed.
 - `skillmux@0.1.2` has been published to npm and verified with `npm view skillmux version` returning `0.1.2`; the temporary npm userconfig used for publishing was deleted after publish.
 - TUI design has started from the root-only accepted state after `skillmux@0.1.2`; no implementation worktree is active yet.
-- TUI design spec is written and spec-reviewed at `docs/superpowers/specs/2026-04-16-skillmux-tui-design.md`; next step is user review before implementation planning.
+- TUI design spec is written and spec-reviewed at `docs/superpowers/specs/2026-04-16-skillmux-tui-design.md`; next step is user approval before invoking `$writing-plans`.
 - Browser visual companion scratch files live under `.superpowers/brainstorm/` and should stay out of git.
