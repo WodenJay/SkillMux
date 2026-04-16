@@ -48,6 +48,14 @@ Record key product and implementation decisions so later sessions do not lose th
 - Path-related issues attach to every related agent, including shared-path conflict issues. Issues without a path remain global and do not appear in individual agent skill lists.
 - The Task 3 model currently uses `selectedSkillId` as a selected row id for unmanaged and issue rows. Task 4 action dispatch must resolve the selected row first and then use `row.skillId` or `row.skillName`, not pass `selectedSkillId` directly to command helpers.
 
+### TUI Task 4 action dispatch
+
+- `dispatchTuiAction` is model-driven. It resolves the selected row from `DashboardModel.skills` using `DashboardModel.selectedSkillId`; callers do not pass a separate selected skill row.
+- Toggle maps only managed rows to lifecycle commands: enabled rows call `runDisable`, and disabled rows call `runEnable`.
+- Adopt maps only unmanaged rows to `runAdopt` and uses `row.skillName`; remove maps only disabled managed rows to `runRemove` and uses `row.skillId`.
+- Scan is explicit and writes through `runScan`; initial TUI loading remains read-only.
+- Successful actions reload dashboard state with the previous selected agent and selected row id. Failed actions keep the previous model and return one-line status text without stack traces.
+
 ## 2026-04-12
 
 ### Product scope

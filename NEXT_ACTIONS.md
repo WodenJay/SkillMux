@@ -102,7 +102,12 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Run TUI Task 3 through spec review, code-quality review, fix, and re-review
 - [x] Sync TUI Task 3 accepted code back to the root repo
 - [x] Complete fresh root verification after TUI Task 3 sync
-- [ ] Start TUI implementation Task 4 from the approved plan
+- [x] Start TUI implementation Task 4 from the approved plan
+- [x] Complete TUI implementation Task 4 in the worktree: action dispatcher, tests, and typecheck
+- [x] Run TUI Task 4 through spec review, spec fix, spec re-review, and code-quality review
+- [ ] Sync TUI Task 4 accepted code back to the root repo
+- [ ] Complete fresh root verification after TUI Task 4 sync
+- [ ] Start TUI implementation Task 5 from the approved plan
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
 - [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
 - [x] Add tests and implementation for `skillmux config add-agent`

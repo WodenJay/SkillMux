@@ -68,4 +68,6 @@
 - TUI Task 1 is now accepted in the root repo at commit `f4f0f3f`; root verification passed with elevated `npm test`, `npm run typecheck`, and `npm run build`.
 - TUI Task 2 is accepted in the root repo at commit `9953695`; root verification passed with elevated `npm test`, `npm run typecheck`, and `npm run build`.
 - TUI Task 3 is accepted in the root repo at commit `0fd9422`; root verification passed with `npm test`, `npm run typecheck`, and `npm run build`.
-- Next implementation slice after Task 3 root acceptance is TUI Task 4: action dispatcher.
+- TUI Task 4 is accepted in the active worktree at commits `d38c55c` and `d0a76e8`; targeted verification passed with elevated `npm test -- --run tests/tui/actions.test.ts`, and `npm run typecheck` passed.
+- Task 4 adds the row-driven action dispatcher. It resolves `model.selectedSkillId` against `model.skills` before calling lifecycle helpers; do not pass selected row ids directly to command helpers.
+- Next acceptance step is syncing TUI Task 4 back to the root repo, then running fresh root verification.

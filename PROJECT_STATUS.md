@@ -37,6 +37,9 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - Task 3 is accepted in the root repo after sync and fresh root verification.
 - TUI Task 3 accepted root commit: `0fd9422`.
 - Task 3 scope: read-only dashboard model and loader for agents, managed rows, unmanaged rows, issue rows, and selection/count state.
+- Task 4 is accepted in the active TUI worktree after implementation, spec review, code-quality review, targeted tests, and typecheck.
+- TUI Task 4 worktree commits: `d38c55c` and `d0a76e8`.
+- Task 4 scope: row-driven TUI action dispatcher for toggle, adopt, remove, scan, command-output status text, reloads, and failure preservation.
 - Remaining plan slices are still pending.
 
 ## Accepted Tasks
@@ -61,6 +64,7 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - TUI Task 1: add dependencies, TSX test coverage, `skillmux tui` command shell, launcher stub, and non-interactive TTY guard
 - TUI Task 2: add read-only manifest snapshot loading and shared doctor diagnostics
 - TUI Task 3: add read-only dashboard model and loader
+- TUI Task 4: add row-driven TUI action dispatcher
 
 ## Accepted Root Commits
 
@@ -83,6 +87,7 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - `f4f0f3f` `docs: record tui task 1 acceptance`
 - `9953695` `docs: record tui task 2 acceptance`
 - `0fd9422` `docs: record tui task 3 acceptance`
+- `d0a76e8` `fix: resolve tui action selection from model` (worktree acceptance pending root sync)
 
 ## Current Product Direction
 

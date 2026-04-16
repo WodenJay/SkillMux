@@ -762,7 +762,7 @@ git commit -m "feat: add tui dashboard state loader"
 - Create: `src/tui/actions.ts`
 - Test: `tests/tui/actions.test.ts`
 
-- [ ] **Step 1: Write failing action dispatcher tests**
+- [x] **Step 1: Write failing action dispatcher tests**
 
 Add `tests/tui/actions.test.ts`:
 
@@ -800,7 +800,7 @@ describe("dispatchTuiAction", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify the red state**
+- [x] **Step 2: Run tests to verify the red state**
 
 Run:
 
@@ -810,7 +810,7 @@ npm test -- --run tests/tui/actions.test.ts
 
 Expected: FAIL because `dispatchTuiAction` does not exist.
 
-- [ ] **Step 3: Implement action dispatch with service injection**
+- [x] **Step 3: Implement action dispatch with service injection**
 
 Create `src/tui/actions.ts`:
 
@@ -830,7 +830,7 @@ Implementation rules:
 - strip trailing newlines from command output before showing it in status
 - do not show stack traces in status messages
 
-- [ ] **Step 4: Add tests for invalid rows and errors**
+- [x] **Step 4: Add tests for invalid rows and errors**
 
 Extend `tests/tui/actions.test.ts` to cover:
 
@@ -840,7 +840,7 @@ Extend `tests/tui/actions.test.ts` to cover:
 - command rejection preserves the current model and returns `Adopt failed: <reason>` style text
 - `s` calls `runScan` and `reload`
 
-- [ ] **Step 5: Run targeted tests and commit**
+- [x] **Step 5: Run targeted tests and commit**
 
 Run:
 
