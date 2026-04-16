@@ -26,9 +26,10 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - TUI implementation plan review passed.
 - Execution mode selected by the user: subagent-driven development.
 - Selected first-version layout: persistent multi-panel dashboard with agents, selected-agent skills, and detail/action context visible together.
-- Task 1 is accepted in the active TUI worktree after implementation, spec review, code-quality re-review, targeted tests, and typecheck.
+- Task 1 is accepted in the root repo after implementation, spec review, code-quality re-review, root sync, full tests, typecheck, and build.
+- TUI Task 1 accepted root code commit: `f4f0f3f`.
 - Task 1 scope: dependencies, TSX config, CLI shell, launcher stub, TTY guard, and command tests.
-- Targeted TUI shell tests required elevated execution in this Windows sandbox because ordinary sandbox execution hit `spawn EPERM`; elevated verification passed.
+- Targeted and full TUI Task 1 test verification required elevated execution in this Windows sandbox because ordinary sandbox execution hit `spawn EPERM`; elevated verification passed.
 - Remaining plan slices are still pending.
 
 ## Accepted Tasks
@@ -50,6 +51,7 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - Lifecycle Closure Task 5: final documentation and release readiness
 - Post-lifecycle release prep: prepare `skillmux@0.1.2`
 - Post-lifecycle npm publish: publish `skillmux@0.1.2`
+- TUI Task 1: add dependencies, TSX test coverage, `skillmux tui` command shell, launcher stub, and non-interactive TTY guard
 
 ## Accepted Root Commits
 
@@ -69,6 +71,7 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - `6fcaef7` `feat: add batch lifecycle operations`
 - `64a0d42` `docs: record lifecycle closure updates`
 - `0f72701` `chore: prepare skillmux 0.1.2 release`
+- `f4f0f3f` `docs: record tui task 1 acceptance`
 
 ## Current Product Direction
 

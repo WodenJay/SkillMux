@@ -64,4 +64,6 @@
 - Browser visual companion scratch files live under `.superpowers/brainstorm/` and should stay out of git.
 - Active TUI implementation worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-implementation`.
 - Task 1 of the TUI implementation slice is complete in the worktree, with targeted tests and typecheck passing.
-- This supersedes the earlier no-active-worktree TUI note; root acceptance is still pending until Task 1 is synced back to `C:\Users\wudon\Desktop\SkillMux\` and verified there.
+- This supersedes the earlier no-active-worktree TUI note; the same worktree remains available for the next TUI implementation slice.
+- TUI Task 1 is now accepted in the root repo at commit `f4f0f3f`; root verification passed with elevated `npm test`, `npm run typecheck`, and `npm run build`.
+- Next implementation slice is TUI Task 2: read-only manifest snapshot and shared doctor diagnostics.
