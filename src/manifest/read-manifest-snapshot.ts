@@ -4,11 +4,12 @@ import { ManifestValidationError } from "../core/errors";
 import type { Manifest } from "../core/types";
 import { buildEmptyManifest } from "./build-empty-manifest";
 import { manifestSchema } from "./manifest-schema";
-import { writeManifest } from "./write-manifest";
+import { formatValidationIssues } from "./read-manifest";
 
-function getManifestPath(home: string): string {
-  return join(home, "manifest.json");
-}
+export type ManifestSnapshot = {
+  manifest: Manifest;
+  exists: boolean;
+};
 
 function normalizeHomePath(home: string): string {
   const resolvedHome = resolve(home);
@@ -17,41 +18,28 @@ function normalizeHomePath(home: string): string {
     : resolvedHome;
 }
 
-export function formatValidationIssues(error: {
-  issues: Array<{ path: (string | number)[]; message: string }>;
-}): string {
-  return error.issues
-    .map((issue) => {
-      const path = issue.path.length > 0 ? issue.path.join(".") : "<root>";
-      return `${path}: ${issue.message}`;
-    })
-    .join("; ");
-}
-
-export async function readManifest(home: string): Promise<Manifest> {
-  const manifestPath = getManifestPath(home);
+export async function readManifestSnapshot(
+  home: string
+): Promise<ManifestSnapshot> {
+  const manifestPath = join(home, "manifest.json");
 
   try {
     const contents = await fs.readFile(manifestPath, "utf8");
-    const parsedJson = JSON.parse(contents) as unknown;
-    const parsedManifest = manifestSchema.safeParse(parsedJson);
+    const parsed = manifestSchema.safeParse(JSON.parse(contents) as unknown);
 
-    if (!parsedManifest.success) {
+    if (!parsed.success) {
       throw new ManifestValidationError(
-        `Invalid manifest at ${manifestPath}: ${formatValidationIssues(parsedManifest.error)}`
+        `Invalid manifest at ${manifestPath}: ${formatValidationIssues(parsed.error)}`
       );
     }
 
-    if (
-      normalizeHomePath(parsedManifest.data.skillmuxHome) !==
-      normalizeHomePath(home)
-    ) {
+    if (normalizeHomePath(parsed.data.skillmuxHome) !== normalizeHomePath(home)) {
       throw new ManifestValidationError(
         `Invalid manifest at ${manifestPath}: skillmuxHome must match ${home}`
       );
     }
 
-    return parsedManifest.data;
+    return { manifest: parsed.data, exists: true };
   } catch (error) {
     if (
       typeof error === "object" &&
@@ -59,9 +47,7 @@ export async function readManifest(home: string): Promise<Manifest> {
       "code" in error &&
       (error as NodeJS.ErrnoException).code === "ENOENT"
     ) {
-      const emptyManifest = buildEmptyManifest(home);
-      await writeManifest(home, emptyManifest);
-      return emptyManifest;
+      return { manifest: buildEmptyManifest(home), exists: false };
     }
 
     if (error instanceof SyntaxError) {
