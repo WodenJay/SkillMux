@@ -1,10 +1,10 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI implementation planning in progress
+Phase: TUI implementation in progress
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
-Active development worktree: `(none)`
+Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-implementation`
 
 ## Current TUI Design Status
 
@@ -24,10 +24,11 @@ Active development worktree: `(none)`
 - User approved the written design spec.
 - TUI implementation plan has been drafted at `docs/superpowers/plans/2026-04-16-skillmux-tui-implementation-plan.md`.
 - TUI implementation plan review passed.
-- Next required superpowers step: choose execution mode, then start implementation from the approved plan.
+- Execution mode selected by the user: subagent-driven development.
 - Selected first-version layout: persistent multi-panel dashboard with agents, selected-agent skills, and detail/action context visible together.
-- Task 1 is complete in the active TUI worktree: dependencies, TSX config, CLI shell, and the non-interactive guard are in place.
-- Targeted TUI shell tests and `npm run typecheck` both passed in the worktree.
+- Task 1 is accepted in the active TUI worktree after implementation, spec review, code-quality re-review, targeted tests, and typecheck.
+- Task 1 scope: dependencies, TSX config, CLI shell, launcher stub, TTY guard, and command tests.
+- Targeted TUI shell tests required elevated execution in this Windows sandbox because ordinary sandbox execution hit `spawn EPERM`; elevated verification passed.
 - Remaining plan slices are still pending.
 
 ## Accepted Tasks

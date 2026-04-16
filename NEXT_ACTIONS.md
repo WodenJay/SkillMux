@@ -86,9 +86,12 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Invoke `$writing-plans` after user approval
 - [x] Write the TUI implementation plan under `docs/superpowers/plans/`
 - [x] Review the TUI implementation plan with a subagent
-- [ ] Offer execution choice after plan review passes
+- [x] Offer execution choice after plan review passes
 - [x] Start TUI implementation in the user-selected execution mode
 - [x] Complete TUI implementation Task 1 in the worktree: dependencies, CLI shell, tests, and typecheck
+- [x] Run TUI Task 1 through spec review, code-quality review, fixes, and re-review
+- [ ] Sync TUI Task 1 accepted code back to the root repo
+- [ ] Complete fresh root verification after TUI Task 1 sync
 - [ ] Start TUI implementation Task 2 from the approved plan
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
 - [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
