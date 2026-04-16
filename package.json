@@ -14,7 +14,7 @@
   },
   "scripts": {
     "build": "tsup",
-    "test": "node --require ./scripts/vitest-preload.cjs ./node_modules/vitest/vitest.mjs run --configLoader native",
+    "test": "vitest run --configLoader runner",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
