@@ -54,4 +54,4 @@
 - lifecycle-closure Task 4 (`lifecycle batch operations`) is accepted in root commit `6fcaef7`; `.worktrees/lifecycle-batch` has been removed, and the repo is back to root-only accepted state for the next slice.
 - lifecycle-closure Task 5 (`final documentation and release readiness`) is accepted in root commit `64a0d42`; `.worktrees/lifecycle-release-docs` has been removed, and the repo is back to root-only accepted state.
 - post-lifecycle npm release prep was opened after root commit `73cb496`; the active isolated preparation worktree is recorded in the next note.
-- post-lifecycle npm release prep is active in `.worktrees/post-lifecycle-release` from root commit `75cf4d0`; baseline passed with `npm test`, `npm run typecheck`, and `npm run build`; target `skillmux@0.1.2`; `npm publish` has not been run and requires explicit user approval.
+- post-lifecycle npm release prep is accepted in root commit `0f72701`; `.worktrees/post-lifecycle-release` has been removed; target `skillmux@0.1.2`; final root verification passed; `npm publish` has not been run and requires explicit user approval.

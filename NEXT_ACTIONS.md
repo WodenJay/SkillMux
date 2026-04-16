@@ -132,6 +132,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Bump the package version for the post-lifecycle release to `skillmux@0.1.2`
 - [x] Run release verification: `git diff --check`, `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`
 - [x] Review release readiness before syncing back to root
-- [ ] Sync accepted release-prep changes back to the root repo
-- [ ] Complete fresh root release verification
+- [x] Sync accepted release-prep changes back to the root repo
+- [x] Complete fresh root release verification
+- [x] Remove `.worktrees/post-lifecycle-release` after root acceptance
 - [ ] Publish to npm only after explicit user approval

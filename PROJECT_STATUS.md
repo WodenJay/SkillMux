@@ -1,10 +1,10 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: post-lifecycle npm release prep
+Phase: post-lifecycle npm release ready; publish pending
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
-Active development worktree: `.worktrees/post-lifecycle-release`
+Active development worktree: `(none)`
 
 ## Accepted Tasks
 
@@ -23,6 +23,7 @@ Active development worktree: `.worktrees/post-lifecycle-release`
 - Lifecycle Closure Task 3: add config update-agent command
 - Lifecycle Closure Task 4: add batch lifecycle operations
 - Lifecycle Closure Task 5: final documentation and release readiness
+- Post-lifecycle release prep: prepare `skillmux@0.1.2`
 
 ## Accepted Root Commits
 
@@ -41,6 +42,7 @@ Active development worktree: `.worktrees/post-lifecycle-release`
 - `a645ade` `feat: add config update-agent command`
 - `6fcaef7` `feat: add batch lifecycle operations`
 - `64a0d42` `docs: record lifecycle closure updates`
+- `0f72701` `chore: prepare skillmux 0.1.2 release`
 
 ## Current Product Direction
 
@@ -83,6 +85,15 @@ Task 10 passed fresh in the root repo with:
   - `skillmux config remove-agent`
   - the README logo and centered README header polish
 
+## Post-Lifecycle Release Prep
+
+- Target package: `skillmux@0.1.2`
+- Local package metadata has been bumped in `package.json` and `package-lock.json`.
+- Final root verification passed with `git diff --check`, `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`.
+- The dry-run package was `skillmux@0.1.2` / `skillmux-0.1.2.tgz`.
+- npm registry check on 2026-04-16 still showed latest published version `0.1.1`.
+- `npm publish` has not been run for `skillmux@0.1.2` and requires explicit user approval.
+
 ## Lifecycle Closure Release-Docs Status
 
 - Status: accepted in the root repo; `.worktrees/lifecycle-release-docs` has been removed
@@ -107,10 +118,11 @@ Task 10 passed fresh in the root repo with:
 - Post-lifecycle npm release prep was opened after accepted root commit `73cb496`; active preparation uses the worktree recorded below.
 - npm registry check on 2026-04-16 showed published versions `0.1.0` and `0.1.1`; the next compatible release target is `0.1.2`.
 - Actual `npm publish` has not been run for the post-lifecycle release and requires explicit user approval.
-- Active release-prep worktree: `.worktrees/post-lifecycle-release` from root commit `75cf4d0`.
+- Release-prep worktree `.worktrees/post-lifecycle-release` was created from root commit `75cf4d0` and has been removed after root acceptance.
 - Release target: `skillmux@0.1.2`.
 - Release-prep baseline passed with `npm test`, `npm run typecheck`, and `npm run build`.
-- Release-prep final verification passed with `git diff --check`, `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`; dry-run package was `skillmux@0.1.2` / `skillmux-0.1.2.tgz`.
+- Release-prep final worktree and root verification passed with `git diff --check`, `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`; dry-run package was `skillmux@0.1.2` / `skillmux-0.1.2.tgz`.
+- Release-prep accepted root commit: `0f72701` `chore: prepare skillmux 0.1.2 release`.
 - `npm publish` has not been run for `skillmux@0.1.2` and requires explicit user approval.
 - lifecycle-closure Task 1 is accepted in the root repo:
   - command added: `skillmux remove --skill <skill> [--json]`

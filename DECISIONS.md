@@ -225,3 +225,4 @@ Record key product and implementation decisions so later sessions do not lose th
 - Baseline release-prep verification passed with `npm test`, `npm run typecheck`, and `npm run build` before the `0.1.2` metadata bump.
 - Final release-prep verification passed with `git diff --check`, `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`; the dry-run tarball filename was `skillmux-0.1.2.tgz`.
 - `npm publish` has not been run for `skillmux@0.1.2`; explicit user approval is still required.
+- Release prep was accepted in root commit `0f72701` and `.worktrees/post-lifecycle-release` was removed after root verification.
