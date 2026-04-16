@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI design in progress
+Phase: TUI implementation planning in progress
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -9,7 +9,7 @@ Active development worktree: `(none)`
 ## Current TUI Design Status
 
 - TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
-- Design is following `$using-superpowers` and the brainstorming hard gate: no implementation work starts until the design spec is approved.
+- Design followed `$using-superpowers` and the brainstorming hard gate; the written spec is approved.
 - The TUI design stage is using `$tui-design`; implementation will additionally use `$terminal-ui`.
 - A browser visual companion was attempted, but it is not usable in the current environment; design review continues in terminal text.
 - The existing CLI command helpers expose `runX` functions, so the likely TUI direction is to reuse the current command layer instead of duplicating filesystem behavior.
@@ -21,7 +21,10 @@ Active development worktree: `(none)`
 - TUI design sections 1-5 are approved.
 - TUI design spec has been written and committed at `docs/superpowers/specs/2026-04-16-skillmux-tui-design.md`.
 - Spec review passed after clarifying read-only initial loading and disabled-row population.
-- Next required superpowers step: wait for user approval of the written spec, then invoke `$writing-plans`.
+- User approved the written design spec.
+- TUI implementation plan has been drafted at `docs/superpowers/plans/2026-04-16-skillmux-tui-implementation-plan.md`.
+- TUI implementation plan review passed.
+- Next required superpowers step: choose execution mode, then start implementation from the approved plan.
 - Selected first-version layout: persistent multi-panel dashboard with agents, selected-agent skills, and detail/action context visible together.
 
 ## Accepted Tasks

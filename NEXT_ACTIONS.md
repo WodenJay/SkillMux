@@ -82,8 +82,12 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Commit the TUI design spec and tracking updates
 - [x] Review the TUI design spec with a subagent
 - [x] Ask for user review before writing the implementation plan
-- [ ] Wait for user approval of the written TUI design spec
-- [ ] Invoke `$writing-plans` after user approval
+- [x] Wait for user approval of the written TUI design spec
+- [x] Invoke `$writing-plans` after user approval
+- [x] Write the TUI implementation plan under `docs/superpowers/plans/`
+- [x] Review the TUI implementation plan with a subagent
+- [ ] Offer execution choice after plan review passes
+- [ ] Start TUI implementation in the user-selected execution mode
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
 - [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
 - [x] Add tests and implementation for `skillmux config add-agent`
