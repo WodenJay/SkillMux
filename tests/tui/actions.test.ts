@@ -43,6 +43,26 @@ function enabledRow(): TuiEnabledSkillRow {
   };
 }
 
+function enabledOtherRow(): TuiEnabledSkillRow {
+  return {
+    id: "find-skills",
+    kind: "enabled",
+    marker: "" as TuiEnabledSkillRow["marker"],
+    skillId: "find-skills",
+    name: "Find Skills",
+    path: join("C:", "skillmux", "skills", "find-skills"),
+    agentId: "codex",
+    activationLinkPath: join(
+      "C:",
+      "Users",
+      "me",
+      ".codex",
+      "skills",
+      "find-skills"
+    )
+  };
+}
+
 function disabledRow(): TuiDisabledSkillRow {
   return {
     id: "terminal-ui",
@@ -82,6 +102,17 @@ function issueRow(): TuiSkillRow {
   };
 }
 
+function createModelWithSelectedSkill(
+  selectedSkill: TuiSkillRow,
+  extraSkills: TuiSkillRow[] = []
+): DashboardModel {
+  return createModel({
+    skills: [...extraSkills, selectedSkill],
+    selectedAgentId: selectedSkill.agentId,
+    selectedSkillId: selectedSkill.id
+  });
+}
+
 function createServices(
   overrides: Partial<TuiActionServices> = {}
 ): TuiActionServices {
@@ -98,7 +129,7 @@ function createServices(
 
 describe("dispatchTuiAction", () => {
   it("enables a disabled managed row, reloads, and trims trailing newlines", async () => {
-    const model = createModel({ selectedSkillId: "terminal-ui" });
+    const model = createModelWithSelectedSkill(disabledRow());
     const reloadedModel = createModel({ selectedSkillId: "terminal-ui" });
     const services = createServices({
       runEnable: vi.fn().mockResolvedValue({ output: "Enabled terminal-ui\n\n" }),
@@ -108,7 +139,6 @@ describe("dispatchTuiAction", () => {
     const result = await dispatchTuiAction({
       action: "toggle",
       model,
-      selectedSkill: disabledRow(),
       homeDir: "HOME",
       skillmuxHome: "SKILLMUX",
       platform: "win32",
@@ -134,14 +164,36 @@ describe("dispatchTuiAction", () => {
     });
   });
 
-  it("disables an enabled managed row", async () => {
-    const model = createModel();
+  it("uses the model selected row instead of an externally supplied row", async () => {
+    const selectedRow = disabledRow();
+    const model = createModel({
+      skills: [enabledOtherRow(), selectedRow],
+      selectedSkillId: selectedRow.id
+    });
     const services = createServices();
 
     await dispatchTuiAction({
       action: "toggle",
       model,
-      selectedSkill: enabledRow(),
+      services
+    });
+
+    expect(services.runEnable).toHaveBeenCalledWith({
+      homeDir: undefined,
+      skillmuxHome: undefined,
+      skill: "terminal-ui",
+      agent: "codex"
+    });
+    expect(services.runDisable).not.toHaveBeenCalled();
+  });
+
+  it("disables an enabled managed row", async () => {
+    const model = createModelWithSelectedSkill(enabledRow());
+    const services = createServices();
+
+    await dispatchTuiAction({
+      action: "toggle",
+      model,
       services
     });
 
@@ -154,13 +206,12 @@ describe("dispatchTuiAction", () => {
   });
 
   it("adopts an unmanaged row using the row skill name", async () => {
-    const model = createModel({ selectedSkillId: "unmanaged:terminal-ui" });
+    const model = createModelWithSelectedSkill(unmanagedRow());
     const services = createServices();
 
     await dispatchTuiAction({
       action: "adopt",
       model,
-      selectedSkill: unmanagedRow(),
       services
     });
 
@@ -173,15 +224,12 @@ describe("dispatchTuiAction", () => {
   });
 
   it("refuses to adopt non-adoptable rows", async () => {
-    const model = createModel({
-      selectedSkillId: "issue:codex:unknown-entry:notes.txt"
-    });
+    const model = createModelWithSelectedSkill(issueRow());
     const services = createServices();
 
     const result = await dispatchTuiAction({
       action: "adopt",
       model,
-      selectedSkill: issueRow(),
       services
     });
 
@@ -190,14 +238,34 @@ describe("dispatchTuiAction", () => {
     expect(result.statusMessage).toBe("Adopt is only available for unmanaged rows");
   });
 
+  it("asks for a selection when the selected row is missing", async () => {
+    const model = createModel({
+      skills: [disabledRow()],
+      selectedSkillId: "missing-row"
+    });
+    const services = createServices();
+
+    const result = await dispatchTuiAction({
+      action: "toggle",
+      model,
+      services
+    });
+
+    expect(services.runEnable).not.toHaveBeenCalled();
+    expect(services.runDisable).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      model,
+      statusMessage: "Select a skill first"
+    });
+  });
+
   it("refuses to remove enabled rows", async () => {
-    const model = createModel();
+    const model = createModelWithSelectedSkill(enabledRow());
     const services = createServices();
 
     const result = await dispatchTuiAction({
       action: "remove",
       model,
-      selectedSkill: enabledRow(),
       services
     });
 
@@ -207,13 +275,12 @@ describe("dispatchTuiAction", () => {
   });
 
   it("removes a disabled managed row using the row skill id", async () => {
-    const model = createModel();
+    const model = createModelWithSelectedSkill(disabledRow());
     const services = createServices();
 
     await dispatchTuiAction({
       action: "remove",
       model,
-      selectedSkill: disabledRow(),
       services
     });
 
@@ -225,7 +292,7 @@ describe("dispatchTuiAction", () => {
   });
 
   it("keeps the original model and hides stack traces when a command fails", async () => {
-    const model = createModel({ selectedSkillId: "unmanaged:terminal-ui" });
+    const model = createModelWithSelectedSkill(unmanagedRow());
     const services = createServices({
       runAdopt: vi
         .fn()
@@ -236,7 +303,6 @@ describe("dispatchTuiAction", () => {
     const result = await dispatchTuiAction({
       action: "adopt",
       model,
-      selectedSkill: unmanagedRow(),
       services
     });
 
@@ -260,7 +326,6 @@ describe("dispatchTuiAction", () => {
     const result = await dispatchTuiAction({
       action: "scan",
       model,
-      selectedSkill: null,
       homeDir: "HOME",
       skillmuxHome: "SKILLMUX",
       platform: "win32",

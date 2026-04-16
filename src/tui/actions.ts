@@ -50,7 +50,6 @@ export type TuiActionServices = {
 export type DispatchTuiActionInput = {
   action: TuiAction;
   model: DashboardModel;
-  selectedSkill: TuiSkillRow | null;
   homeDir?: string;
   skillmuxHome?: string;
   platform?: NodeJS.Platform;
@@ -116,6 +115,14 @@ function refusal(
   return { model, statusMessage };
 }
 
+function resolveSelectedSkill(model: DashboardModel): TuiSkillRow | null {
+  if (model.selectedSkillId === null) {
+    return null;
+  }
+
+  return model.skills.find((row) => row.id === model.selectedSkillId) ?? null;
+}
+
 export async function dispatchTuiAction(
   input: DispatchTuiActionInput
 ): Promise<DispatchTuiActionResult> {
@@ -132,7 +139,7 @@ export async function dispatchTuiAction(
       return reloadAfterCommand(input, services, result.output);
     }
 
-    const selectedSkill = input.selectedSkill;
+    const selectedSkill = resolveSelectedSkill(input.model);
     if (selectedSkill === null) {
       return refusal(input.model, "Select a skill first");
     }
