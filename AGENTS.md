@@ -41,6 +41,8 @@
 - 现在已经支持通过 `skillmux config remove-agent` 删除自定义 agent 的配置覆盖项。
 - 现在已经支持通过 `skillmux config update-agent` 更新已有自定义 agent 配置覆盖项；新增仍然使用 `config add-agent`。
 - 现在已经支持 `skillmux adopt`、`skillmux remove` 和常用 repeatable flag 批量操作；README 需要保持这些命令的用户向说明。
+- 当前已经进入 TUI 设计阶段；设计阶段使用 `$using-superpowers` 和 `$tui-design`，实现阶段再额外使用 `$terminal-ui`。
+- TUI 实现前必须先完成并批准 `docs/superpowers/specs/` 下的设计 spec；不要跳过 brainstorming 的设计门禁。
 - 当前开发环境是windows，使用的是PowerShell，不支持`&&`，因此使用命令的时候请不要使用`&&`。
 
 ## Execution Notes
@@ -56,3 +58,6 @@
 - post-lifecycle npm release prep was opened after root commit `73cb496`; the active isolated preparation worktree is recorded in the next note.
 - post-lifecycle npm release prep is accepted in root commit `0f72701`; `.worktrees/post-lifecycle-release` has been removed; target `skillmux@0.1.2`; final root verification passed.
 - `skillmux@0.1.2` has been published to npm and verified with `npm view skillmux version` returning `0.1.2`; the temporary npm userconfig used for publishing was deleted after publish.
+- TUI design has started from the root-only accepted state after `skillmux@0.1.2`; no implementation worktree is active yet.
+- TUI design spec is now written at `docs/superpowers/specs/2026-04-16-skillmux-tui-design.md`; next step is superpowers spec review before implementation planning.
+- Browser visual companion scratch files live under `.superpowers/brainstorm/` and should stay out of git.

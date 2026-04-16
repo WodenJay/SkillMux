@@ -2,6 +2,25 @@
 
 Record key product and implementation decisions so later sessions do not lose the reasoning.
 
+## 2026-04-16
+
+### TUI design process
+
+- The TUI work starts only after the CLI lifecycle surface is complete and published as `skillmux@0.1.2`.
+- The design phase must use `$using-superpowers` and `$tui-design`.
+- The implementation phase must additionally use `$terminal-ui`.
+- The brainstorming hard gate applies: no TUI implementation starts until the design is approved, written as a spec, and reviewed.
+- The TUI should reuse the existing command helper functions where possible, rather than duplicating the local filesystem and manifest rules.
+- Browser visual companion files are stored under `.superpowers/brainstorm/`, which is ignored by git.
+- The first TUI version should prioritize a daily management dashboard over a wizard-first or doctor-first experience.
+- The default dashboard should be agent-first: users choose an agent, then manage visible, disabled, unmanaged, or problematic skills for that agent.
+- First-version TUI action safety model: `Space` toggles enable/disable for the focused managed skill and reports in the status bar; `a` adopts and `r` removes, both with explicit confirmation because they change ownership or delete managed local copies.
+- Enabled/disabled state must not rely on color alone: enabled rows use a filled circle plus text/state, disabled rows use a hollow circle plus text/state, and color only reinforces the marker.
+- The right detail panel should not duplicate action shortcuts already shown in the footer. It should explain the selected item and show contextual messages, while the footer remains the single place for shortcut discovery.
+- First-version TUI layout uses a persistent multi-panel dashboard: left agents, center skills for the selected agent, right detail/action context.
+- Because the browser visual companion is not accessible in this environment, TUI design review continues through terminal text instead of browser mockups.
+- The accepted TUI design spec is `docs/superpowers/specs/2026-04-16-skillmux-tui-design.md`.
+
 ## 2026-04-12
 
 ### Product scope

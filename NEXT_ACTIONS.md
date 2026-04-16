@@ -63,6 +63,25 @@ Track the next concrete actions. Mark done items with `[x]`.
 
 ## Next
 
+- [x] Start the TUI design stage with `$using-superpowers`
+- [x] Load `$tui-design` for the TUI design stage
+- [x] Load `$terminal-ui` for later implementation-stage guidance
+- [x] Start the browser visual companion for TUI layout review
+- [x] Clarify the first TUI scope and primary user workflow
+- [x] Clarify which dashboard axis should be primary: agents first or skills first
+- [x] Clarify confirmation behavior for mutating TUI actions
+- [x] Propose 2-3 TUI design approaches with trade-offs
+- [x] Select first-version TUI layout approach
+- [x] Present the selected TUI design in reviewable sections
+  - [x] Section 1: layout and primary interaction shape
+  - [x] Section 2: state model, refresh, and scan behavior
+  - [x] Section 3: keyboard interaction, confirmations, and help
+  - [x] Section 4: architecture boundaries, component split, and testing strategy
+  - [x] Section 5: error handling, compatibility, and non-goals
+- [x] Write the TUI design spec under `docs/superpowers/specs/`
+- [ ] Commit the TUI design spec and tracking updates
+- [ ] Review the TUI design spec with a subagent
+- [ ] Ask for user review before writing the implementation plan
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
 - [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
 - [x] Add tests and implementation for `skillmux config add-agent`

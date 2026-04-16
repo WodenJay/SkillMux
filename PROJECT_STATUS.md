@@ -1,10 +1,28 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: post-lifecycle npm release complete
+Phase: TUI design in progress
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
+
+## Current TUI Design Status
+
+- TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
+- Design is following `$using-superpowers` and the brainstorming hard gate: no implementation work starts until the design spec is approved.
+- The TUI design stage is using `$tui-design`; implementation will additionally use `$terminal-ui`.
+- A browser visual companion is available for layout and mockup review at `http://localhost:57218`.
+- The existing CLI command helpers expose `runX` functions, so the likely TUI direction is to reuse the current command layer instead of duplicating filesystem behavior.
+- First-version TUI scope preference: daily management dashboard for agents, skills, enablement state, issue count, and keyboard-driven lifecycle actions.
+- Primary dashboard axis: agent-first. The default view should help users inspect and manage what one selected agent can see.
+- Mutating action preference: selected skill enable/disable is toggled with `Space` and status feedback; `adopt` and `remove` stay on `a` and `r` with confirmation.
+- Skill rows should show a status marker before the skill name: filled green circle for enabled, hollow circle for disabled, and distinct text/symbol labels for unmanaged or issue states.
+- Detail panel should not repeat the global footer actions; it should focus on metadata, state explanation, source paths, and issue/adoption guidance.
+- TUI design sections 1-5 are approved.
+- TUI design spec has been written to `docs/superpowers/specs/2026-04-16-skillmux-tui-design.md`.
+- Next required superpowers step: commit the spec, then run spec-document-reviewer subagent review.
+- Selected first-version layout: persistent multi-panel dashboard with agents, selected-agent skills, and detail/action context visible together.
+- Browser visual companion was attempted but is not usable in the current environment, so remaining design review continues in terminal text.
 
 ## Accepted Tasks
 
