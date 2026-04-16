@@ -66,5 +66,5 @@
 - Task 1 of the TUI implementation slice is complete in the worktree, with targeted tests and typecheck passing.
 - This supersedes the earlier no-active-worktree TUI note; the same worktree remains available for the next TUI implementation slice.
 - TUI Task 1 is now accepted in the root repo at commit `f4f0f3f`; root verification passed with elevated `npm test`, `npm run typecheck`, and `npm run build`.
-- TUI Task 2 is accepted in the active worktree at commit `3004f07`; root sync and root verification are pending.
+- TUI Task 2 is accepted in the root repo at commit `9953695`; root verification passed with elevated `npm test`, `npm run typecheck`, and `npm run build`.
 - Next implementation slice after Task 2 root acceptance is TUI Task 3: read-only dashboard state loader.

@@ -31,6 +31,8 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - Task 1 scope: dependencies, TSX config, CLI shell, launcher stub, TTY guard, and command tests.
 - Targeted and full TUI Task 1 test verification required elevated execution in this Windows sandbox because ordinary sandbox execution hit `spawn EPERM`; elevated verification passed.
 - Task 2 is accepted in the active TUI worktree after implementation, spec review, code-quality re-review, targeted tests, and typecheck.
+- Task 2 is accepted in the root repo after sync and fresh root verification.
+- TUI Task 2 accepted root code commit: `9953695`.
 - Task 2 scope: read-only manifest snapshot loading and shared doctor issue collection.
 - Remaining plan slices are still pending.
 
@@ -54,6 +56,7 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - Post-lifecycle release prep: prepare `skillmux@0.1.2`
 - Post-lifecycle npm publish: publish `skillmux@0.1.2`
 - TUI Task 1: add dependencies, TSX test coverage, `skillmux tui` command shell, launcher stub, and non-interactive TTY guard
+- TUI Task 2: add read-only manifest snapshot loading and shared doctor diagnostics
 
 ## Accepted Root Commits
 
@@ -74,6 +77,7 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - `64a0d42` `docs: record lifecycle closure updates`
 - `0f72701` `chore: prepare skillmux 0.1.2 release`
 - `f4f0f3f` `docs: record tui task 1 acceptance`
+- `9953695` `docs: record tui task 2 acceptance`
 
 ## Current Product Direction
 

@@ -95,8 +95,8 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Start TUI implementation Task 2 from the approved plan
 - [x] Complete TUI implementation Task 2 in the worktree: read-only manifest snapshot and shared diagnostics
 - [x] Run TUI Task 2 through spec review, code-quality review, fixes, and re-review
-- [ ] Sync TUI Task 2 accepted code back to the root repo
-- [ ] Complete fresh root verification after TUI Task 2 sync
+- [x] Sync TUI Task 2 accepted code back to the root repo
+- [x] Complete fresh root verification after TUI Task 2 sync
 - [ ] Start TUI implementation Task 3 from the approved plan
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
 - [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
