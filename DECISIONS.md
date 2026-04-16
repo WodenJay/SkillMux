@@ -27,11 +27,11 @@ Record key product and implementation decisions so later sessions do not lose th
 - Implementation planning chooses Ink and React for the dashboard, with a new read-only manifest snapshot path because existing `readManifest`, `runList`, and `runScan` can write manifest state.
 - The TUI implementation plan review passed. Recommended execution mode remains subagent-driven development, one accepted slice at a time.
 
-### TUI Task 1 test runner workaround
+### TUI Task 1 sandbox debugging note
 
-- Vitest on this Windows sandbox could not start its default Windows realpath probe or esbuild service because child-process spawning is blocked in the environment.
-- Task 1 uses a local test-runner preload hook to keep Vitest in native config-loader mode, neutralize the Windows `net use` probe, and provide an esbuild shim backed by `typescript.transpileModule` for the test run only.
-- The workaround is confined to the worktree test script and preload file; it is not part of the shipped CLI behavior.
+- During Task 1, a temporary Vitest preload workaround was tried to diagnose Windows sandbox `EPERM` failures in this environment.
+- That workaround was removed after review; the project now uses the normal `vitest run --configLoader runner` test script and the Vitest config only includes the requested `.test.ts` / `.test.tsx` patterns.
+- The remaining `spawn EPERM` issue belongs to the sandbox/runtime environment, not to the checked-in TUI command shell.
 
 ## 2026-04-12
 
