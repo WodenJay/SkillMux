@@ -55,6 +55,7 @@ Record key product and implementation decisions so later sessions do not lose th
 - Adopt maps only unmanaged rows to `runAdopt` and uses `row.skillName`; remove maps only disabled managed rows to `runRemove` and uses `row.skillId`.
 - Scan is explicit and writes through `runScan`; initial TUI loading remains read-only.
 - Successful actions reload dashboard state with the previous selected agent and selected row id. Failed actions keep the previous model and return one-line status text without stack traces.
+- Task 4 root acceptance required full root verification after sync, not just the worktree targeted test.
 
 ## 2026-04-12
 
