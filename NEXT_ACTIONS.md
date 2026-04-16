@@ -127,11 +127,11 @@ Track the next concrete actions. Mark done items with `[x]`.
 
 ## Post-Lifecycle Release
 
-- [ ] Create fresh release-prep worktree from the current root accepted state
-- [ ] Verify the release-prep worktree baseline with `npm test`, `npm run typecheck`, and `npm run build`
-- [ ] Bump the package version for the post-lifecycle release
-- [ ] Run release verification: `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`
-- [ ] Review release readiness before syncing back to root
+- [x] Create fresh release-prep worktree from the current root accepted state
+- [x] Verify the release-prep worktree baseline with `npm test`, `npm run typecheck`, and `npm run build`
+- [x] Bump the package version for the post-lifecycle release to `skillmux@0.1.2`
+- [x] Run release verification: `git diff --check`, `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`
+- [x] Review release readiness before syncing back to root
 - [ ] Sync accepted release-prep changes back to the root repo
 - [ ] Complete fresh root release verification
 - [ ] Publish to npm only after explicit user approval

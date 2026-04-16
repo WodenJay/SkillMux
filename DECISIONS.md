@@ -221,3 +221,7 @@ Record key product and implementation decisions so later sessions do not lose th
 - npm registry check on 2026-04-16 showed `skillmux@0.1.1` as the latest published version, with versions `0.1.0` and `0.1.1` present.
 - The release target is `skillmux@0.1.2` because the lifecycle work adds backward-compatible CLI functionality.
 - `npm publish` is an external release action and must wait for explicit user approval after local verification and dry-run packaging pass.
+- Release prep is isolated in `.worktrees/post-lifecycle-release` from root commit `75cf4d0`.
+- Baseline release-prep verification passed with `npm test`, `npm run typecheck`, and `npm run build` before the `0.1.2` metadata bump.
+- Final release-prep verification passed with `git diff --check`, `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`; the dry-run tarball filename was `skillmux-0.1.2.tgz`.
+- `npm publish` has not been run for `skillmux@0.1.2`; explicit user approval is still required.
