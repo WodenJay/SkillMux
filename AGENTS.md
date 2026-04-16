@@ -20,7 +20,7 @@
 - 当一个比较大的任务完成时，停下来提醒我`/compact`，以压缩上下文，避免后续的上下文过长导致性能问题。但你要整理好下一步需要做什么，避免compact后忘记了下一步要做什么。
 - 对于subagent，当执行完任务并且不再需要的时候，及时清理，不要堆积大量无用的subagent。
 - `docs/superpowers/plans`里面的任务每完成一个也要打勾`[x]`以保持同步。
-- subagent尽量不要使用太旧的模型(比如`GPT-5.2`)，相对简单/追求快速的任务可以使用`GPT-5.4-mini`(更省token)，相对困难/追求质量的任务就用`GPT-5.4`(主agent的model)。
+- subagent不要使用太旧的模型(比如`GPT-5.2`)，相对简单/追求快速的任务(比如写`README.md`)可以使用`GPT-5.4-mini`(更省token)，相对困难/追求质量的任务就用`GPT-5.4`(主agent的model)。
 
 ## Current Direction
 
