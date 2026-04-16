@@ -33,6 +33,13 @@ Record key product and implementation decisions so later sessions do not lose th
 - That workaround was removed after review; the project now uses the normal `vitest run --configLoader runner` test script and the Vitest config only includes the requested `.test.ts` / `.test.tsx` patterns.
 - The remaining `spawn EPERM` issue belongs to the sandbox/runtime environment, not to the checked-in TUI command shell.
 
+### TUI Task 2 read-only manifest loading
+
+- The TUI initial-load path needs a manifest reader that does not bootstrap or write `manifest.json`.
+- `readManifestSnapshot` returns an empty in-memory manifest when the manifest file is absent and reports `exists: false`; it does not create the file.
+- Manifest validation messages are shared with `readManifest` so the read-only path stays actionable and consistent.
+- Doctor issue collection is now reusable through `collectDoctorIssues`, while `runDoctor` still combines live scan issues with doctor-derived issues before formatting output.
+
 ## 2026-04-12
 
 ### Product scope

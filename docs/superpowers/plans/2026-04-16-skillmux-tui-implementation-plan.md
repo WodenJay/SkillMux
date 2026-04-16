@@ -306,7 +306,7 @@ git commit -m "feat: add tui command shell"
 - Test: `tests/manifest/read-manifest-snapshot.test.ts`
 - Test: `tests/commands/doctor.test.ts`
 
-- [ ] **Step 1: Write failing read-only manifest tests**
+- [x] **Step 1: Write failing read-only manifest tests**
 
 Add `tests/manifest/read-manifest-snapshot.test.ts`:
 
@@ -335,7 +335,7 @@ describe("readManifestSnapshot", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify the red state**
+- [x] **Step 2: Run test to verify the red state**
 
 Run:
 
@@ -345,7 +345,7 @@ npm test -- --run tests/manifest/read-manifest-snapshot.test.ts
 
 Expected: FAIL because `readManifestSnapshot` does not exist.
 
-- [ ] **Step 3: Implement read-only manifest snapshot**
+- [x] **Step 3: Implement read-only manifest snapshot**
 
 Create `src/manifest/read-manifest-snapshot.ts`:
 
@@ -406,7 +406,7 @@ export async function readManifestSnapshot(home: string): Promise<ManifestSnapsh
 }
 ```
 
-- [ ] **Step 4: Extract shared doctor issue collection**
+- [x] **Step 4: Extract shared doctor issue collection**
 
 Move the read-only issue helpers from `src/commands/doctor.ts` into `src/diagnostics/collect-doctor-issues.ts`:
 
@@ -432,7 +432,7 @@ export async function collectDoctorIssues(
 
 Keep `runDoctor` behavior unchanged by calling `collectDoctorIssues` after it gathers scan entries.
 
-- [ ] **Step 5: Run targeted tests**
+- [x] **Step 5: Run targeted tests**
 
 Run:
 
@@ -442,7 +442,7 @@ npm test -- --run tests/manifest/read-manifest-snapshot.test.ts tests/commands/d
 
 Expected: PASS.
 
-- [ ] **Step 6: Typecheck and commit**
+- [x] **Step 6: Typecheck and commit**
 
 Run:
 

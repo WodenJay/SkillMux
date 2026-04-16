@@ -30,6 +30,8 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - TUI Task 1 accepted root code commit: `f4f0f3f`.
 - Task 1 scope: dependencies, TSX config, CLI shell, launcher stub, TTY guard, and command tests.
 - Targeted and full TUI Task 1 test verification required elevated execution in this Windows sandbox because ordinary sandbox execution hit `spawn EPERM`; elevated verification passed.
+- Task 2 is accepted in the active TUI worktree after implementation, spec review, code-quality re-review, targeted tests, and typecheck.
+- Task 2 scope: read-only manifest snapshot loading and shared doctor issue collection.
 - Remaining plan slices are still pending.
 
 ## Accepted Tasks
