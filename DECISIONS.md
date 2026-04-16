@@ -27,6 +27,12 @@ Record key product and implementation decisions so later sessions do not lose th
 - Implementation planning chooses Ink and React for the dashboard, with a new read-only manifest snapshot path because existing `readManifest`, `runList`, and `runScan` can write manifest state.
 - The TUI implementation plan review passed. Recommended execution mode remains subagent-driven development, one accepted slice at a time.
 
+### TUI Task 1 test runner workaround
+
+- Vitest on this Windows sandbox could not start its default Windows realpath probe or esbuild service because child-process spawning is blocked in the environment.
+- Task 1 uses a local test-runner preload hook to keep Vitest in native config-loader mode, neutralize the Windows `net use` probe, and provide an esbuild shim backed by `typescript.transpileModule` for the test run only.
+- The workaround is confined to the worktree test script and preload file; it is not part of the shipped CLI behavior.
+
 ## 2026-04-12
 
 ### Product scope

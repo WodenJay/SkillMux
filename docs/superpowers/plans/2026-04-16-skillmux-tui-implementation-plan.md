@@ -96,7 +96,7 @@ Build the TUI in eight slices. Each slice should end with targeted tests, `npm r
 - Test: `tests/commands/tui.test.ts`
 - Test: `tests/smoke/cli-smoke.test.ts`
 
-- [ ] **Step 1: Install runtime and test dependencies**
+- [x] **Step 1: Install runtime and test dependencies**
 
 Run:
 
@@ -112,7 +112,7 @@ npm install -D @types/react ink-testing-library
 
 Expected: `package.json` has `ink` and `react` under `dependencies`; `@types/react` and `ink-testing-library` are dev dependencies; `package-lock.json` is updated.
 
-- [ ] **Step 2: Add TSX coverage to TypeScript and Vitest config**
+- [x] **Step 2: Add TSX coverage to TypeScript and Vitest config**
 
 Modify `tsconfig.json` compiler options:
 
@@ -141,7 +141,7 @@ Modify `vitest.config.ts` include:
 include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"]
 ```
 
-- [ ] **Step 3: Write failing CLI registration and non-TTY tests**
+- [x] **Step 3: Write failing CLI registration and non-TTY tests**
 
 Add `tests/commands/tui.test.ts`:
 
@@ -181,7 +181,7 @@ describe("tui command", () => {
 
 Update `tests/smoke/cli-smoke.test.ts` to expect `tui` in the command list.
 
-- [ ] **Step 4: Run tests to verify the red state**
+- [x] **Step 4: Run tests to verify the red state**
 
 Run:
 
@@ -191,7 +191,7 @@ npm test -- --run tests/smoke/cli-smoke.test.ts tests/commands/tui.test.ts
 
 Expected: FAIL because `src/commands/tui.ts` and `tui` registration do not exist.
 
-- [ ] **Step 5: Implement the minimal TUI command shell**
+- [x] **Step 5: Implement the minimal TUI command shell**
 
 Create `src/tui/tty.ts`:
 
@@ -270,7 +270,7 @@ program
   });
 ```
 
-- [ ] **Step 6: Run targeted tests**
+- [x] **Step 6: Run targeted tests**
 
 Run:
 
@@ -280,7 +280,7 @@ npm test -- --run tests/smoke/cli-smoke.test.ts tests/commands/tui.test.ts
 
 Expected: PASS.
 
-- [ ] **Step 7: Typecheck and commit**
+- [x] **Step 7: Typecheck and commit**
 
 Run:
 

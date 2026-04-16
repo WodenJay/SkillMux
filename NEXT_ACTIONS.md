@@ -87,7 +87,9 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Write the TUI implementation plan under `docs/superpowers/plans/`
 - [x] Review the TUI implementation plan with a subagent
 - [ ] Offer execution choice after plan review passes
-- [ ] Start TUI implementation in the user-selected execution mode
+- [x] Start TUI implementation in the user-selected execution mode
+- [x] Complete TUI implementation Task 1 in the worktree: dependencies, CLI shell, tests, and typecheck
+- [ ] Start TUI implementation Task 2 from the approved plan
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
 - [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
 - [x] Add tests and implementation for `skillmux config add-agent`

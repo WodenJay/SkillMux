@@ -62,3 +62,5 @@
 - TUI design spec is written, spec-reviewed, and user-approved at `docs/superpowers/specs/2026-04-16-skillmux-tui-design.md`.
 - TUI implementation plan at `docs/superpowers/plans/2026-04-16-skillmux-tui-implementation-plan.md` is reviewed and approved; next step is execution-mode choice before implementation starts.
 - Browser visual companion scratch files live under `.superpowers/brainstorm/` and should stay out of git.
+- Active TUI implementation worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-implementation`.
+- Task 1 of the TUI implementation slice is complete in the worktree, with targeted tests and typecheck passing.

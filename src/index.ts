@@ -13,6 +13,7 @@ import { runImport } from "./commands/import";
 import { runList } from "./commands/list";
 import { runRemove } from "./commands/remove";
 import { runScan } from "./commands/scan";
+import { runTui } from "./commands/tui";
 
 function collectValues(value: string, previous: string[] = []): string[] {
   return [...previous, value];
@@ -109,6 +110,13 @@ export function buildCli(): Command {
     .action(async (options: { json?: boolean }) => {
       const result = await runDoctor({ json: options.json === true });
       process.stdout.write(result.output);
+    });
+
+  program
+    .command("tui")
+    .description("Open the interactive SkillMux dashboard")
+    .action(async () => {
+      await runTui();
     });
 
   const configCommand = program.command("config");

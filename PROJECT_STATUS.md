@@ -26,6 +26,9 @@ Active development worktree: `(none)`
 - TUI implementation plan review passed.
 - Next required superpowers step: choose execution mode, then start implementation from the approved plan.
 - Selected first-version layout: persistent multi-panel dashboard with agents, selected-agent skills, and detail/action context visible together.
+- Task 1 is complete in the active TUI worktree: dependencies, TSX config, CLI shell, and the non-interactive guard are in place.
+- Targeted TUI shell tests and `npm run typecheck` both passed in the worktree.
+- Remaining plan slices are still pending.
 
 ## Accepted Tasks
 
