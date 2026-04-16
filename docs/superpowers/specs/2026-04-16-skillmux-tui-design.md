@@ -76,6 +76,8 @@ Skill rows use a symbol plus text and optional color. Color never carries meanin
 
 If a terminal cannot render `●` and `○` correctly, implementation may fall back to ASCII markers such as `*` and `o`.
 
+For the selected agent, the Skills panel lists every manifest-managed skill. A row is enabled when that skill has an enabled activation for the selected agent; otherwise it appears as disabled and `Space` can enable it. The panel also includes live unmanaged/adoptable rows and issue rows discovered for that agent.
+
 ## Detail Panel
 
 The detail panel shows metadata and state explanation only. It can show:
@@ -162,11 +164,13 @@ The first version does not require typing the skill name. Existing `runRemove` s
 The TUI loads dashboard state from existing SkillMux behavior:
 
 - `runAgents` for agent discovery
-- current list or equivalent internal aggregation for agents, skills, activations, and live entries
+- a read-only aggregation path for agents, skills, activations, and live entries
 - `runDoctor` or equivalent issue aggregation for issue counts and issue rows
 - manifest data for `lastScan`
 
 Opening the TUI must not automatically run `scan`, because `scan` writes manifest state. Users run `s` when they want to refresh and persist a scan result.
+
+Initial TUI launch must not call `runScan` or a command helper that calls `runScan`. If the current `runList` path writes manifest state by calling `runScan`, implementation should instead extract or add a read-only dashboard loader using manifest reads plus agent discovery/live inspection. `runScan` and scan-backed helpers are reserved for the explicit `s` refresh action unless they are refactored to accept a precomputed read-only scan projection.
 
 An implementation should normalize rows into a dashboard model similar to:
 

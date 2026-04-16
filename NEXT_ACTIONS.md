@@ -79,8 +79,8 @@ Track the next concrete actions. Mark done items with `[x]`.
   - [x] Section 4: architecture boundaries, component split, and testing strategy
   - [x] Section 5: error handling, compatibility, and non-goals
 - [x] Write the TUI design spec under `docs/superpowers/specs/`
-- [ ] Commit the TUI design spec and tracking updates
-- [ ] Review the TUI design spec with a subagent
+- [x] Commit the TUI design spec and tracking updates
+- [x] Review the TUI design spec with a subagent
 - [ ] Ask for user review before writing the implementation plan
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
 - [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting

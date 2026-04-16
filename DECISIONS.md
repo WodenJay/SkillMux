@@ -20,6 +20,9 @@ Record key product and implementation decisions so later sessions do not lose th
 - First-version TUI layout uses a persistent multi-panel dashboard: left agents, center skills for the selected agent, right detail/action context.
 - Because the browser visual companion is not accessible in this environment, TUI design review continues through terminal text instead of browser mockups.
 - The accepted TUI design spec is `docs/superpowers/specs/2026-04-16-skillmux-tui-design.md`.
+- Initial TUI launch must use a read-only dashboard loader. It must not call `runScan` or a helper that writes manifest state unless the user explicitly presses `s`.
+- For the selected agent, the Skills panel lists every manifest-managed skill; rows without an enabled activation for that agent appear disabled and can be enabled with `Space`.
+- Spec review passed after those two points were clarified. The next gate is user review before implementation planning.
 
 ## 2026-04-12
 
