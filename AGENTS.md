@@ -67,5 +67,5 @@
 - This supersedes the earlier no-active-worktree TUI note; the same worktree remains available for the next TUI implementation slice.
 - TUI Task 1 is now accepted in the root repo at commit `f4f0f3f`; root verification passed with elevated `npm test`, `npm run typecheck`, and `npm run build`.
 - TUI Task 2 is accepted in the root repo at commit `9953695`; root verification passed with elevated `npm test`, `npm run typecheck`, and `npm run build`.
-- TUI Task 3 is accepted in the active TUI implementation worktree at commit `07a093d`; targeted tests, typecheck, spec review, and code-quality re-review passed.
-- Next acceptance step is syncing TUI Task 3 back to the root repo and running fresh root verification.
+- TUI Task 3 is accepted in the root repo at commit `0fd9422`; root verification passed with `npm test`, `npm run typecheck`, and `npm run build`.
+- Next implementation slice after Task 3 root acceptance is TUI Task 4: action dispatcher.

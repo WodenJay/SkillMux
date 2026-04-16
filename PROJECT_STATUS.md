@@ -34,8 +34,8 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - Task 2 is accepted in the root repo after sync and fresh root verification.
 - TUI Task 2 accepted root code commit: `9953695`.
 - Task 2 scope: read-only manifest snapshot loading and shared doctor issue collection.
-- Task 3 is accepted in the active TUI worktree after implementation, spec review, code-quality re-review, targeted tests, and typecheck.
-- TUI Task 3 accepted worktree code commit: `07a093d`.
+- Task 3 is accepted in the root repo after sync and fresh root verification.
+- TUI Task 3 accepted root commit: `0fd9422`.
 - Task 3 scope: read-only dashboard model and loader for agents, managed rows, unmanaged rows, issue rows, and selection/count state.
 - Remaining plan slices are still pending.
 
@@ -82,6 +82,7 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - `0f72701` `chore: prepare skillmux 0.1.2 release`
 - `f4f0f3f` `docs: record tui task 1 acceptance`
 - `9953695` `docs: record tui task 2 acceptance`
+- `0fd9422` `docs: record tui task 3 acceptance`
 
 ## Current Product Direction
 
