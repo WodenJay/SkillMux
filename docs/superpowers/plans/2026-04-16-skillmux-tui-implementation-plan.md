@@ -467,7 +467,7 @@ git commit -m "feat: add read-only manifest snapshot"
 - Test: `tests/tui/load-dashboard-state.test.ts`
 - Test: `tests/tui/dashboard-model.test.ts`
 
-- [ ] **Step 1: Write failing dashboard loader tests**
+- [x] **Step 1: Write failing dashboard loader tests**
 
 Add `tests/tui/load-dashboard-state.test.ts`:
 
@@ -532,7 +532,7 @@ describe("loadDashboardState", () => {
 });
 ```
 
-- [ ] **Step 2: Write failing model tests**
+- [x] **Step 2: Write failing model tests**
 
 Add `tests/tui/dashboard-model.test.ts`:
 
@@ -612,7 +612,7 @@ describe("buildDashboardModel", () => {
 });
 ```
 
-- [ ] **Step 3: Run tests to verify the red state**
+- [x] **Step 3: Run tests to verify the red state**
 
 Run:
 
@@ -622,7 +622,7 @@ npm test -- --run tests/tui/load-dashboard-state.test.ts tests/tui/dashboard-mod
 
 Expected: FAIL because dashboard modules do not exist.
 
-- [ ] **Step 4: Define dashboard view models**
+- [x] **Step 4: Define dashboard view models**
 
 Create `src/tui/dashboard-model.ts` with exported types:
 
@@ -704,7 +704,7 @@ export type DashboardModel = {
 - add issue rows related to the selected agent
 - compute counts for the agent list
 
-- [ ] **Step 5: Implement the read-only loader**
+- [x] **Step 5: Implement the read-only loader**
 
 Create `src/tui/load-dashboard-state.ts`:
 
@@ -729,7 +729,7 @@ Implementation rules:
 - call `buildDashboardModel`
 - do not write `manifest.json`, links, config, or managed skill files
 
-- [ ] **Step 6: Run targeted tests**
+- [x] **Step 6: Run targeted tests**
 
 Run:
 
@@ -739,7 +739,7 @@ npm test -- --run tests/tui/load-dashboard-state.test.ts tests/tui/dashboard-mod
 
 Expected: PASS.
 
-- [ ] **Step 7: Typecheck and commit**
+- [x] **Step 7: Typecheck and commit**
 
 Run:
 

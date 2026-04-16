@@ -40,6 +40,14 @@ Record key product and implementation decisions so later sessions do not lose th
 - Manifest validation messages are shared with `readManifest` so the read-only path stays actionable and consistent.
 - Doctor issue collection is now reusable through `collectDoctorIssues`, while `runDoctor` still combines live scan issues with doctor-derived issues before formatting output.
 
+### TUI Task 3 read-only dashboard state
+
+- `loadDashboardState` is the TUI initial state loader and stays read-only: it uses `readManifestSnapshot`, `discoverAgents`, `scanAgentSkills`, and `collectDoctorIssues`, then builds a dashboard model without calling `runScan`, `runList`, `runDoctor`, `readManifest`, or `writeManifest`.
+- The dashboard model is agent-first. Managed skills are listed for the selected agent even when disabled; a row is enabled only when that selected agent has an enabled activation.
+- Skill row markers use UTF-8 symbols in the model: `●` for enabled, `○` for disabled, `?` for unmanaged/adoptable entries, and `!` for issues. Later Ink components may add color, but color is only reinforcement.
+- Path-related issues attach to every related agent, including shared-path conflict issues. Issues without a path remain global and do not appear in individual agent skill lists.
+- The Task 3 model currently uses `selectedSkillId` as a selected row id for unmanaged and issue rows. Task 4 action dispatch must resolve the selected row first and then use `row.skillId` or `row.skillName`, not pass `selectedSkillId` directly to command helpers.
+
 ## 2026-04-12
 
 ### Product scope
