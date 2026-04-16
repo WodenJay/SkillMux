@@ -1,10 +1,10 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: lifecycle-closure complete in root
+Phase: post-lifecycle npm release prep
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
-Active development worktree: `(none)`
+Active development worktree: pending `.worktrees/post-lifecycle-release`
 
 ## Accepted Tasks
 
@@ -104,6 +104,9 @@ Task 10 passed fresh in the root repo with:
 - Task 5 accepted root commit: `64a0d42` `docs: record lifecycle closure updates`.
 - Task 5 worktree and root verification passed with `npm test`, `npm run typecheck`, and `npm run build`.
 - The repository is back to root-only accepted state.
+- Post-lifecycle npm release prep has started from root commit `73cb496`.
+- npm registry check on 2026-04-16 showed published versions `0.1.0` and `0.1.1`; the next compatible release target is `0.1.2`.
+- Actual `npm publish` has not been run for the post-lifecycle release and requires explicit user approval.
 - lifecycle-closure Task 1 is accepted in the root repo:
   - command added: `skillmux remove --skill <skill> [--json]`
   - safety behavior: refuses enabled skills, refuses non-canonical managed paths, refuses symlink/junction leaf or ancestor removal paths, and removes disabled manifest state only after checks

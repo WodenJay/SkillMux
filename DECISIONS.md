@@ -214,3 +214,10 @@ Record key product and implementation decisions so later sessions do not lose th
 - Release-readiness documentation may mention verification results, but it must not claim an npm publish unless publish actually happens
 - Task 5 was accepted in root commit `64a0d42` after worktree review, README revision based on user feedback, sync to the root checkout, and fresh root verification with `npm test`, `npm run typecheck`, and `npm run build`
 - `.worktrees/lifecycle-release-docs` was removed after root acceptance; the repository is back to root-only accepted state
+
+### Post-lifecycle npm release
+
+- The post-lifecycle release should publish the completed lifecycle CLI surface after final verification.
+- npm registry check on 2026-04-16 showed `skillmux@0.1.1` as the latest published version, with versions `0.1.0` and `0.1.1` present.
+- The release target is `skillmux@0.1.2` because the lifecycle work adds backward-compatible CLI functionality.
+- `npm publish` is an external release action and must wait for explicit user approval after local verification and dry-run packaging pass.

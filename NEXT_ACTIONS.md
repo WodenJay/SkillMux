@@ -123,4 +123,15 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Sync Task 5 accepted docs back to the root repo
 - [x] Complete fresh root verification after sync: `npm test`, `npm run typecheck`, `npm run build`
 - [x] Remove `.worktrees/lifecycle-release-docs` after root acceptance
-- [ ] Decide whether to prepare a post-lifecycle npm release; do not claim publish until it is actually performed
+- [x] Decide whether to prepare a post-lifecycle npm release; do not claim publish until it is actually performed
+
+## Post-Lifecycle Release
+
+- [ ] Create fresh release-prep worktree from the current root accepted state
+- [ ] Verify the release-prep worktree baseline with `npm test`, `npm run typecheck`, and `npm run build`
+- [ ] Bump the package version for the post-lifecycle release
+- [ ] Run release verification: `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`
+- [ ] Review release readiness before syncing back to root
+- [ ] Sync accepted release-prep changes back to the root repo
+- [ ] Complete fresh root release verification
+- [ ] Publish to npm only after explicit user approval

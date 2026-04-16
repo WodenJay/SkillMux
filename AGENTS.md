@@ -53,3 +53,4 @@
 - lifecycle-closure Task 3 (`skillmux config update-agent`) is accepted in root commit `a645ade`; `.worktrees/lifecycle-config-update` has been removed, and the repo is back to root-only accepted state for the next slice.
 - lifecycle-closure Task 4 (`lifecycle batch operations`) is accepted in root commit `6fcaef7`; `.worktrees/lifecycle-batch` has been removed, and the repo is back to root-only accepted state for the next slice.
 - lifecycle-closure Task 5 (`final documentation and release readiness`) is accepted in root commit `64a0d42`; `.worktrees/lifecycle-release-docs` has been removed, and the repo is back to root-only accepted state.
+- post-lifecycle npm release prep has started from root commit `73cb496`; use `.worktrees/post-lifecycle-release` for isolated preparation, target `skillmux@0.1.2`, and do not run `npm publish` without explicit user approval.
