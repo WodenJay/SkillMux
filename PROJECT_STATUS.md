@@ -47,6 +47,7 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - Task 6 scope: Ink dashboard components, modal/status/footer presentation, and App keyboard wiring over the Task 5 reducer/action intents.
 - Task 6 worktree implementation is complete with targeted component/state/action tests and typecheck passing; spec/code review and root acceptance are still pending.
 - Task 6 spec-review follow-up is in progress: modal footer shortcuts, Dashboard terminal dimension ownership, and busy status text are being tightened in the worktree.
+- Task 6 code-quality follow-up is in progress: confirmed modal writes now close before dispatch, duplicate confirmed writes are guarded, stale async results are ignored, and search-mode `q` stays text input.
 - Remaining plan slices are still pending.
 
 ## Accepted Tasks

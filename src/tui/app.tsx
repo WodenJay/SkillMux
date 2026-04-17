@@ -1,5 +1,5 @@
 import { Text, useApp, useInput } from "ink";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   dispatchTuiAction,
   type DispatchTuiActionInput,
@@ -98,9 +98,35 @@ export function App({
   const { exit } = useApp();
   const [state, setState] = useState<TuiState | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const requestSequence = useRef(0);
+  const latestRequest = useRef(0);
+  const activeActionRequest = useRef<number | null>(null);
   const services = useMemo(
     () => ({ ...defaultServices, ...serviceOverrides }),
     [serviceOverrides]
+  );
+
+  const beginRequest = useCallback((): number => {
+    requestSequence.current += 1;
+    latestRequest.current = requestSequence.current;
+
+    return requestSequence.current;
+  }, []);
+
+  const isLatestRequest = useCallback((requestId: number): boolean => {
+    return latestRequest.current === requestId;
+  }, []);
+
+  const startBusyState = useCallback(
+    (baseState: TuiState, action: TuiAction): TuiState =>
+      updateTuiState(
+        updateTuiState(baseState, { type: "set-busy", busy: true }),
+        {
+          type: "set-status",
+          message: action === "scan" ? "scanning..." : "working..."
+        }
+      ),
+    []
   );
 
   useEffect(() => {
@@ -126,17 +152,17 @@ export function App({
   }, [homeDir, platform, services, skillmuxHome]);
 
   const runAction = useCallback(
-    (action: TuiAction, model: DashboardModel) => {
+    (action: TuiAction, model: DashboardModel, baseState?: TuiState) => {
+      if (activeActionRequest.current !== null) {
+        return;
+      }
+
+      const requestId = beginRequest();
+      activeActionRequest.current = requestId;
       setState((current) =>
         current === null
           ? current
-          : updateTuiState(
-              updateTuiState(current, { type: "set-busy", busy: true }),
-              {
-                type: "set-status",
-                message: action === "scan" ? "scanning..." : "working..."
-              }
-            )
+          : startBusyState(baseState ?? current, action)
       );
 
       services
@@ -148,6 +174,10 @@ export function App({
           platform
         })
         .then((result) => {
+          if (!isLatestRequest(requestId)) {
+            return;
+          }
+
           setState((current) =>
             current === null
               ? current
@@ -155,6 +185,10 @@ export function App({
           );
         })
         .catch((error: unknown) => {
+          if (!isLatestRequest(requestId)) {
+            return;
+          }
+
           setState((current) =>
             current === null
               ? current
@@ -166,13 +200,27 @@ export function App({
                   }
                 )
           );
+        })
+        .finally(() => {
+          if (activeActionRequest.current === requestId) {
+            activeActionRequest.current = null;
+          }
         });
     },
-    [homeDir, platform, services, skillmuxHome]
+    [
+      beginRequest,
+      homeDir,
+      isLatestRequest,
+      platform,
+      services,
+      skillmuxHome,
+      startBusyState
+    ]
   );
 
   const reloadAgent = useCallback(
     (agentId: string) => {
+      const requestId = beginRequest();
       setState((current) =>
         current === null
           ? current
@@ -185,11 +233,19 @@ export function App({
       services
         .loadDashboardState(loadOptions({ homeDir, skillmuxHome, platform }, agentId))
         .then((model) => {
+          if (!isLatestRequest(requestId)) {
+            return;
+          }
+
           setState((current) =>
             current === null ? current : replaceStateModel(current, model, null)
           );
         })
         .catch((error: unknown) => {
+          if (!isLatestRequest(requestId)) {
+            return;
+          }
+
           setState((current) =>
             current === null
               ? current
@@ -203,7 +259,7 @@ export function App({
           );
         });
     },
-    [homeDir, platform, services, skillmuxHome]
+    [beginRequest, homeDir, isLatestRequest, platform, services, skillmuxHome]
   );
 
   useEffect(() => {
@@ -233,35 +289,14 @@ export function App({
   }, [reloadAgent, state]);
 
   useInput((input, key) => {
-    if ((key.ctrl && input === "c") || input === "q") {
+    if (key.ctrl && input === "c") {
       exit();
       return;
     }
 
     if (state === null) {
-      return;
-    }
-
-    if (state.modal !== null) {
-      if (key.escape) {
-        setState(updateTuiState(state, { type: "close" }));
-        return;
-      }
-
-      if (
-        input.toLocaleLowerCase() === "y" &&
-        state.modal.kind === "confirm-adopt"
-      ) {
-        runAction("adopt", updateTuiState(state, { type: "close" }).model);
-        return;
-      }
-
-      if (
-        input.toLocaleLowerCase() === "y" &&
-        state.modal.kind === "confirm-remove"
-      ) {
-        runAction("remove", updateTuiState(state, { type: "close" }).model);
-        return;
+      if (input === "q") {
+        exit();
       }
 
       return;
@@ -292,6 +327,47 @@ export function App({
         );
       }
 
+      return;
+    }
+
+    if (state.modal !== null) {
+      if (key.escape) {
+        setState(updateTuiState(state, { type: "close" }));
+        return;
+      }
+
+      if (input === "q") {
+        exit();
+        return;
+      }
+
+      if (activeActionRequest.current !== null) {
+        return;
+      }
+
+      if (
+        input.toLocaleLowerCase() === "y" &&
+        state.modal.kind === "confirm-adopt"
+      ) {
+        const closedState = updateTuiState(state, { type: "close" });
+        runAction("adopt", closedState.model, closedState);
+        return;
+      }
+
+      if (
+        input.toLocaleLowerCase() === "y" &&
+        state.modal.kind === "confirm-remove"
+      ) {
+        const closedState = updateTuiState(state, { type: "close" });
+        runAction("remove", closedState.model, closedState);
+        return;
+      }
+
+      return;
+    }
+
+    if (input === "q") {
+      exit();
       return;
     }
 

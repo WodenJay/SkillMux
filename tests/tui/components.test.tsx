@@ -115,6 +115,23 @@ async function settle(): Promise<void> {
   });
 }
 
+type Deferred<T> = {
+  promise: Promise<T>;
+  resolve: (value: T) => void;
+  reject: (error: unknown) => void;
+};
+
+function deferred<T>(): Deferred<T> {
+  let resolve!: (value: T) => void;
+  let reject!: (error: unknown) => void;
+  const promise = new Promise<T>((promiseResolve, promiseReject) => {
+    resolve = promiseResolve;
+    reject = promiseReject;
+  });
+
+  return { promise, resolve, reject };
+}
+
 describe("TUI dashboard components", () => {
   const dashboardRequiresExplicitDimensions = (
     // @ts-expect-error Dashboard must receive terminal dimensions from App.
@@ -331,5 +348,185 @@ describe("App", () => {
     });
     expect(lastFrame()).toContain("Skills for claude");
     expect(lastFrame()).toContain("claude-skill");
+  });
+
+  it("closes adopt confirmation immediately and ignores duplicate y while write is pending", async () => {
+    const pendingAdopt = deferred<{
+      model: DashboardModel;
+      statusMessage: string;
+    }>();
+    const loadDashboardState = vi.fn().mockResolvedValue(
+      model({
+        selectedSkillId: "unmanaged:find-skills"
+      })
+    );
+    const dispatchTuiAction = vi.fn().mockReturnValue(pendingAdopt.promise);
+    const { lastFrame, stdin } = render(
+      <App
+        services={{ loadDashboardState, dispatchTuiAction }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("\t");
+    await settle();
+    stdin.write("a");
+    await settle();
+    expect(lastFrame()).toContain("Adopt find-skills for codex?");
+
+    stdin.write("y");
+    stdin.write("y");
+    await settle();
+
+    expect(dispatchTuiAction).toHaveBeenCalledTimes(1);
+    expect(dispatchTuiAction).toHaveBeenCalledWith(
+      expect.objectContaining({ action: "adopt" })
+    );
+    expect(lastFrame()).toContain("working...");
+    expect(lastFrame()).not.toContain("Adopt find-skills for codex?");
+
+    pendingAdopt.reject(new Error("copy failed"));
+    await settle();
+
+    expect(lastFrame()).toContain("Action failed: copy failed");
+    expect(lastFrame()).toContain("Skills for codex");
+  });
+
+  it("does not let stale earlier agent reload results overwrite the later selection", async () => {
+    const claudeLoad = deferred<DashboardModel>();
+    const geminiLoad = deferred<DashboardModel>();
+    const loadDashboardState = vi
+      .fn()
+      .mockResolvedValueOnce(
+        model({
+          agents: [
+            agent(),
+            agent({ id: "claude", name: "claude" }),
+            agent({ id: "gemini", name: "gemini" })
+          ],
+          selectedAgentId: "codex",
+          selectedSkillId: "using-superpowers",
+          skills: [enabledSkill()]
+        })
+      )
+      .mockReturnValueOnce(claudeLoad.promise)
+      .mockReturnValueOnce(geminiLoad.promise);
+    const { lastFrame, stdin } = render(
+      <App
+        services={{ loadDashboardState }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("j");
+    await settle();
+    stdin.write("j");
+    await settle();
+
+    expect(loadDashboardState).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ selectedAgentId: "claude" })
+    );
+    expect(loadDashboardState).toHaveBeenNthCalledWith(
+      3,
+      expect.objectContaining({ selectedAgentId: "gemini" })
+    );
+
+    geminiLoad.resolve(
+      model({
+        agents: [
+          agent(),
+          agent({ id: "claude", name: "claude" }),
+          agent({ id: "gemini", name: "gemini" })
+        ],
+        selectedAgentId: "gemini",
+        skills: [
+          enabledSkill({
+            id: "gemini-skill",
+            skillId: "gemini-skill",
+            name: "gemini-skill",
+            agentId: "gemini"
+          })
+        ]
+      })
+    );
+    await settle();
+    expect(lastFrame()).toContain("Skills for gemini");
+    expect(lastFrame()).toContain("gemini-skill");
+
+    claudeLoad.resolve(
+      model({
+        agents: [
+          agent(),
+          agent({ id: "claude", name: "claude" }),
+          agent({ id: "gemini", name: "gemini" })
+        ],
+        selectedAgentId: "claude",
+        skills: [
+          enabledSkill({
+            id: "claude-skill",
+            skillId: "claude-skill",
+            name: "claude-skill",
+            agentId: "claude"
+          })
+        ]
+      })
+    );
+    await settle();
+
+    expect(lastFrame()).toContain("Skills for gemini");
+    expect(lastFrame()).toContain("gemini-skill");
+    expect(lastFrame()).not.toContain("claude-skill");
+  });
+
+  it("adds q to the search query instead of quitting search mode", async () => {
+    const loadDashboardState = vi.fn().mockResolvedValue(model());
+    const { lastFrame, stdin } = render(
+      <App
+        services={{ loadDashboardState }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("/");
+    await settle();
+    stdin.write("q");
+    await settle();
+
+    expect(lastFrame()).toContain("/q");
+    expect(lastFrame()).toContain("Last scan: never | issues: 0");
+  });
+
+  it("dispatches the intended toggle action from Space", async () => {
+    const pendingToggle = deferred<{
+      model: DashboardModel;
+      statusMessage: string;
+    }>();
+    const loadDashboardState = vi.fn().mockResolvedValue(model());
+    const dispatchTuiAction = vi.fn().mockReturnValue(pendingToggle.promise);
+    const { stdin } = render(
+      <App
+        services={{ loadDashboardState, dispatchTuiAction }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("\t");
+    await settle();
+    stdin.write(" ");
+    await settle();
+    await settle();
+
+    expect(dispatchTuiAction).toHaveBeenCalledWith(
+      expect.objectContaining({ action: "toggle" })
+    );
   });
 });

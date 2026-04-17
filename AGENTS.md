@@ -76,3 +76,4 @@
 - TUI Task 6 has started in `.worktrees/tui-implementation`; keep implementation scoped to Ink dashboard components, App keyboard handling, and component tests until review and root acceptance.
 - TUI Task 6 worktree implementation is complete with `npm test -- --run tests/tui/components.test.tsx tests/tui/state.test.ts tests/tui/actions.test.ts` and `npm run typecheck` passing; it is not root-accepted yet.
 - TUI Task 6 spec review found localized issues in modal footer shortcuts, Dashboard terminal dimension ownership, and busy status text; fixes are applied in the worktree pending verification/review.
+- TUI Task 6 code-quality review found duplicate confirmed write and async ordering issues in `App`; fixes are applied in the worktree pending verification/review.
