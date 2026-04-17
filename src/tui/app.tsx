@@ -371,6 +371,10 @@ export function App({
       return;
     }
 
+    if (activeActionRequest.current !== null) {
+      return;
+    }
+
     if (key.tab) {
       setState(
         updateTuiState(state, {

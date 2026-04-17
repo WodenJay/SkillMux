@@ -529,4 +529,61 @@ describe("App", () => {
       expect.objectContaining({ action: "toggle" })
     );
   });
+
+  it("blocks agent navigation reloads while a write action is pending", async () => {
+    const pendingToggle = deferred<{
+      model: DashboardModel;
+      statusMessage: string;
+    }>();
+    const baseModel = model({
+      agents: [agent(), agent({ id: "claude", name: "claude" })],
+      selectedAgentId: "codex",
+      selectedSkillId: "using-superpowers",
+      skills: [enabledSkill()]
+    });
+    const loadDashboardState = vi.fn().mockResolvedValue(baseModel);
+    const dispatchTuiAction = vi.fn().mockReturnValue(pendingToggle.promise);
+    const { lastFrame, stdin } = render(
+      <App
+        services={{ loadDashboardState, dispatchTuiAction }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("\t");
+    await settle();
+    stdin.write(" ");
+    await settle();
+    await settle();
+
+    expect(dispatchTuiAction).toHaveBeenCalledTimes(1);
+    expect(lastFrame()).toContain("Skills for codex");
+    expect(lastFrame()).not.toContain("[Space]toggle");
+
+    stdin.write("\t");
+    await settle();
+    stdin.write("\t");
+    await settle();
+    stdin.write("j");
+    await settle();
+    await settle();
+
+    expect(loadDashboardState).toHaveBeenCalledTimes(1);
+    expect(lastFrame()).toContain("Skills for codex");
+    expect(lastFrame()).not.toContain("Skills for claude");
+    expect(lastFrame()).not.toContain("[Space]toggle");
+
+    pendingToggle.resolve({
+      model: baseModel,
+      statusMessage: "Disabled using-superpowers"
+    });
+    await settle();
+
+    expect(loadDashboardState).toHaveBeenCalledTimes(1);
+    expect(lastFrame()).toContain("Disabled using-superpowers");
+    expect(lastFrame()).toContain("Skills for codex");
+    expect(lastFrame()).toContain("[Space]toggle");
+  });
 });

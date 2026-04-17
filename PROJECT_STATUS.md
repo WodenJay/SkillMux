@@ -252,6 +252,9 @@ Task 10 passed fresh in the root repo with:
   - `npx skills` is responsible for fetching and installing skills from remote sources
   - SkillMux is responsible for scanning, adopting, enabling, disabling, listing, and diagnosing locally present skills
   - future integration work should improve the handoff between those two tools, not replace `npx skills`
+- TUI Task 6 code-quality re-review follow-up is applied in the active worktree:
+  - App normal dashboard input is blocked while a mutating action request is active, preventing agent reloads from clearing busy state before writes finish
+  - regression coverage verifies a pending Space/toggle action cannot trigger another selected-agent reload through navigation
 - next approved design focus is CLI lifecycle closure in this order:
 - implementation planning for that phase is now complete
   - `remove skill`

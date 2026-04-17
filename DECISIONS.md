@@ -309,3 +309,9 @@ Record key product and implementation decisions so later sessions do not lose th
 - `skillmux@0.1.2` was published to npm on 2026-04-16 after explicit user approval.
 - The first publish attempt failed before login with npm auth errors; the successful publish used a temporary npm userconfig and deleted it after publish.
 - npm registry verification after publish returned `0.1.2`.
+
+### TUI Task 6 App input gating
+
+- While an App-level mutating action request is active, normal dashboard inputs that can navigate, search, open actions, or reload agents are ignored.
+- `Ctrl+C` remains a global exit route, and `q` still exits from normal or modal state during an active action.
+- This conservative Task 6 behavior prevents an agent reload from becoming the latest async request and clearing busy state while the original filesystem write is still running.
