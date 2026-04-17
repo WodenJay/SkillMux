@@ -66,6 +66,7 @@ Record key product and implementation decisions so later sessions do not lose th
 - `DashboardModel.skills` remains current-agent-only. Agent navigation or agent search changes `model.selectedAgentId` and records `pendingAgentId`; Task 6 must consume that intent and reload dashboard state for the selected agent.
 - When no agent is selected, visible skills are empty. The reducer must not expose stale current-agent rows as if they were global skills.
 - Task 5 worktree acceptance required spec re-review, code-quality re-review, `git diff --check`, full tests, typecheck, and build before root sync.
+- Task 5 root acceptance required fresh root verification after sync with `git diff --check`, `npm test`, `npm run typecheck`, and `npm run build`.
 
 ## 2026-04-12
 

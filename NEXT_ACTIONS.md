@@ -111,8 +111,8 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Complete TUI implementation Task 5 in the worktree: pure reducer, navigation, search, modals, action availability, and pending intents
 - [x] Run TUI Task 5 through spec review, spec fixes, code-quality review, quality fixes, and re-review
 - [x] Complete TUI Task 5 worktree verification: `git diff --check`, `npm test`, `npm run typecheck`, `npm run build`
-- [ ] Sync TUI Task 5 accepted code back to the root repo
-- [ ] Complete fresh root verification after TUI Task 5 sync
+- [x] Sync TUI Task 5 accepted code back to the root repo
+- [x] Complete fresh root verification after TUI Task 5 sync
 - [ ] Start TUI implementation Task 6 from the approved plan
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
 - [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting

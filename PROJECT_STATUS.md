@@ -40,8 +40,8 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - Task 4 is accepted in the root repo after sync and fresh root verification.
 - TUI Task 4 accepted root commit: `d443df2`.
 - Task 4 scope: row-driven TUI action dispatcher for toggle, adopt, remove, scan, command-output status text, reloads, and failure preservation.
-- Task 5 is accepted in the active TUI worktree after implementation, spec re-review, code-quality re-review, full worktree tests, typecheck, build, and diff check.
-- TUI Task 5 accepted worktree code commit: `871c027`.
+- Task 5 is accepted in the root repo after implementation, spec re-review, code-quality re-review, root sync, full root tests, typecheck, build, and diff check.
+- TUI Task 5 accepted root commit: `5f8e2f4`.
 - Task 5 scope: pure TUI reducer state, focus/navigation/search behavior, help/adopt/remove modal state, action availability selectors, pending action intent, and pending agent selection intent for Task 6 reload wiring.
 - Remaining plan slices are still pending.
 
@@ -92,6 +92,7 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - `9953695` `docs: record tui task 2 acceptance`
 - `0fd9422` `docs: record tui task 3 acceptance`
 - `d443df2` `docs: record tui task 4 acceptance`
+- `5f8e2f4` `docs: record tui task 5 acceptance`
 
 ## Current Product Direction
 
