@@ -27,6 +27,7 @@ export type TuiState = {
   modal: TuiModal | null;
   busy: boolean;
   pendingAction: TuiAction | null;
+  pendingAgentId: string | null;
 };
 
 export type TuiStateEvent =
@@ -163,9 +164,11 @@ function stateWithAgentCursor(state: TuiState, cursor: number): TuiState {
   const agentCursor = clampCursor(cursor, visibleAgents.length);
   const selectedAgent = visibleAgents[agentCursor] ?? null;
   const selectedSkill = selectedAgentSkill(state.model.skills, selectedAgent?.id ?? null);
+  const previousAgentId = state.model.selectedAgentId;
+  const selectedAgentId = selectedAgent?.id ?? null;
   const model = {
     ...state.model,
-    selectedAgentId: selectedAgent?.id ?? null,
+    selectedAgentId,
     selectedSkillId: selectedSkill?.id ?? null
   };
   const skillCursor =
@@ -182,7 +185,11 @@ function stateWithAgentCursor(state: TuiState, cursor: number): TuiState {
     ...state,
     model,
     agentCursor,
-    skillCursor
+    skillCursor,
+    pendingAgentId:
+      selectedAgentId !== null && selectedAgentId !== previousAgentId
+        ? selectedAgentId
+        : state.pendingAgentId
   };
 }
 
@@ -269,7 +276,8 @@ export function getSelectedSkill(state: TuiState): TuiSkillRow | null {
 
 export function getAvailableActions(state: TuiState): TuiAvailableActions {
   const selectedSkill = getSelectedSkill(state);
-  const hasFocusedSkill = state.focus === "skills";
+  const canAcceptActions = state.modal === null && !state.busy;
+  const hasFocusedSkill = canAcceptActions && state.focus === "skills";
 
   return {
     toggle:
@@ -277,8 +285,8 @@ export function getAvailableActions(state: TuiState): TuiAvailableActions {
       (selectedSkill?.kind === "enabled" || selectedSkill?.kind === "disabled"),
     adopt: hasFocusedSkill && selectedSkill?.kind === "unmanaged",
     remove: hasFocusedSkill && selectedSkill?.kind === "disabled",
-    scan: true,
-    help: true
+    scan: canAcceptActions,
+    help: canAcceptActions
   };
 }
 
@@ -295,6 +303,19 @@ export function consumeActionIntent(state: TuiState): {
   };
 }
 
+export function consumeAgentSelectionIntent(state: TuiState): {
+  state: TuiState;
+  agentId: string | null;
+} {
+  return {
+    state: {
+      ...state,
+      pendingAgentId: null
+    },
+    agentId: state.pendingAgentId
+  };
+}
+
 export function createInitialTuiState(model: DashboardModel): TuiState {
   const state: TuiState = {
     model,
@@ -305,7 +326,8 @@ export function createInitialTuiState(model: DashboardModel): TuiState {
     statusMessage: null,
     modal: null,
     busy: false,
-    pendingAction: null
+    pendingAction: null,
+    pendingAgentId: null
   };
 
   return {
@@ -341,6 +363,35 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
 
     if (isModalBackgroundEvent(event)) {
       return state;
+    }
+  }
+
+  if (state.busy) {
+    if (event.type === "set-busy") {
+      return {
+        ...state,
+        busy: event.busy
+      };
+    }
+
+    if (event.type === "set-status") {
+      return {
+        ...state,
+        statusMessage: event.message
+      };
+    }
+
+    if (
+      event.type === "request-toggle" ||
+      event.type === "request-adopt" ||
+      event.type === "request-remove" ||
+      event.type === "request-scan" ||
+      event.type === "open-help"
+    ) {
+      return {
+        ...state,
+        pendingAction: null
+      };
     }
   }
 

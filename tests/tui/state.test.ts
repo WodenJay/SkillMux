@@ -9,6 +9,7 @@ import type {
   TuiUnmanagedSkillRow
 } from "../../src/tui/dashboard-model";
 import {
+  consumeAgentSelectionIntent,
   createInitialTuiState,
   getAvailableActions,
   getSelectedSkill,
@@ -233,17 +234,12 @@ describe("TUI state reducer", () => {
     ).toMatchObject({ toggle: false, remove: false, adopt: false });
   });
 
-  it("updates selected model row ids while navigating visible rows", () => {
+  it("records an agent selection intent when navigation selects another agent", () => {
     const state = createInitialTuiState(
       model({
         agents: [agent("codex"), agent("claude")],
         skills: [
-          enabledSkill({ id: "codex-skill", skillId: "codex-skill", agentId: "codex" }),
-          enabledSkill({
-            id: "claude-skill",
-            skillId: "claude-skill",
-            agentId: "claude"
-          })
+          enabledSkill({ id: "codex-skill", skillId: "codex-skill", agentId: "codex" })
         ],
         selectedAgentId: "codex",
         selectedSkillId: "codex-skill"
@@ -251,15 +247,14 @@ describe("TUI state reducer", () => {
     );
 
     const nextAgent = updateTuiState(state, { type: "next-row" });
-    const skillsFocused = updateTuiState(nextAgent, { type: "focus-next" });
-    const nextSkill = updateTuiState(skillsFocused, { type: "next-row" });
+    const consumed = consumeAgentSelectionIntent(nextAgent);
 
     expect(nextAgent.agentCursor).toBe(1);
     expect(nextAgent.model.selectedAgentId).toBe("claude");
-    expect(nextAgent.model.selectedSkillId).toBe("claude-skill");
-    expect(nextSkill.skillCursor).toBe(0);
-    expect(nextSkill.model.selectedSkillId).toBe("claude-skill");
-    expect(getSelectedSkill(nextSkill)?.id).toBe("claude-skill");
+    expect(nextAgent.model.selectedSkillId).toBeNull();
+    expect(nextAgent.pendingAgentId).toBe("claude");
+    expect(consumed.agentId).toBe("claude");
+    expect(consumed.state.pendingAgentId).toBeNull();
   });
 
   it("sets pending toggle action only for managed skill rows", () => {
@@ -324,6 +319,49 @@ describe("TUI state reducer", () => {
     expect(updateTuiState(withModal, { type: "close" }).modal).toBeNull();
   });
 
+  it("suppresses available actions while a modal is open or work is busy", () => {
+    const skillsFocused = updateTuiState(
+      createInitialTuiState(model({ selectedSkillId: "paper-polish" })),
+      { type: "focus-next" }
+    );
+    const withModal = updateTuiState(skillsFocused, { type: "open-help" });
+    const busy = updateTuiState(skillsFocused, { type: "set-busy", busy: true });
+
+    expect(getAvailableActions(skillsFocused)).toMatchObject({
+      toggle: true,
+      remove: true,
+      scan: true,
+      help: true
+    });
+    expect(getAvailableActions(withModal)).toEqual({
+      toggle: false,
+      adopt: false,
+      remove: false,
+      scan: false,
+      help: false
+    });
+    expect(getAvailableActions(busy)).toEqual({
+      toggle: false,
+      adopt: false,
+      remove: false,
+      scan: false,
+      help: false
+    });
+  });
+
+  it("refuses pending and modal-opening actions while busy", () => {
+    const skillsFocused = updateTuiState(
+      createInitialTuiState(model({ selectedSkillId: "paper-polish" })),
+      { type: "focus-next" }
+    );
+    const busy = updateTuiState(skillsFocused, { type: "set-busy", busy: true });
+
+    expect(updateTuiState(busy, { type: "request-toggle" }).pendingAction).toBeNull();
+    expect(updateTuiState(busy, { type: "request-remove" }).modal).toBeNull();
+    expect(updateTuiState(busy, { type: "request-scan" }).pendingAction).toBeNull();
+    expect(updateTuiState(busy, { type: "open-help" }).modal).toBeNull();
+  });
+
   it("gates footer and requested row actions to skills focus", () => {
     const agentsFocused = createInitialTuiState(
       model({ selectedSkillId: "paper-polish" })
@@ -367,6 +405,7 @@ describe("TUI state reducer", () => {
 
     expect(filteredAgents.model.selectedAgentId).toBe("claude");
     expect(filteredAgents.model.selectedSkillId).toBeNull();
+    expect(filteredAgents.pendingAgentId).toBe("claude");
     expect(filteredSkills.model.selectedSkillId).toBe("paper-polish");
     expect(getSelectedSkill(filteredSkills)?.id).toBe("paper-polish");
     expect(getAvailableActions(filteredSkills)).toMatchObject({
