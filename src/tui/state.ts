@@ -215,6 +215,25 @@ function moveCursor(state: TuiState, cursor: number): TuiState {
   return state;
 }
 
+function isModalBackgroundEvent(event: TuiStateEvent): boolean {
+  return (
+    event.type === "focus-next" ||
+    event.type === "focus-previous" ||
+    event.type === "next-row" ||
+    event.type === "previous-row" ||
+    event.type === "first-row" ||
+    event.type === "last-row" ||
+    event.type === "open-search" ||
+    event.type === "search-query-changed" ||
+    event.type === "open-help" ||
+    event.type === "request-adopt" ||
+    event.type === "request-remove" ||
+    event.type === "request-toggle" ||
+    event.type === "request-scan" ||
+    event.type === "clear-pending-action"
+  );
+}
+
 export function getVisibleAgents(state: TuiState): TuiAgentRow[] {
   if (state.search?.panel !== "agents") {
     return state.model.agents;
@@ -250,12 +269,14 @@ export function getSelectedSkill(state: TuiState): TuiSkillRow | null {
 
 export function getAvailableActions(state: TuiState): TuiAvailableActions {
   const selectedSkill = getSelectedSkill(state);
+  const hasFocusedSkill = state.focus === "skills";
 
   return {
     toggle:
-      selectedSkill?.kind === "enabled" || selectedSkill?.kind === "disabled",
-    adopt: selectedSkill?.kind === "unmanaged",
-    remove: selectedSkill?.kind === "disabled",
+      hasFocusedSkill &&
+      (selectedSkill?.kind === "enabled" || selectedSkill?.kind === "disabled"),
+    adopt: hasFocusedSkill && selectedSkill?.kind === "unmanaged",
+    remove: hasFocusedSkill && selectedSkill?.kind === "disabled",
     scan: true,
     help: true
   };
@@ -295,6 +316,34 @@ export function createInitialTuiState(model: DashboardModel): TuiState {
 }
 
 export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState {
+  if (state.modal !== null) {
+    if (event.type === "close") {
+      return {
+        ...state,
+        modal: null,
+        pendingAction: null
+      };
+    }
+
+    if (event.type === "set-busy") {
+      return {
+        ...state,
+        busy: event.busy
+      };
+    }
+
+    if (event.type === "set-status") {
+      return {
+        ...state,
+        statusMessage: event.message
+      };
+    }
+
+    if (isModalBackgroundEvent(event)) {
+      return state;
+    }
+  }
+
   const readyState = clearTransientIntent(state);
 
   if (event.type === "focus-next") {
@@ -373,14 +422,8 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
         : getVisibleSkills(searchedState).length;
 
     return searchedState.search.panel === "agents"
-      ? {
-          ...searchedState,
-          agentCursor: clampCursor(searchedState.agentCursor, rowCount)
-        }
-      : {
-          ...searchedState,
-          skillCursor: clampCursor(searchedState.skillCursor, rowCount)
-        };
+      ? stateWithAgentCursor(searchedState, clampCursor(searchedState.agentCursor, rowCount))
+      : stateWithSkillCursor(searchedState, clampCursor(searchedState.skillCursor, rowCount));
   }
 
   if (event.type === "close") {
@@ -409,6 +452,10 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
   }
 
   if (event.type === "request-adopt") {
+    if (state.focus !== "skills") {
+      return readyState;
+    }
+
     const selectedSkill = getSelectedSkill(state);
 
     if (selectedSkill?.kind !== "unmanaged") {
@@ -429,6 +476,10 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
   }
 
   if (event.type === "request-remove") {
+    if (state.focus !== "skills") {
+      return readyState;
+    }
+
     const selectedSkill = getSelectedSkill(state);
 
     if (selectedSkill?.kind !== "disabled") {
@@ -451,6 +502,10 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
   }
 
   if (event.type === "request-toggle") {
+    if (state.focus !== "skills") {
+      return readyState;
+    }
+
     const selectedSkill = getSelectedSkill(state);
 
     if (selectedSkill?.kind !== "enabled" && selectedSkill?.kind !== "disabled") {

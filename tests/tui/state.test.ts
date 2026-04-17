@@ -142,8 +142,9 @@ describe("TUI state reducer", () => {
   });
 
   it("opens remove confirmation only for disabled managed rows", () => {
-    const disabled = createInitialTuiState(
-      model({ selectedSkillId: "paper-polish" })
+    const disabled = updateTuiState(
+      createInitialTuiState(model({ selectedSkillId: "paper-polish" })),
+      { type: "focus-next" }
     );
     const enabled = createInitialTuiState(
       model({ selectedSkillId: "terminal-ui" })
@@ -174,7 +175,7 @@ describe("TUI state reducer", () => {
     expect(getVisibleAgents(filteredAgents).map((row) => row.id)).toEqual([
       "claude"
     ]);
-    expect(getVisibleSkills(filteredAgents)).toHaveLength(4);
+    expect(getVisibleSkills(filteredAgents)).toHaveLength(0);
     expect(skillSearch.search).toEqual({ panel: "skills", query: "" });
     expect(getVisibleSkills(filteredSkills).map((row) => row.id)).toEqual([
       "paper-polish"
@@ -201,24 +202,33 @@ describe("TUI state reducer", () => {
   });
 
   it("derives footer action availability from selected row state", () => {
-    const baseModel = model();
+    const baseState = updateTuiState(createInitialTuiState(model()), {
+      type: "focus-next"
+    });
 
-    expect(
-      getAvailableActions(createInitialTuiState(baseModel)).toggle
-    ).toBe(true);
+    expect(getAvailableActions(baseState).toggle).toBe(true);
     expect(
       getAvailableActions(
-        createInitialTuiState(model({ selectedSkillId: "paper-polish" }))
+        updateTuiState(
+          createInitialTuiState(model({ selectedSkillId: "paper-polish" })),
+          { type: "focus-next" }
+        )
       )
     ).toMatchObject({ toggle: true, remove: true, adopt: false });
     expect(
       getAvailableActions(
-        createInitialTuiState(model({ selectedSkillId: "unmanaged:find-skills" }))
+        updateTuiState(
+          createInitialTuiState(model({ selectedSkillId: "unmanaged:find-skills" })),
+          { type: "focus-next" }
+        )
       )
     ).toMatchObject({ toggle: false, remove: false, adopt: true });
     expect(
       getAvailableActions(
-        createInitialTuiState(model({ selectedSkillId: "issue:codex:broken" }))
+        updateTuiState(
+          createInitialTuiState(model({ selectedSkillId: "issue:codex:broken" })),
+          { type: "focus-next" }
+        )
       )
     ).toMatchObject({ toggle: false, remove: false, adopt: false });
   });
@@ -253,9 +263,13 @@ describe("TUI state reducer", () => {
   });
 
   it("sets pending toggle action only for managed skill rows", () => {
-    const enabled = createInitialTuiState(model({ selectedSkillId: "terminal-ui" }));
-    const unmanaged = createInitialTuiState(
-      model({ selectedSkillId: "unmanaged:find-skills" })
+    const enabled = updateTuiState(
+      createInitialTuiState(model({ selectedSkillId: "terminal-ui" })),
+      { type: "focus-next" }
+    );
+    const unmanaged = updateTuiState(
+      createInitialTuiState(model({ selectedSkillId: "unmanaged:find-skills" })),
+      { type: "focus-next" }
     );
 
     expect(updateTuiState(enabled, { type: "request-toggle" }).pendingAction).toBe(
@@ -267,11 +281,13 @@ describe("TUI state reducer", () => {
   });
 
   it("opens adopt confirmation only for unmanaged rows", () => {
-    const unmanaged = createInitialTuiState(
-      model({ selectedSkillId: "unmanaged:find-skills" })
+    const unmanaged = updateTuiState(
+      createInitialTuiState(model({ selectedSkillId: "unmanaged:find-skills" })),
+      { type: "focus-next" }
     );
-    const disabled = createInitialTuiState(
-      model({ selectedSkillId: "paper-polish" })
+    const disabled = updateTuiState(
+      createInitialTuiState(model({ selectedSkillId: "paper-polish" })),
+      { type: "focus-next" }
     );
 
     expect(updateTuiState(unmanaged, { type: "request-adopt" }).modal).toEqual({
@@ -280,5 +296,82 @@ describe("TUI state reducer", () => {
       agentId: "codex"
     });
     expect(updateTuiState(disabled, { type: "request-adopt" }).modal).toBeNull();
+  });
+
+  it("traps dashboard events while a modal is open but allows close and status updates", () => {
+    const withModal = updateTuiState(createInitialTuiState(model()), {
+      type: "open-help"
+    });
+    const moved = updateTuiState(withModal, { type: "focus-next" });
+    const searched = updateTuiState(withModal, { type: "open-search" });
+    const requested = updateTuiState(withModal, { type: "request-scan" });
+    const busy = updateTuiState(withModal, { type: "set-busy", busy: true });
+    const status = updateTuiState(withModal, {
+      type: "set-status",
+      message: "Scanning"
+    });
+
+    expect(moved).toMatchObject({
+      focus: "agents",
+      agentCursor: 0,
+      skillCursor: 0,
+      modal: { kind: "help" }
+    });
+    expect(searched.search).toBeNull();
+    expect(requested.pendingAction).toBeNull();
+    expect(busy.busy).toBe(true);
+    expect(status.statusMessage).toBe("Scanning");
+    expect(updateTuiState(withModal, { type: "close" }).modal).toBeNull();
+  });
+
+  it("gates footer and requested row actions to skills focus", () => {
+    const agentsFocused = createInitialTuiState(
+      model({ selectedSkillId: "paper-polish" })
+    );
+    const skillsFocused = updateTuiState(agentsFocused, { type: "focus-next" });
+
+    expect(getAvailableActions(agentsFocused)).toMatchObject({
+      toggle: false,
+      adopt: false,
+      remove: false
+    });
+    expect(getAvailableActions(skillsFocused)).toMatchObject({
+      toggle: true,
+      remove: true
+    });
+    expect(
+      updateTuiState(agentsFocused, { type: "request-toggle" }).pendingAction
+    ).toBeNull();
+    expect(updateTuiState(agentsFocused, { type: "request-remove" }).modal).toBeNull();
+    expect(
+      updateTuiState(skillsFocused, { type: "request-toggle" }).pendingAction
+    ).toBe("toggle");
+  });
+
+  it("tracks selected agent and skill rows when search filtering hides the previous selection", () => {
+    const searchAgents = updateTuiState(createInitialTuiState(model()), {
+      type: "open-search"
+    });
+    const filteredAgents = updateTuiState(searchAgents, {
+      type: "search-query-changed",
+      query: "cla"
+    });
+    const skillsFocused = updateTuiState(createInitialTuiState(model()), {
+      type: "focus-next"
+    });
+    const searchSkills = updateTuiState(skillsFocused, { type: "open-search" });
+    const filteredSkills = updateTuiState(searchSkills, {
+      type: "search-query-changed",
+      query: "paper"
+    });
+
+    expect(filteredAgents.model.selectedAgentId).toBe("claude");
+    expect(filteredAgents.model.selectedSkillId).toBeNull();
+    expect(filteredSkills.model.selectedSkillId).toBe("paper-polish");
+    expect(getSelectedSkill(filteredSkills)?.id).toBe("paper-polish");
+    expect(getAvailableActions(filteredSkills)).toMatchObject({
+      toggle: true,
+      remove: true
+    });
   });
 });
