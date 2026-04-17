@@ -73,6 +73,9 @@ Record key product and implementation decisions so later sessions do not lose th
 - `Dashboard` owns the minimum terminal fallback and renders exactly `Terminal too small. Resize to at least 80x24.` when either dimension is below the supported size.
 - `Footer` derives shortcut visibility from `getAvailableActions`; components do not duplicate the reducer's availability rules.
 - `App` uses injected services for tests, loads through `loadDashboardState` on mount, and dispatches only confirmed or reducer-intended actions through `dispatchTuiAction`.
+- `App`, not `Dashboard`, owns terminal dimension defaults from `process.stdout`; `Dashboard` receives explicit dimensions and remains presentational.
+- Modal rendering hides the normal footer shortcut list because modal input only accepts `y`, `Esc`, and quit handling; confirmation dialogs keep their own `[y] confirm   [Esc] cancel` prompt.
+- `StatusLine` shows explicit busy messages such as `working...` or `loading agent...`; it falls back to `scanning...` only when busy has no status message.
 - When no agent is selected, visible skills are empty. The reducer must not expose stale current-agent rows as if they were global skills.
 - Task 5 worktree acceptance required spec re-review, code-quality re-review, `git diff --check`, full tests, typecheck, and build before root sync.
 - Task 5 root acceptance required fresh root verification after sync with `git diff --check`, `npm test`, `npm run typecheck`, and `npm run build`.

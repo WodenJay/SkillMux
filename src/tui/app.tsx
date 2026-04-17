@@ -370,8 +370,8 @@ export function App({
   return (
     <Dashboard
       state={state}
-      width={terminalWidth}
-      height={terminalHeight}
+      width={terminalWidth ?? process.stdout.columns ?? 80}
+      height={terminalHeight ?? process.stdout.rows ?? 24}
     />
   );
 }

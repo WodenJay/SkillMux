@@ -7,6 +7,7 @@ import { Dashboard } from "../../src/tui/components/Dashboard";
 import { ConfirmDialog } from "../../src/tui/components/ConfirmDialog";
 import { DetailPane } from "../../src/tui/components/DetailPane";
 import { HelpOverlay } from "../../src/tui/components/HelpOverlay";
+import { StatusLine } from "../../src/tui/components/StatusLine";
 import type {
   DashboardModel,
   TuiAgentRow,
@@ -115,6 +116,13 @@ async function settle(): Promise<void> {
 }
 
 describe("TUI dashboard components", () => {
+  const dashboardRequiresExplicitDimensions = (
+    // @ts-expect-error Dashboard must receive terminal dimensions from App.
+    <Dashboard state={state()} />
+  );
+
+  void dashboardRequiresExplicitDimensions;
+
   it("renders agents, skills for codex, detail, a skill marker/name, and available toggle shortcut", () => {
     const { lastFrame } = render(
       <Dashboard state={state()} width={80} height={24} />
@@ -165,6 +173,48 @@ describe("TUI dashboard components", () => {
 
     expect(frame).toContain("Remove terminal-ui from SkillMux?");
     expect(frame).toContain("[y] confirm   [Esc] cancel");
+  });
+
+  it("does not show normal footer shortcuts while a modal is active", () => {
+    const withModal = updateTuiState(
+      state({ selectedSkillId: "terminal-ui" }),
+      { type: "request-remove" }
+    );
+    const { lastFrame } = render(
+      <Dashboard state={withModal} width={80} height={24} />
+    );
+
+    const frame = lastFrame();
+
+    expect(frame).toContain("[y] confirm   [Esc] cancel");
+    expect(frame).not.toContain("[Tab]focus");
+    expect(frame).not.toContain("[Space]toggle");
+  });
+
+  it("uses explicit busy status text before falling back to scanning text", () => {
+    const working = render(
+      <StatusLine
+        busy
+        statusMessage="working..."
+        lastScanAt={null}
+        issueCount={0}
+      />
+    );
+    const loading = render(
+      <StatusLine
+        busy
+        statusMessage="loading agent..."
+        lastScanAt={null}
+        issueCount={0}
+      />
+    );
+    const fallback = render(
+      <StatusLine busy statusMessage={null} lastScanAt={null} issueCount={0} />
+    );
+
+    expect(working.lastFrame()).toContain("working...");
+    expect(loading.lastFrame()).toContain("loading agent...");
+    expect(fallback.lastFrame()).toContain("scanning...");
   });
 
   it("renders the exact too-small terminal fallback below 80x24", () => {
@@ -218,6 +268,20 @@ describe("App", () => {
     });
     expect(lastFrame()).toContain("Skills for codex");
     expect(lastFrame()).toContain("using-superpowers");
+  });
+
+  it("supplies default terminal dimensions to the dashboard", async () => {
+    const loadDashboardState = vi.fn().mockResolvedValue(model());
+    const { lastFrame } = render(
+      <App services={{ loadDashboardState }} />
+    );
+
+    await settle();
+
+    expect(lastFrame()).toContain("Skills for codex");
+    expect(lastFrame()).not.toBe(
+      "Terminal too small. Resize to at least 80x24."
+    );
   });
 
   it("reloads dashboard skills when agent navigation creates a pending agent selection", async () => {

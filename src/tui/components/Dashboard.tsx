@@ -16,8 +16,8 @@ import { StatusLine } from "./StatusLine";
 
 export type DashboardProps = {
   state: TuiState;
-  width?: number;
-  height?: number;
+  width: number;
+  height: number;
 };
 
 const minimumWidth = 80;
@@ -25,8 +25,8 @@ const minimumHeight = 24;
 
 export function Dashboard({
   state,
-  width = process.stdout.columns ?? minimumWidth,
-  height = process.stdout.rows ?? minimumHeight
+  width,
+  height
 }: DashboardProps) {
   if (width < minimumWidth || height < minimumHeight) {
     return <Text>Terminal too small. Resize to at least 80x24.</Text>;
@@ -71,7 +71,11 @@ export function Dashboard({
       state.modal?.kind === "confirm-remove" ? (
         <ConfirmDialog modal={state.modal} />
       ) : null}
-      <Footer actions={actions} search={state.search} />
+      {state.modal === null ? (
+        <Footer actions={actions} search={state.search} />
+      ) : (
+        <Box height={3} />
+      )}
     </Box>
   );
 }

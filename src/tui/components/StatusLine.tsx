@@ -15,13 +15,13 @@ export function StatusLine({
 }: StatusLineProps) {
   const message =
     statusMessage ??
-    `Last scan: ${lastScanAt ?? "never"} | issues: ${issueCount}`;
+    (busy
+      ? "scanning..."
+      : `Last scan: ${lastScanAt ?? "never"} | issues: ${issueCount}`);
 
   return (
     <Box height={1}>
-      <Text color={busy ? "cyan" : undefined}>
-        {busy ? "scanning..." : message}
-      </Text>
+      <Text color={busy ? "cyan" : undefined}>{message}</Text>
     </Box>
   );
 }

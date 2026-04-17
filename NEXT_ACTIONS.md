@@ -116,6 +116,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Start TUI implementation Task 6 from the approved plan
 - [x] Complete TUI implementation Task 6 in the worktree: Ink dashboard components, App keyboard wiring, and component tests
 - [ ] Run TUI Task 6 through spec review, code-quality review, fixes, and re-review
+- [x] Fix TUI Task 6 spec review findings: modal footer shortcuts, Dashboard dimension props, and busy status text
 - [ ] Complete TUI Task 6 worktree verification: `git diff --check`, targeted tests, `npm test`, `npm run typecheck`, `npm run build`
 - [ ] Sync TUI Task 6 accepted code back to the root repo
 - [ ] Complete fresh root verification after TUI Task 6 sync
