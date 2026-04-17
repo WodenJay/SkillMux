@@ -871,7 +871,7 @@ git commit -m "feat: add tui action dispatcher"
 - Create: `src/tui/state.ts`
 - Test: `tests/tui/state.test.ts`
 
-- [ ] **Step 1: Write failing reducer tests**
+- [x] **Step 1: Write failing reducer tests**
 
 Add `tests/tui/state.test.ts`:
 
@@ -921,7 +921,7 @@ describe("tui state", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify the red state**
+- [x] **Step 2: Run tests to verify the red state**
 
 Run:
 
@@ -931,7 +931,7 @@ npm test -- --run tests/tui/state.test.ts
 
 Expected: FAIL because `src/tui/state.ts` does not exist.
 
-- [ ] **Step 3: Implement pure state transitions**
+- [x] **Step 3: Implement pure state transitions**
 
 Create `src/tui/state.ts` with:
 
@@ -968,7 +968,7 @@ Reducer rules:
 - `r` opens remove confirmation only for disabled managed rows
 - `Space` maps to action intent only for managed skill rows
 
-- [ ] **Step 4: Add reducer coverage for search and help**
+- [x] **Step 4: Add reducer coverage for search and help**
 
 Extend `tests/tui/state.test.ts` for:
 
@@ -977,7 +977,7 @@ Extend `tests/tui/state.test.ts` for:
 - `?` opens help
 - footer/action availability changes by selected row state
 
-- [ ] **Step 5: Run targeted tests and commit**
+- [x] **Step 5: Run targeted tests and commit**
 
 Run:
 

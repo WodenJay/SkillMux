@@ -70,4 +70,6 @@
 - TUI Task 3 is accepted in the root repo at commit `0fd9422`; root verification passed with `npm test`, `npm run typecheck`, and `npm run build`.
 - TUI Task 4 is accepted in the root repo at commit `d443df2`; root verification passed with `npm test`, `npm run typecheck`, and `npm run build`.
 - Task 4 adds the row-driven action dispatcher. It resolves `model.selectedSkillId` against `model.skills` before calling lifecycle helpers; do not pass selected row ids directly to command helpers.
-- Next implementation slice after Task 4 root acceptance is TUI Task 5: pure TUI state, navigation, search, and modals.
+- TUI Task 5 is accepted in the active worktree at commit `871c027`; worktree verification passed with `git diff --check`, `npm test`, `npm run typecheck`, and `npm run build`.
+- Task 5 adds pure TUI state, navigation, search, modals, action availability selectors, pending action intent, and pending agent selection intent for the later Ink app.
+- Next implementation slice after Task 5 root acceptance is TUI Task 6: Ink dashboard components and keyboard wiring.
