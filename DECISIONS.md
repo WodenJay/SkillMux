@@ -64,6 +64,15 @@ Record key product and implementation decisions so later sessions do not lose th
 - Confirmation/help modals trap background reducer events. The modal UI in Task 6 should render confirm/cancel behavior separately.
 - `getAvailableActions` is the footer contract. It hides row/global actions while a modal is open or work is busy, so Task 6 should not duplicate availability rules in components.
 - `DashboardModel.skills` remains current-agent-only. Agent navigation or agent search changes `model.selectedAgentId` and records `pendingAgentId`; Task 6 must consume that intent and reload dashboard state for the selected agent.
+
+### TUI Task 6 Ink dashboard
+
+- Task 6 should keep filesystem reads and writes inside `App` services/actions. Presentational components receive state-derived view data and callbacks only.
+- The detail panel should describe the selected row and paths, but footer shortcuts remain the single action list to avoid duplicate action guidance.
+- Agent selection changes must consume the Task 5 pending agent intent and reload dashboard state for that agent, because `DashboardModel.skills` is scoped to the selected agent.
+- `Dashboard` owns the minimum terminal fallback and renders exactly `Terminal too small. Resize to at least 80x24.` when either dimension is below the supported size.
+- `Footer` derives shortcut visibility from `getAvailableActions`; components do not duplicate the reducer's availability rules.
+- `App` uses injected services for tests, loads through `loadDashboardState` on mount, and dispatches only confirmed or reducer-intended actions through `dispatchTuiAction`.
 - When no agent is selected, visible skills are empty. The reducer must not expose stale current-agent rows as if they were global skills.
 - Task 5 worktree acceptance required spec re-review, code-quality re-review, `git diff --check`, full tests, typecheck, and build before root sync.
 - Task 5 root acceptance required fresh root verification after sync with `git diff --check`, `npm test`, `npm run typecheck`, and `npm run build`.

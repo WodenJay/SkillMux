@@ -43,6 +43,9 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - Task 5 is accepted in the root repo after implementation, spec re-review, code-quality re-review, root sync, full root tests, typecheck, build, and diff check.
 - TUI Task 5 accepted root commit: `5f8e2f4`.
 - Task 5 scope: pure TUI reducer state, focus/navigation/search behavior, help/adopt/remove modal state, action availability selectors, pending action intent, and pending agent selection intent for Task 6 reload wiring.
+- TUI Task 6 has started in `.worktrees/tui-implementation`.
+- Task 6 scope: Ink dashboard components, modal/status/footer presentation, and App keyboard wiring over the Task 5 reducer/action intents.
+- Task 6 worktree implementation is complete with targeted component/state/action tests and typecheck passing; spec/code review and root acceptance are still pending.
 - Remaining plan slices are still pending.
 
 ## Accepted Tasks
@@ -69,6 +72,7 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - TUI Task 3: add read-only dashboard model and loader
 - TUI Task 4: add row-driven TUI action dispatcher
 - TUI Task 5: add pure TUI state, navigation, search, modal, and action intent reducer
+- TUI Task 6: render Ink dashboard components and wire App keyboard handling
 
 ## Accepted Root Commits
 

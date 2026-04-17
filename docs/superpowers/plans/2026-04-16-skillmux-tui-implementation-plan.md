@@ -1016,11 +1016,11 @@ git commit -m "feat: add tui state reducer"
 - Create: `src/tui/components/ConfirmDialog.tsx`
 - Test: `tests/tui/components.test.tsx`
 
-- [ ] **Step 1: Load `$terminal-ui` before this task**
+- [x] **Step 1: Load `$terminal-ui` before this task**
 
 Read the terminal UI guidance before writing Ink components. Follow its rules for stable layout, keyboard handling, rendering cost, and terminal compatibility.
 
-- [ ] **Step 2: Write failing component render tests**
+- [x] **Step 2: Write failing component render tests**
 
 Add `tests/tui/components.test.tsx`:
 
@@ -1087,7 +1087,7 @@ describe("Dashboard", () => {
 });
 ```
 
-- [ ] **Step 3: Run tests to verify the red state**
+- [x] **Step 3: Run tests to verify the red state**
 
 Run:
 
@@ -1097,7 +1097,7 @@ npm test -- --run tests/tui/components.test.tsx
 
 Expected: FAIL because components do not exist.
 
-- [ ] **Step 4: Implement presentational components**
+- [x] **Step 4: Implement presentational components**
 
 Component rules:
 
@@ -1111,7 +1111,7 @@ Component rules:
 - help overlay groups Navigation, Actions, Search, and Safety
 - confirmation dialogs show `[y] confirm   [Esc] cancel`
 
-- [ ] **Step 5: Implement `App` keyboard wiring**
+- [x] **Step 5: Implement `App` keyboard wiring**
 
 Create `src/tui/app.tsx`:
 
@@ -1124,7 +1124,7 @@ Create `src/tui/app.tsx`:
 - keep old dashboard content visible during failed actions
 - call `exit()` on `q` and `Ctrl+C`
 
-- [ ] **Step 6: Add component coverage for modal and too-small message**
+- [x] **Step 6: Add component coverage for modal and too-small message**
 
 Extend `tests/tui/components.test.tsx` for:
 
@@ -1134,7 +1134,7 @@ Extend `tests/tui/components.test.tsx` for:
 - too-small terminal fallback
 - no action duplication inside `DetailPane`
 
-- [ ] **Step 7: Run targeted tests and commit**
+- [x] **Step 7: Run targeted tests and commit**
 
 Run:
 

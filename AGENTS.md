@@ -73,3 +73,5 @@
 - TUI Task 5 is accepted in the root repo at commit `5f8e2f4`; root verification passed with `git diff --check`, `npm test`, `npm run typecheck`, and `npm run build`.
 - Task 5 adds pure TUI state, navigation, search, modals, action availability selectors, pending action intent, and pending agent selection intent for the later Ink app.
 - Next implementation slice after Task 5 root acceptance is TUI Task 6: Ink dashboard components and keyboard wiring.
+- TUI Task 6 has started in `.worktrees/tui-implementation`; keep implementation scoped to Ink dashboard components, App keyboard handling, and component tests until review and root acceptance.
+- TUI Task 6 worktree implementation is complete with `npm test -- --run tests/tui/components.test.tsx tests/tui/state.test.ts tests/tui/actions.test.ts` and `npm run typecheck` passing; it is not root-accepted yet.
