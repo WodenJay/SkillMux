@@ -252,10 +252,12 @@ export function getVisibleAgents(state: TuiState): TuiAgentRow[] {
 }
 
 export function getVisibleSkills(state: TuiState): TuiSkillRow[] {
+  if (state.model.selectedAgentId === null) {
+    return [];
+  }
+
   const agentSkills =
-    state.model.selectedAgentId === null
-      ? state.model.skills
-      : state.model.skills.filter((row) => row.agentId === state.model.selectedAgentId);
+    state.model.skills.filter((row) => row.agentId === state.model.selectedAgentId);
 
   if (state.search?.panel !== "skills") {
     return agentSkills;

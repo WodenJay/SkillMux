@@ -413,4 +413,30 @@ describe("TUI state reducer", () => {
       remove: true
     });
   });
+
+  it("hides stale current-agent skills when agent search has no matches", () => {
+    const searchAgents = updateTuiState(createInitialTuiState(model()), {
+      type: "open-search"
+    });
+    const noMatchingAgents = updateTuiState(searchAgents, {
+      type: "search-query-changed",
+      query: "missing-agent"
+    });
+    const skillsFocused = updateTuiState(noMatchingAgents, { type: "focus-next" });
+    const movedSkill = updateTuiState(skillsFocused, { type: "next-row" });
+    const toggled = updateTuiState(movedSkill, { type: "request-toggle" });
+
+    expect(noMatchingAgents.model.selectedAgentId).toBeNull();
+    expect(noMatchingAgents.model.selectedSkillId).toBeNull();
+    expect(getVisibleSkills(noMatchingAgents)).toEqual([]);
+    expect(getVisibleSkills(skillsFocused)).toEqual([]);
+    expect(movedSkill.model.selectedSkillId).toBeNull();
+    expect(getSelectedSkill(movedSkill)).toBeNull();
+    expect(getAvailableActions(movedSkill)).toMatchObject({
+      toggle: false,
+      adopt: false,
+      remove: false
+    });
+    expect(toggled.pendingAction).toBeNull();
+  });
 });
