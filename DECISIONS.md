@@ -316,3 +316,4 @@ Record key product and implementation decisions so later sessions do not lose th
 - `Ctrl+C` remains a global exit route, and `q` still exits from normal or modal state during an active action.
 - This conservative Task 6 behavior prevents an agent reload from becoming the latest async request and clearing busy state while the original filesystem write is still running.
 - Task 6 worktree acceptance required spec re-review, code-quality re-review, `git diff --check`, targeted TUI tests, full `npm test`, `npm run typecheck`, and `npm run build` before root sync.
+- Task 6 was accepted in the root repo at commit `88a5ee2` after fresh root verification with `git diff --check`, `npm test`, `npm run typecheck`, and `npm run build`.

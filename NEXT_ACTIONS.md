@@ -120,8 +120,9 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Fix TUI Task 6 code-quality findings: duplicate confirmed writes, stale async result ordering, and search-mode `q`
 - [x] Fix TUI Task 6 code-quality re-review finding: block dashboard navigation/reload while writes are active
 - [x] Complete TUI Task 6 worktree verification: `git diff --check`, targeted tests, `npm test`, `npm run typecheck`, `npm run build`
-- [ ] Sync TUI Task 6 accepted code back to the root repo
-- [ ] Complete fresh root verification after TUI Task 6 sync
+- [x] Sync TUI Task 6 accepted code back to the root repo
+- [x] Complete fresh root verification after TUI Task 6 sync
+- [ ] Start TUI implementation Task 7 from the approved plan
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
 - [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
 - [x] Add tests and implementation for `skillmux config add-agent`
