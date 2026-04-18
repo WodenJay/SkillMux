@@ -317,3 +317,11 @@ Record key product and implementation decisions so later sessions do not lose th
 - This conservative Task 6 behavior prevents an agent reload from becoming the latest async request and clearing busy state while the original filesystem write is still running.
 - Task 6 worktree acceptance required spec re-review, code-quality re-review, `git diff --check`, targeted TUI tests, full `npm test`, `npm run typecheck`, and `npm run build` before root sync.
 - Task 6 was accepted in the root repo at commit `88a5ee2` after fresh root verification with `git diff --check`, `npm test`, `npm run typecheck`, and `npm run build`.
+- Task 7 launch wiring should stay minimal: `launchTui` renders `<App {...options} />` with only `homeDir` and `skillmuxHome`, and Commander help should exit before any TUI action runs.
+
+### TUI Task 7 launch connection
+
+- `skillmux tui` should keep the command-level interactive terminal guard before Ink starts.
+- The real launcher should be a narrow adapter: render `<App {...options} />` with Ink and await `waitUntilExit()`.
+- CLI help for `skillmux tui --help` must remain non-mutating and must not launch the dashboard; Commander help exits before the action handler.
+- This round prioritizes `gpt-5.4-mini` subagents to conserve quota, with escalation only if review or debugging needs exceed the model.

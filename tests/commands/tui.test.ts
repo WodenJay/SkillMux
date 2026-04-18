@@ -67,4 +67,29 @@ describe("tui command", () => {
     });
     expect(stderr.write).not.toHaveBeenCalled();
   });
+
+  it("shows help without running the tui action", async () => {
+    const cli = buildCli();
+    cli.exitOverride();
+    const stdoutChunks: string[] = [];
+    const originalWrite = process.stdout.write;
+    process.stdout.write = ((chunk: string | Uint8Array) => {
+      stdoutChunks.push(
+        typeof chunk === "string" ? chunk : Buffer.from(chunk).toString("utf8")
+      );
+      return true;
+    }) as typeof process.stdout.write;
+
+    try {
+      await expect(
+        cli.parseAsync(["node", "skillmux", "tui", "--help"], { from: "node" })
+      ).rejects.toThrow(/process\.exit unexpectedly called with "0"/);
+    } finally {
+      process.stdout.write = originalWrite;
+    }
+
+    expect(stdoutChunks.join("")).toContain(
+      "Open the interactive SkillMux dashboard"
+    );
+  });
 });

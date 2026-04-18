@@ -48,6 +48,8 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - Task 6 adds Ink dashboard components plus App keyboard handling for navigation, search, help, confirmations, toggles, scan intent, pending-agent reloads, and guarded mutating action flow.
 - Next implementation slice: TUI Task 7, real Ink launch wiring and end-to-end command behavior.
 - Remaining plan slices are still pending.
+- Task 7 current slice: write failing launch/help tests, connect `launchTui` to real `ink.render`, then run targeted and full verification in the worktree before root sync.
+- Task 7 worktree implementation is complete and verified with targeted tests, the CLI smoke slice, `npm run typecheck`, and `npm run build`; root sync and fresh root verification remain.
 
 ## Accepted Tasks
 
@@ -254,6 +256,10 @@ Task 10 passed fresh in the root repo with:
 - TUI Task 6 code-quality re-review follow-up is applied in the active worktree:
   - App normal dashboard input is blocked while a mutating action request is active, preventing agent reloads from clearing busy state before writes finish
   - regression coverage verifies a pending Space/toggle action cannot trigger another selected-agent reload through navigation
+- TUI Task 7 has started in `.worktrees/tui-implementation` from accepted root commit `d4de92d`:
+  - target scope: replace the temporary TUI launcher with real Ink rendering, keep command TTY protection, and verify CLI help exits before launching
+  - implementation is delegated to a `gpt-5.4-mini` subagent for this cost-constrained round
+  - accepted state still requires spec review, code-quality review, worktree verification, root sync, and fresh root verification
 - next approved design focus is CLI lifecycle closure in this order:
 - implementation planning for that phase is now complete
   - `remove skill`

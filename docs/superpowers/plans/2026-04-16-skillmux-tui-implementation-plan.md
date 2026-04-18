@@ -1166,7 +1166,7 @@ git commit -m "feat: render tui dashboard"
 - Modify: `src/commands/tui.ts`
 - Test: `tests/commands/tui.test.ts`
 
-- [ ] **Step 1: Write failing launch integration tests**
+- [x] **Step 1: Write failing launch integration tests**
 
 Extend `tests/commands/tui.test.ts`:
 
@@ -1190,7 +1190,7 @@ it("passes home options into the injected launcher", async () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify behavior before final launch wiring**
+- [x] **Step 2: Run tests to verify behavior before final launch wiring**
 
 Run:
 
@@ -1200,7 +1200,7 @@ npm test -- --run tests/commands/tui.test.ts
 
 Expected: PASS for injected launcher tests. If it fails, fix command plumbing before touching Ink launch.
 
-- [ ] **Step 3: Implement real Ink launch**
+- [x] **Step 3: Implement real Ink launch**
 
 Modify `src/tui/launch-tui.tsx`:
 
@@ -1220,11 +1220,11 @@ export async function launchTui(options: LaunchTuiOptions = {}): Promise<void> {
 }
 ```
 
-- [ ] **Step 4: Confirm CLI help describes the TUI without launching it**
+- [x] **Step 4: Confirm CLI help describes the TUI without launching it**
 
 Add or extend a test using `buildCli()` and `parseAsync(["node", "skillmux", "tui", "--help"])` with `exitOverride()`. Expected output should include `Open the interactive SkillMux dashboard`. Do not require a launcher injection assertion unless `buildCli` has gained an explicit injection seam; Commander help exits before the action handler runs.
 
-- [ ] **Step 5: Run command and package verification**
+- [x] **Step 5: Run command and package verification**
 
 Run:
 

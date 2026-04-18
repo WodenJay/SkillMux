@@ -1,8 +1,13 @@
+import React from "react";
+import { render } from "ink";
+import { App } from "./app";
+
 export type LaunchTuiOptions = {
   homeDir?: string;
   skillmuxHome?: string;
 };
 
-export async function launchTui(_options: LaunchTuiOptions = {}): Promise<void> {
-  throw new Error("TUI launch is not implemented yet");
+export async function launchTui(options: LaunchTuiOptions = {}): Promise<void> {
+  const instance = render(<App {...options} />);
+  await instance.waitUntilExit();
 }
