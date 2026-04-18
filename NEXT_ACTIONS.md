@@ -115,11 +115,11 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Complete fresh root verification after TUI Task 5 sync
 - [x] Start TUI implementation Task 6 from the approved plan
 - [x] Complete TUI implementation Task 6 in the worktree: Ink dashboard components, App keyboard wiring, and component tests
-- [ ] Run TUI Task 6 through spec review, code-quality review, fixes, and re-review
+- [x] Run TUI Task 6 through spec review, code-quality review, fixes, and re-review
 - [x] Fix TUI Task 6 spec review findings: modal footer shortcuts, Dashboard dimension props, and busy status text
 - [x] Fix TUI Task 6 code-quality findings: duplicate confirmed writes, stale async result ordering, and search-mode `q`
 - [x] Fix TUI Task 6 code-quality re-review finding: block dashboard navigation/reload while writes are active
-- [ ] Complete TUI Task 6 worktree verification: `git diff --check`, targeted tests, `npm test`, `npm run typecheck`, `npm run build`
+- [x] Complete TUI Task 6 worktree verification: `git diff --check`, targeted tests, `npm test`, `npm run typecheck`, `npm run build`
 - [ ] Sync TUI Task 6 accepted code back to the root repo
 - [ ] Complete fresh root verification after TUI Task 6 sync
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`

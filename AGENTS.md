@@ -78,3 +78,4 @@
 - TUI Task 6 spec review found localized issues in modal footer shortcuts, Dashboard terminal dimension ownership, and busy status text; fixes are applied in the worktree pending verification/review.
 - TUI Task 6 code-quality review found duplicate confirmed write and async ordering issues in `App`; fixes are applied in the worktree pending verification/review.
 - TUI Task 6 code-quality re-review found an action-vs-agent-reload race; the worktree now blocks normal dashboard input while a mutating action request is active, while preserving `Ctrl+C` and `q` exit routes.
+- TUI Task 6 is accepted in the active worktree after spec re-review, code-quality re-review, `git diff --check`, targeted tests, full `npm test`, `npm run typecheck`, and `npm run build`; root sync and fresh root verification are next.

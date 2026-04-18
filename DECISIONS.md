@@ -315,3 +315,4 @@ Record key product and implementation decisions so later sessions do not lose th
 - While an App-level mutating action request is active, normal dashboard inputs that can navigate, search, open actions, or reload agents are ignored.
 - `Ctrl+C` remains a global exit route, and `q` still exits from normal or modal state during an active action.
 - This conservative Task 6 behavior prevents an agent reload from becoming the latest async request and clearing busy state while the original filesystem write is still running.
+- Task 6 worktree acceptance required spec re-review, code-quality re-review, `git diff --check`, targeted TUI tests, full `npm test`, `npm run typecheck`, and `npm run build` before root sync.
