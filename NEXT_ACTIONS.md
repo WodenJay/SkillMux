@@ -127,8 +127,8 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Fix the TUI Task 7 lazy-load regression so the default launcher is imported only when needed
 - [x] Run TUI Task 7 through spec review, code-quality review, fixes, and re-review
 - [x] Complete TUI Task 7 worktree verification: `git diff --check`, targeted tests, `npm test`, `npm run typecheck`, `npm run build`
-- [ ] Sync TUI Task 7 accepted code back to the root repo
-- [ ] Complete fresh root verification after TUI Task 7 sync
+- [x] Sync TUI Task 7 accepted code back to the root repo
+- [x] Complete fresh root verification after TUI Task 7 sync
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
 - [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
 - [x] Add tests and implementation for `skillmux config add-agent`
