@@ -270,6 +270,7 @@ Task 10 passed fresh in the root repo with:
 - TUI Task 7 is accepted in the root repo:
   - accepted code through root commit `95a215d`
   - fresh root verification passed with `git diff --check`, targeted TUI/command tests, full `npm test`, `npm run typecheck`, and `npm run build`
+  - manual root re-check found that `tsup` with `splitting: false` still placed the TUI/Ink module graph in the bundled CLI entry despite source-level lazy loading; the build now uses ESM splitting and has smoke coverage for that boundary
   - next implementation slice: TUI Task 8 documentation, manual terminal checks, and release readiness
 - next approved design focus is CLI lifecycle closure in this order:
 - implementation planning for that phase is now complete

@@ -129,6 +129,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Complete TUI Task 7 worktree verification: `git diff --check`, targeted tests, `npm test`, `npm run typecheck`, `npm run build`
 - [x] Sync TUI Task 7 accepted code back to the root repo
 - [x] Complete fresh root verification after TUI Task 7 sync
+- [x] Re-check Task 7 manually in root and fix bundled CLI eager TUI loading
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
 - [x] Design how `config add-agent` should validate ids, normalize paths, and preserve user config formatting
 - [x] Add tests and implementation for `skillmux config add-agent`

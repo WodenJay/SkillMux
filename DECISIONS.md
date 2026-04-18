@@ -321,6 +321,7 @@ Record key product and implementation decisions so later sessions do not lose th
 - The default `skillmux tui` launcher must be lazy-loaded from `src/commands/tui.ts`; top-level `Ink`/`App` loading in the shared CLI path is a regression.
 - Task 7 worktree acceptance requires both launch behavior coverage and lazy-loading coverage so future non-TUI commands do not accidentally import Ink/App.
 - Task 7 root acceptance requires the same full root verification gate as earlier TUI slices before moving to Task 8 documentation and manual checks.
+- Source-level dynamic import is not enough if the ESM bundle is flattened; `tsup` splitting must stay enabled so Ink/App live in the launch chunk instead of the shared CLI entry.
 
 ### TUI Task 7 launch connection
 

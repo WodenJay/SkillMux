@@ -83,3 +83,4 @@
 - Next implementation slice after Task 6 root acceptance is TUI Task 7: connect real Ink launch and end-to-end command behavior.
 - TUI Task 7 is accepted in the active worktree after spec re-review, code-quality re-review, lazy-load fix for the default launcher, `git diff --check`, targeted tests, full `npm test`, `npm run typecheck`, and `npm run build`; root sync and fresh root verification are next.
 - TUI Task 7 is accepted in the root repo at commit `95a215d` plus root acceptance documentation; root verification passed with `git diff --check`, targeted TUI/command tests, `npm test`, `npm run typecheck`, and `npm run build`. Next implementation slice is TUI Task 8: documentation, manual checks, and release readiness.
+- Follow-up manual review found the bundled CLI still loaded the TUI graph when `tsup` used `splitting: false`; root now keeps `splitting: true` with smoke coverage so the generated CLI entry lazy-loads the TUI launch chunk.
