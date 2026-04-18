@@ -92,4 +92,32 @@ describe("tui command", () => {
       "Open the interactive SkillMux dashboard"
     );
   });
+
+  it("reports non-interactive CLI use without surfacing a stack trace", async () => {
+    const cli = buildCli();
+    const stderrChunks: string[] = [];
+    const originalWrite = process.stderr.write;
+    const originalExitCode = process.exitCode;
+    let exitCodeAfterRun: string | number | undefined;
+    process.exitCode = 0;
+    process.stderr.write = ((chunk: string | Uint8Array) => {
+      stderrChunks.push(
+        typeof chunk === "string" ? chunk : Buffer.from(chunk).toString("utf8")
+      );
+      return true;
+    }) as typeof process.stderr.write;
+
+    try {
+      await cli.parseAsync(["node", "skillmux", "tui"], { from: "node" });
+      exitCodeAfterRun = process.exitCode;
+    } finally {
+      process.stderr.write = originalWrite;
+      process.exitCode = originalExitCode;
+    }
+
+    const stderr = stderrChunks.join("");
+    expect(exitCodeAfterRun).toBe(1);
+    expect(stderr).toContain("requires an interactive terminal");
+    expect(stderr).not.toContain("Error:");
+  });
 });

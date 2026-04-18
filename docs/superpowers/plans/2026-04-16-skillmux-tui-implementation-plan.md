@@ -1267,7 +1267,7 @@ git commit -m "feat: connect tui launch"
 - Modify: `DECISIONS.md`
 - Modify: `docs/superpowers/plans/2026-04-16-skillmux-tui-implementation-plan.md`
 
-- [ ] **Step 1: Update README with additive user-facing TUI docs**
+- [x] **Step 1: Update README with additive user-facing TUI docs**
 
 Add a new README section without removing existing CLI documentation:
 
@@ -1292,7 +1292,7 @@ Use the dashboard when you want to inspect one agent and manage the skills it ca
 The dashboard needs an interactive terminal. For scripts or redirected output, use `skillmux list`, `skillmux scan`, or `skillmux doctor`.
 ````
 
-- [ ] **Step 2: Update tracking docs**
+- [x] **Step 2: Update tracking docs**
 
 Update:
 
@@ -1301,11 +1301,11 @@ Update:
 - `DECISIONS.md`: record Ink choice, read-only launch loader, and action key behavior
 - `AGENTS.md`: record accepted TUI implementation state and any active worktree cleanup
 
-- [ ] **Step 3: Mark this plan's completed task checkboxes**
+- [x] **Step 3: Mark this plan's completed task checkboxes**
 
 As each task is accepted, update this plan's task checkboxes from `[ ]` to `[x]`. Do not mark a task complete before its tests, review, and commit are done.
 
-- [ ] **Step 4: Run full automated verification**
+- [x] **Step 4: Run full automated verification**
 
 Run:
 
@@ -1339,6 +1339,8 @@ npm pack --dry-run
 
 Expected: package includes `dist/` and no scratch `.superpowers/` files.
 
+Result on 2026-04-18 from the root repo: PASS for `npm test` (26 files / 137 tests), `npm run typecheck`, `npm run build`, and `npm pack --dry-run`. The package preview included `README.md`, `dist/`, and `package.json`, with no scratch `.superpowers/` files.
+
 - [ ] **Step 5: Run manual terminal checks**
 
 Manual checks:
@@ -1363,7 +1365,9 @@ node dist\cli.js tui > tui-output.txt
 
 Expected: command reports the non-interactive terminal error instead of drawing ANSI UI.
 
-- [ ] **Step 6: Commit docs and readiness updates**
+Non-interactive result on 2026-04-18 from the root repo: redirected output and `NO_COLOR` runs returned exit code 1 with the terminal requirement message and no Node stack trace. Real Windows Terminal 80x24/120x40 visual checks and `Ctrl+C` terminal restoration were not run in this non-TTY tool session.
+
+- [x] **Step 6: Commit docs and readiness updates**
 
 Commit:
 

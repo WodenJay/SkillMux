@@ -84,3 +84,9 @@
 - TUI Task 7 is accepted in the active worktree after spec re-review, code-quality re-review, lazy-load fix for the default launcher, `git diff --check`, targeted tests, full `npm test`, `npm run typecheck`, and `npm run build`; root sync and fresh root verification are next.
 - TUI Task 7 is accepted in the root repo at commit `95a215d` plus root acceptance documentation; root verification passed with `git diff --check`, targeted TUI/command tests, `npm test`, `npm run typecheck`, and `npm run build`. Next implementation slice is TUI Task 8: documentation, manual checks, and release readiness.
 - Follow-up manual review found the bundled CLI still loaded the TUI graph when `tsup` used `splitting: false`; root now keeps `splitting: true` with smoke coverage so the generated CLI entry lazy-loads the TUI launch chunk.
+- TUI Task 8 documentation/readiness work is now in progress in the root repo.
+- Task 8 stays docs-only for this pass: README TUI usage guidance plus tracking updates in `PROJECT_STATUS.md`, `NEXT_ACTIONS.md`, `DECISIONS.md`, and the Task 8 plan checklist.
+- Do not claim verification, manual checks, or commit completion until those actions actually run.
+- Task 8 readiness exposed and fixed the non-interactive `skillmux tui` CLI path so it exits with a friendly terminal error instead of a Node stack trace.
+- Task 8 automated verification passed in the root repo with `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`; non-interactive `skillmux tui` redirect/`NO_COLOR` checks also return exit 1 without drawing the TUI.
+- True Windows Terminal 80x24/120x40 visual checks and `Ctrl+C` terminal restoration still require a real interactive terminal outside this non-TTY tool session.

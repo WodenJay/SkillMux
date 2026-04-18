@@ -13,7 +13,7 @@ import { runImport } from "./commands/import";
 import { runList } from "./commands/list";
 import { runRemove } from "./commands/remove";
 import { runScan } from "./commands/scan";
-import { runTui } from "./commands/tui";
+import { runTui, TuiNonInteractiveTerminalError } from "./commands/tui";
 
 function collectValues(value: string, previous: string[] = []): string[] {
   return [...previous, value];
@@ -116,7 +116,16 @@ export function buildCli(): Command {
     .command("tui")
     .description("Open the interactive SkillMux dashboard")
     .action(async () => {
-      await runTui();
+      try {
+        await runTui();
+      } catch (error) {
+        if (error instanceof TuiNonInteractiveTerminalError) {
+          process.exitCode = 1;
+          return;
+        }
+
+        throw error;
+      }
     });
 
   const configCommand = program.command("config");

@@ -205,3 +205,14 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Publish to npm only after explicit user approval
 - [x] Verify npm registry latest version returns `0.1.2`
 - [x] Confirm the temporary npm publish config was deleted
+
+## TUI Task 8
+
+- [x] Update `README.md` with the interactive dashboard user section
+- [x] Update `AGENTS.md`, `PROJECT_STATUS.md`, and `DECISIONS.md` for Task 8 docs readiness
+- [x] Mark the completed Task 8 documentation steps in `docs/superpowers/plans/2026-04-16-skillmux-tui-implementation-plan.md`
+- [x] Run the Task 8 automated verification gate: `npm test`, `npm run typecheck`, `npm run build`, `npm pack --dry-run`
+- [x] Fix the non-interactive `skillmux tui` readiness issue so redirected output reports the terminal requirement without a stack trace
+- [x] Run the Task 8 non-interactive terminal checks for redirected output and `NO_COLOR`
+- [ ] Run the Task 8 real Windows Terminal checks at 80x24 and 120x40, including `Ctrl+C` terminal restoration
+- [x] Commit the Task 8 docs, readiness updates, and non-interactive TUI fix

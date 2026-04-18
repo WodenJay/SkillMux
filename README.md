@@ -10,7 +10,7 @@ SkillMux 是一个用来管理本地 agent skills 的命令行工具。
 
 SkillMux 的作用就是把这件事接管下来：把 skill 收拢到统一位置，然后按 agent 启用、停用、扫描和检查状态。它既适合人直接用，也适合把仓库链接发给 AI，让 AI 按文档自动安装和操作。
 
-目前适合让AI来使用该软件进行skills的管理，后续 (如果我有时间的话 O.o ) 会推出tui, web界面等更友好的交互方式。
+你可以继续把它交给 AI 使用，也可以用 `skillmux tui` 在终端里直接查看和管理某个 agent 的 skills。后续如果需要，还可以继续扩展 web 等界面。
 
 ## 适合谁
 
@@ -421,3 +421,23 @@ skillmux doctor
 - 控制某个 skill 对哪些 agent 可见，用 `skillmux enable` 和 `skillmux disable`
 - 删除已经停用的托管 skill 用 `skillmux remove`
 - 检查异常状态用 `skillmux doctor`
+
+## 交互式看板
+
+如果你想一次只看一个 agent，并直接管理它能看到的 skills，可以运行：
+
+```bash
+skillmux tui
+```
+
+这个界面适合在交互式终端里使用。它会显示当前选中的 agent，以及这个 agent 能看到的 skills，并允许你直接做常见管理操作。
+
+- `Space` 启用或停用当前选中的已托管 skill。
+- `a` 在确认后接管一个未托管 skill。
+- `r` 在确认后移除一个已停用的已托管 skill。
+- `s` 扫描本地 agent 文件夹并刷新看板。
+- `/` 在当前聚焦的列表里搜索。
+- `?` 打开帮助。
+- `q` 退出界面。
+
+如果输出是脚本重定向，或者当前终端不是交互式终端，请改用 `skillmux list`、`skillmux scan` 或 `skillmux doctor`。

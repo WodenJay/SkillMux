@@ -279,3 +279,8 @@ Task 10 passed fresh in the root repo with:
   - `config` command-family expansion
   - batch operations
   - TUI only after those command semantics are stable
+- TUI Task 8 has started in the root repo as a docs/readiness-only slice.
+- Task 8 adds user-facing README coverage for `skillmux tui` and records readiness status in the tracking docs.
+- Task 8 readiness exposed a non-interactive CLI issue: `node dist\cli.js tui` wrote the friendly terminal message and then surfaced a Node stack trace. The CLI action now catches only the typed TUI non-interactive error, sets exit code 1, and lets unexpected errors propagate.
+- Task 8 automated verification passed in the root repo with `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`.
+- Non-interactive `skillmux tui` checks passed for redirected output and `NO_COLOR`; true Windows Terminal 80x24/120x40 visual checks and `Ctrl+C` terminal restoration remain pending because this tool session is non-TTY.

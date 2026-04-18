@@ -329,3 +329,7 @@ Record key product and implementation decisions so later sessions do not lose th
 - The real launcher should be a narrow adapter: render `<App {...options} />` with Ink and await `waitUntilExit()`.
 - CLI help for `skillmux tui --help` must remain non-mutating and must not launch the dashboard; Commander help exits before the action handler.
 - This round prioritizes `gpt-5.4-mini` subagents to conserve quota, with escalation only if review or debugging needs exceed the model.
+- TUI Task 8 should keep the README as a user manual, not a status report. The new `skillmux tui` section should explain the dashboard and the fallback commands in plain user-facing language.
+- The action key map is part of the user contract: `Space` toggles the selected managed skill, `a` adopts after confirmation, `r` removes after confirmation, `s` refreshes, `/` searches the focused list, `?` opens help, and `q` exits.
+- The docs-only Task 8 slice must not claim verification or release completion until those steps actually run.
+- Release readiness checks should treat non-interactive `skillmux tui` as a user-facing CLI path, not just a unit-test path. It should write the existing friendly terminal requirement message, set exit code 1, and avoid surfacing a Node stack trace; unexpected TUI errors should still propagate.

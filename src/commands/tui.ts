@@ -8,6 +8,13 @@ export type RunTuiOptions = LaunchTuiOptions & {
   launch?: (options: LaunchTuiOptions) => Promise<void>;
 };
 
+export class TuiNonInteractiveTerminalError extends Error {
+  constructor() {
+    super("skillmux tui requires an interactive terminal");
+    this.name = "TuiNonInteractiveTerminalError";
+  }
+}
+
 async function launchDefaultTui(options: LaunchTuiOptions): Promise<void> {
   const { launchTui } = await import("../tui/launch-tui");
 
@@ -23,7 +30,7 @@ export async function runTui(options: RunTuiOptions = {}): Promise<void> {
     stderr.write(
       "skillmux tui requires an interactive terminal. Use skillmux list, skillmux scan, or skillmux doctor for non-interactive output.\n"
     );
-    throw new Error("skillmux tui requires an interactive terminal");
+    throw new TuiNonInteractiveTerminalError();
   }
 
   await (options.launch ?? launchDefaultTui)({
