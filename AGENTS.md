@@ -81,3 +81,4 @@
 - TUI Task 6 is accepted in the active worktree after spec re-review, code-quality re-review, `git diff --check`, targeted tests, full `npm test`, `npm run typecheck`, and `npm run build`; root sync and fresh root verification are next.
 - TUI Task 6 is accepted in the root repo at commit `88a5ee2`; root verification passed with `git diff --check`, `npm test`, `npm run typecheck`, and `npm run build`.
 - Next implementation slice after Task 6 root acceptance is TUI Task 7: connect real Ink launch and end-to-end command behavior.
+- TUI Task 7 is accepted in the active worktree after spec re-review, code-quality re-review, lazy-load fix for the default launcher, `git diff --check`, targeted tests, full `npm test`, `npm run typecheck`, and `npm run build`; root sync and fresh root verification are next.

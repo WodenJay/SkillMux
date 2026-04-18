@@ -261,6 +261,12 @@ Task 10 passed fresh in the root repo with:
   - target scope: replace the temporary TUI launcher with real Ink rendering, keep command TTY protection, and verify CLI help exits before launching
   - implementation is delegated to a `gpt-5.4-mini` subagent for this cost-constrained round
   - accepted state still requires spec review, code-quality review, worktree verification, root sync, and fresh root verification
+- TUI Task 7 is accepted in the active worktree:
+  - real Ink launch is connected through `launchTui`, while `runTui` lazy-loads the default launcher only after the interactive terminal guard
+  - CLI help and registration stay non-launching paths
+  - spec review passed, code-quality review found eager TUI loading, the lazy-load fix was applied, and both re-reviews passed
+  - worktree verification passed with `git diff --check`, targeted TUI/command tests, full `npm test`, `npm run typecheck`, and `npm run build`
+  - next acceptance step: sync the committed code back to the root repo and run fresh root verification
 - next approved design focus is CLI lifecycle closure in this order:
 - implementation planning for that phase is now complete
   - `remove skill`

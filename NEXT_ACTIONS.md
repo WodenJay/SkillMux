@@ -125,8 +125,8 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Start TUI implementation Task 7 from the approved plan
 - [x] Complete TUI Task 7 implementation in the worktree: real Ink launch, command help behavior, and launch tests
 - [x] Fix the TUI Task 7 lazy-load regression so the default launcher is imported only when needed
-- [ ] Run TUI Task 7 through spec review, code-quality review, fixes, and re-review
-- [ ] Complete TUI Task 7 worktree verification: `git diff --check`, targeted tests, `npm test`, `npm run typecheck`, `npm run build`
+- [x] Run TUI Task 7 through spec review, code-quality review, fixes, and re-review
+- [x] Complete TUI Task 7 worktree verification: `git diff --check`, targeted tests, `npm test`, `npm run typecheck`, `npm run build`
 - [ ] Sync TUI Task 7 accepted code back to the root repo
 - [ ] Complete fresh root verification after TUI Task 7 sync
 - [x] Add a CLI write path for custom agent registration, such as `config add-agent`
