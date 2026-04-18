@@ -50,6 +50,7 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - Remaining plan slices are still pending.
 - Task 7 current slice: write failing launch/help tests, connect `launchTui` to real `ink.render`, then run targeted and full verification in the worktree before root sync.
 - Task 7 worktree implementation is complete and verified with targeted tests, the CLI smoke slice, `npm run typecheck`, and `npm run build`; root sync and fresh root verification remain.
+- Post-review follow-up: fix lazy loading for the default TUI launcher so non-TUI command paths and help text do not eagerly load Ink/App.
 
 ## Accepted Tasks
 

@@ -1,4 +1,4 @@
-import { launchTui, type LaunchTuiOptions } from "../tui/launch-tui";
+import type { LaunchTuiOptions } from "../tui/launch-tui";
 import { isInteractiveTerminal, type TtyLike } from "../tui/tty";
 
 export type RunTuiOptions = LaunchTuiOptions & {
@@ -7,6 +7,12 @@ export type RunTuiOptions = LaunchTuiOptions & {
   stderr?: { write(message: string): unknown };
   launch?: (options: LaunchTuiOptions) => Promise<void>;
 };
+
+async function launchDefaultTui(options: LaunchTuiOptions): Promise<void> {
+  const { launchTui } = await import("../tui/launch-tui");
+
+  await launchTui(options);
+}
 
 export async function runTui(options: RunTuiOptions = {}): Promise<void> {
   const stdin = options.stdin ?? process.stdin;
@@ -20,7 +26,7 @@ export async function runTui(options: RunTuiOptions = {}): Promise<void> {
     throw new Error("skillmux tui requires an interactive terminal");
   }
 
-  await (options.launch ?? launchTui)({
+  await (options.launch ?? launchDefaultTui)({
     homeDir: options.homeDir,
     skillmuxHome: options.skillmuxHome
   });
