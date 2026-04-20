@@ -22,9 +22,8 @@
 - `docs/superpowers/plans`里面的任务每完成一个也要打勾`[x]`以保持同步。
 - subagent不要使用太旧的模型(比如`GPT-5.2`)，相对简单/追求快速的任务(比如写`README.md`)可以使用`GPT-5.4-mini`(更省token)，相对困难/追求质量的任务就用`GPT-5.4`(主agent的model)。
 
-## Current Direction
+## Current Direction (及时清理，不要留下过时/没用的内容)
 
-- 当前优先目标是先做一个**CLI 工具**，暂不做图形界面。
 - 分发方式优先采用 **npm 包**，目标支持 Windows / Linux / macOS。
 - `v0` 只管理本地已安装 skills，不负责远端下载/更新。
 - `npx skills` / `https://skills.sh/` 继续作为远端安装入口；SkillMux 不重复实现远端安装器。
@@ -32,15 +31,10 @@
   - 以 **agent** 为中心管理 skills
   - 以 **skill** 为中心管理其在不同 agent 中的启用状态
 - 需要正确处理 `skills.sh` 安装模式下“单份 skill 内容 + 多处 symlink 引用”的情况。
-- `v0` 需要**直接修改本地环境**，自动完成启用/停用所需的目录与 symlink 操作，而不是只输出建议命令。
 - 需要尽可能覆盖常见 agent（如 `.gemini`、`.codex`、`.claude`、`.agents`、`.openclaw` 等），并尽量自动找对目录。
 - agent 目录发现优先采用“**内置常见规则 + 用户配置覆盖**”的方式，并可参考 `npx skills add <owner/repo>` 已支持的安装目录集合。
 - 停用 skill 时，SkillMux 优先将真实 skill 内容收拢到自己托管的本地仓库中；agent 侧只保留或移除可重建的链接状态。
 - 后续如扩展与 `npx skills` 的配合，重点是优化“安装后如何被 SkillMux 接管和管理”的衔接，不是替代 `npx skills` 的远端获取能力。
-- 现在已经支持通过 `skillmux config add-agent` 为自定义 agent 写入 `~/.skillmux/config.json`。
-- 现在已经支持通过 `skillmux config remove-agent` 删除自定义 agent 的配置覆盖项。
-- 现在已经支持通过 `skillmux config update-agent` 更新已有自定义 agent 配置覆盖项；新增仍然使用 `config add-agent`。
-- 现在已经支持 `skillmux adopt`、`skillmux remove` 和常用 repeatable flag 批量操作；README 需要保持这些命令的用户向说明。
 - 当前已经进入 TUI 设计阶段；设计阶段使用 `$using-superpowers` 和 `$tui-design`，实现阶段再额外使用 `$terminal-ui`。
 - TUI 实现前必须先完成并批准 `docs/superpowers/specs/` 下的设计 spec；不要跳过 brainstorming 的设计门禁。
 - 当前开发环境是windows，使用的是PowerShell，不支持`&&`，因此使用命令的时候请不要使用`&&`。
