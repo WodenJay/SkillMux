@@ -45,48 +45,13 @@
 - TUI 实现前必须先完成并批准 `docs/superpowers/specs/` 下的设计 spec；不要跳过 brainstorming 的设计门禁。
 - 当前开发环境是windows，使用的是PowerShell，不支持`&&`，因此使用命令的时候请不要使用`&&`。
 
-## Execution Notes
+## Execution Notes (及时清理，不要留下过时/没用的内容)
 
-- 当前仓库已回到 **root-only** 工作状态，`.worktrees/` 已清理；主目录 `C:\Users\wudon\Desktop\SkillMux\` 是唯一稳定版与最终交付区。
-- 如果后续需要重新使用 worktree 做隔离开发，可以再创建，但 accepted state 仍然只以主目录验证通过后的代码为准。
-- 子代理产出的代码只有在主目录完成验证后，才算 accepted state。
-- lifecycle-closure Task 1 已同步并提交到主目录；当前没有活跃开发 worktree，后续 Task 2 应从主目录 accepted state 重新创建隔离 worktree。
-- lifecycle-closure Task 2 (`skillmux adopt --agent <agent> [--skill <skill>]`) is accepted in root commit `3f3c2ee`; `.worktrees/lifecycle-adopt` has been removed, and the repo is back to root-only accepted state for the next slice.
-- lifecycle-closure Task 3 (`skillmux config update-agent`) is accepted in root commit `a645ade`; `.worktrees/lifecycle-config-update` has been removed, and the repo is back to root-only accepted state for the next slice.
-- lifecycle-closure Task 4 (`lifecycle batch operations`) is accepted in root commit `6fcaef7`; `.worktrees/lifecycle-batch` has been removed, and the repo is back to root-only accepted state for the next slice.
-- lifecycle-closure Task 5 (`final documentation and release readiness`) is accepted in root commit `64a0d42`; `.worktrees/lifecycle-release-docs` has been removed, and the repo is back to root-only accepted state.
-- post-lifecycle npm release prep was opened after root commit `73cb496`; the active isolated preparation worktree is recorded in the next note.
-- post-lifecycle npm release prep is accepted in root commit `0f72701`; `.worktrees/post-lifecycle-release` has been removed; target `skillmux@0.1.2`; final root verification passed.
-- `skillmux@0.1.2` has been published to npm and verified with `npm view skillmux version` returning `0.1.2`; the temporary npm userconfig used for publishing was deleted after publish.
-- TUI design has started from the root-only accepted state after `skillmux@0.1.2`; no implementation worktree is active yet.
-- TUI design spec is written, spec-reviewed, and user-approved at `docs/superpowers/specs/2026-04-16-skillmux-tui-design.md`.
-- TUI implementation plan at `docs/superpowers/plans/2026-04-16-skillmux-tui-implementation-plan.md` is reviewed and approved; next step is execution-mode choice before implementation starts.
-- Browser visual companion scratch files live under `.superpowers/brainstorm/` and should stay out of git.
-- Active TUI implementation worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-implementation`.
-- Task 1 of the TUI implementation slice is complete in the worktree, with targeted tests and typecheck passing.
-- This supersedes the earlier no-active-worktree TUI note; the same worktree remains available for the next TUI implementation slice.
-- TUI Task 1 is now accepted in the root repo at commit `f4f0f3f`; root verification passed with elevated `npm test`, `npm run typecheck`, and `npm run build`.
-- TUI Task 2 is accepted in the root repo at commit `9953695`; root verification passed with elevated `npm test`, `npm run typecheck`, and `npm run build`.
-- TUI Task 3 is accepted in the root repo at commit `0fd9422`; root verification passed with `npm test`, `npm run typecheck`, and `npm run build`.
-- TUI Task 4 is accepted in the root repo at commit `d443df2`; root verification passed with `npm test`, `npm run typecheck`, and `npm run build`.
-- Task 4 adds the row-driven action dispatcher. It resolves `model.selectedSkillId` against `model.skills` before calling lifecycle helpers; do not pass selected row ids directly to command helpers.
-- TUI Task 5 is accepted in the root repo at commit `5f8e2f4`; root verification passed with `git diff --check`, `npm test`, `npm run typecheck`, and `npm run build`.
-- Task 5 adds pure TUI state, navigation, search, modals, action availability selectors, pending action intent, and pending agent selection intent for the later Ink app.
-- Next implementation slice after Task 5 root acceptance is TUI Task 6: Ink dashboard components and keyboard wiring.
-- TUI Task 6 has started in `.worktrees/tui-implementation`; keep implementation scoped to Ink dashboard components, App keyboard handling, and component tests until review and root acceptance.
-- TUI Task 6 worktree implementation is complete with `npm test -- --run tests/tui/components.test.tsx tests/tui/state.test.ts tests/tui/actions.test.ts` and `npm run typecheck` passing; it is not root-accepted yet.
-- TUI Task 6 spec review found localized issues in modal footer shortcuts, Dashboard terminal dimension ownership, and busy status text; fixes are applied in the worktree pending verification/review.
-- TUI Task 6 code-quality review found duplicate confirmed write and async ordering issues in `App`; fixes are applied in the worktree pending verification/review.
-- TUI Task 6 code-quality re-review found an action-vs-agent-reload race; the worktree now blocks normal dashboard input while a mutating action request is active, while preserving `Ctrl+C` and `q` exit routes.
-- TUI Task 6 is accepted in the active worktree after spec re-review, code-quality re-review, `git diff --check`, targeted tests, full `npm test`, `npm run typecheck`, and `npm run build`; root sync and fresh root verification are next.
-- TUI Task 6 is accepted in the root repo at commit `88a5ee2`; root verification passed with `git diff --check`, `npm test`, `npm run typecheck`, and `npm run build`.
-- Next implementation slice after Task 6 root acceptance is TUI Task 7: connect real Ink launch and end-to-end command behavior.
-- TUI Task 7 is accepted in the active worktree after spec re-review, code-quality re-review, lazy-load fix for the default launcher, `git diff --check`, targeted tests, full `npm test`, `npm run typecheck`, and `npm run build`; root sync and fresh root verification are next.
-- TUI Task 7 is accepted in the root repo at commit `95a215d` plus root acceptance documentation; root verification passed with `git diff --check`, targeted TUI/command tests, `npm test`, `npm run typecheck`, and `npm run build`. Next implementation slice is TUI Task 8: documentation, manual checks, and release readiness.
-- Follow-up manual review found the bundled CLI still loaded the TUI graph when `tsup` used `splitting: false`; root now keeps `splitting: true` with smoke coverage so the generated CLI entry lazy-loads the TUI launch chunk.
-- TUI Task 8 documentation/readiness work is now in progress in the root repo.
-- Task 8 stays docs-only for this pass: README TUI usage guidance plus tracking updates in `PROJECT_STATUS.md`, `NEXT_ACTIONS.md`, `DECISIONS.md`, and the Task 8 plan checklist.
-- Do not claim verification, manual checks, or commit completion until those actions actually run.
-- Task 8 readiness exposed and fixed the non-interactive `skillmux tui` CLI path so it exits with a friendly terminal error instead of a Node stack trace.
-- Task 8 automated verification passed in the root repo with `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`; non-interactive `skillmux tui` redirect/`NO_COLOR` checks also return exit 1 without drawing the TUI.
-- True Windows Terminal 80x24/120x40 visual checks and `Ctrl+C` terminal restoration still require a real interactive terminal outside this non-TTY tool session.
+- A TUI usability follow-up planning pass is recorded at `docs/superpowers/plans/2026-04-19-skillmux-tui-usability-follow-up-plan.md`; resume from that file instead of memory.
+- The recorded follow-up fixes are:
+  - make the dashboard occupy the full terminal and read like the current terminal session has been taken over
+  - switch panel focus with left/right arrows
+  - remove `E0` / `D1` style agent counters
+  - keep user-facing status icons, but explain them clearly in the footer/help area
+  - keep the selected agent clearly highlighted while Skills has focus
+  - remove the Detail pane from the focus cycle
