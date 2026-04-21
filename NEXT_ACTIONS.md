@@ -253,4 +253,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Start Task 3: build the PTY session driver
 - [x] Run Task 3 through the red-state reproduction, PTY env fix, and smoke-fixture validation fix
 - [x] Accept Task 3 in the root repo and record the TERM requirement for Windows PTY rendering
-- [ ] Start Task 4: add scenario fixtures and temporary sandbox control
+- [x] Start Task 4: add scenario fixtures and temporary sandbox control
+- [x] Run Task 4 through subagent implementation, spec review, code-quality review, the fixture-validation fix loop, and fresh root verification
+- [x] Accept Task 4 in the root repo and record the fail-fast fixture rules plus the unscanned default manifest state
+- [ ] Start Task 5: build the high-level explorer API and real lifecycle/usability scenarios

@@ -35,7 +35,14 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
   - `npm test -- --run tests/tui-e2e/pty-session.test.ts tests/tui-e2e/scenarios/smoke.test.ts` passed
 - Windows PTY note: the accepted session driver sets `TERM` to `xterm-256color` when the parent environment does not already provide one, because the harness otherwise can spawn the TUI without visible dashboard output.
 - Smoke-fixture note: the real PTY smoke fixture now writes a valid manifest agent record for `codex` in addition to the activation entry, so the read-only dashboard loader can pass manifest validation and render the dashboard.
-- The next implementation slice is PTY exploration Task 4: scenario fixtures and temporary sandbox control.
+- PTY exploration Task 4 is accepted in the root repo at commit `b3f6d9f` (`test: add tui sandbox fixtures`).
+- Task 4 scope: temporary sandbox creation, declarative scenario fixtures for managed enabled/disabled and unmanaged skills, manifest-backed smoke-fixture reuse, and fail-fast fixture validation for future lifecycle scenarios.
+- Task 4 verification in root:
+  - `npm test -- --run tests/tui-e2e/sandbox.test.ts tests/tui-e2e/scenarios/smoke.test.ts` passed with 3 tests
+  - `npm run typecheck` passed
+  - `git diff --check` passed
+- Task 4 fixture note: accepted fixtures now write through `writeManifest`, reject undeclared agents and conflicting duplicate declarations, and keep `lastScan.at` at `null` until a scenario explicitly models a completed scan.
+- The next implementation slice is PTY exploration Task 5: high-level explorer API and real lifecycle/usability scenarios.
 - TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
 - Design followed `$using-superpowers` and the brainstorming hard gate; the written spec is approved.
 - The TUI design stage is using `$tui-design`; implementation will additionally use `$terminal-ui`.

@@ -547,7 +547,7 @@ git commit -m "test: add tui pty session driver"
 - Create: `tests/tui-e2e/sandbox.ts`
 - Test: `tests/tui-e2e/sandbox.test.ts`
 
-- [ ] **Step 1: Write failing sandbox tests**
+- [x] **Step 1: Write failing sandbox tests**
 
 Create `tests/tui-e2e/sandbox.test.ts`:
 
@@ -584,7 +584,7 @@ describe("createScenarioFixture", () => {
 });
 ```
 
-- [ ] **Step 2: Run the sandbox test to verify the red state**
+- [x] **Step 2: Run the sandbox test to verify the red state**
 
 Run:
 
@@ -594,7 +594,7 @@ npm test -- --run tests/tui-e2e/sandbox.test.ts
 
 Expected: FAIL because fixture helpers do not exist.
 
-- [ ] **Step 3: Implement the sandbox builder on top of existing temp-home helpers**
+- [x] **Step 3: Implement the sandbox builder on top of existing temp-home helpers**
 
 Create `tests/tui-e2e/sandbox.ts`:
 
@@ -642,7 +642,7 @@ export async function createSandbox() {
 }
 ```
 
-- [ ] **Step 4: Add declarative fixture helpers**
+- [x] **Step 4: Add declarative fixture helpers**
 
 Create `tests/tui-e2e/fixtures.ts`:
 
@@ -681,7 +681,7 @@ export async function createScenarioFixture(input: {
 
 Implementation note: when creating agent directories, use `ensureDirectory(join(homeDir, \`.${agentId}\`, "skills"))` instead of creating a fake `.keep` skill so the fixture does not introduce noise in later scans.
 
-- [ ] **Step 5: Run targeted tests and commit**
+- [x] **Step 5: Run targeted tests and commit**
 
 Run:
 
@@ -705,6 +705,14 @@ Commit:
 git add tests/tui-e2e/sandbox.ts tests/tui-e2e/fixtures.ts tests/tui-e2e/sandbox.test.ts
 git commit -m "test: add tui sandbox fixtures"
 ```
+
+Implementation note: the accepted Task 4 fixture layer writes a typed `Manifest` through `writeManifest` instead of serializing ad hoc JSON. This keeps the scenario scaffolding pinned to the production manifest contract while still staying lightweight.
+
+Implementation note: accepted fixtures fail fast on undeclared-agent references and duplicate/conflicting `(agentId, skillName)` declarations across `managedEnabled`, `managedDisabled`, and `unmanaged` inputs. Later lifecycle scenarios should fail at fixture construction time, not during PTY startup.
+
+Implementation note: accepted default fixture state is still "never scanned" with `lastScan.at = null`. Scenarios that need a completed scan must opt into that state explicitly instead of inheriting a fake timestamp.
+
+Implementation note: the shared smoke scenario now asserts that the enabled managed row itself renders, not only that the dashboard header appears.
 
 ### Task 5: Build The High-Level Explorer API And Real Lifecycle Scenarios
 
