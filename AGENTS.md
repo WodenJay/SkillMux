@@ -89,4 +89,14 @@
   - `git diff --check` passes
 - Task 5 explorer note: the high-level PTY explorer now wraps the raw session with key helpers, path/fs probes, and a repo-local PTY lock so real Windows PTY scenarios do not stampede each other.
 - Task 5 reliability note: stale or corrupt PTY lock metadata is treated as recoverable, and lifecycle scenarios wait for the rendered confirm dialog text before sending `y`.
-- The next PTY exploration slice is Task 6: finalize docs/tracking and run the full PTY plus repository verification gate.
+- PTY exploration Task 6 is accepted at root commits `624e7f3` (`test: stabilize pty session serialization`), `04abc2c` (`test: keep pty lock on close timeout`), and `4e3c3b9` (`test: extend tui timeout budgets`).
+- Task 6 verification in the root repo is:
+  - `npm run build` passes
+  - `npm run test:tui-e2e` passes with 16 tests
+  - `npm test` passes with 162 tests
+  - `npm run typecheck` passes
+  - `git diff --check` passes
+- Task 6 PTY stability note: real-session serialization now lives in `tests/tui-e2e/pty-session.ts`, so direct PTY callers such as `smoke.test.ts` serialize correctly while mocked explorer unit tests stay lock-free.
+- Task 6 close-timeout note: PTY session close keeps the lock until exit is confirmed and retries termination on a later close if the first close attempt times out.
+- Task 6 timeout-budget note: the PTY session lock wait budget is now 30000 ms, and the async `tui-lazy-loading` tests carry explicit 15000 ms test budgets so the full-suite run is stable under Windows worker load.
+- Repository cleanup note: `.worktrees/tui-implementation` has been removed and the stale local lifecycle/TUI/task branches have been deleted; keep the accepted root state on `main` after Task 6 closeout.

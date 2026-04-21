@@ -1007,7 +1007,7 @@ Implementation note: after code review, Task 5 acceptance also required treating
 - Modify: `DECISIONS.md`
 - Modify: `docs/superpowers/plans/2026-04-21-skillmux-tui-pty-exploration-implementation-plan.md`
 
-- [ ] **Step 1: Update tracking docs as each task lands**
+- [x] **Step 1: Update tracking docs as each task lands**
 
 Update:
 
@@ -1016,11 +1016,11 @@ Update:
 - `DECISIONS.md` with the runner choice: build `dist/cli.js` first, then drive the real CLI through PTY-backed Vitest scenarios
 - `AGENTS.md` with the active PTY exploration execution notes
 
-- [ ] **Step 2: Mark this plan as execution progresses**
+- [x] **Step 2: Mark this plan as execution progresses**
 
 For each accepted task, change only the completed checkboxes in this file from `[ ]` to `[x]`.
 
-- [ ] **Step 3: Run the full PTY and repository verification gate**
+- [x] **Step 3: Run the full PTY and repository verification gate**
 
 Run:
 
@@ -1062,7 +1062,7 @@ git diff --check
 
 Expected: no whitespace or conflict-marker errors.
 
-- [ ] **Step 4: Commit the final PTY exploration docs state**
+- [x] **Step 4: Commit the final PTY exploration docs state**
 
 Commit:
 
@@ -1104,6 +1104,10 @@ git diff --check
 ```
 
 Expected: no whitespace or unresolved-merge-marker errors.
+
+Implementation note: Task 6 acceptance required a focused PTY stability pass after Task 5. The accepted root code commits are `624e7f3` (`test: stabilize pty session serialization`), `04abc2c` (`test: keep pty lock on close timeout`), and `4e3c3b9` (`test: extend tui timeout budgets`).
+
+Implementation note: real-session serialization now lives in `tests/tui-e2e/pty-session.ts`, `close()` keeps the PTY lock until exit is confirmed and retries safely after a timeout, the PTY lock wait budget is 30000 ms, and the async `tui-lazy-loading` tests use explicit 15000 ms budgets so the full Windows suite remains stable.
 
 ## Execution Handoff
 

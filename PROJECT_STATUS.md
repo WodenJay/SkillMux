@@ -1,10 +1,10 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI implementation in progress
+Phase: TUI PTY exploration complete
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
-Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-implementation`
+Active development worktree: `(none)`
 
 ## Current TUI Design Status
 
@@ -51,7 +51,18 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
   - `npm run typecheck` passed
   - `git diff --check` passed
 - Task 5 reliability note: explorer startup now recovers from stale or corrupt PTY lock metadata, and lifecycle scenarios synchronize on confirm-dialog text before sending `y`.
-- The next implementation slice is PTY exploration Task 6: finalize docs/tracking and run the full PTY plus repository verification gate.
+- PTY exploration Task 6 is accepted in the root repo at commits `624e7f3` (`test: stabilize pty session serialization`), `04abc2c` (`test: keep pty lock on close timeout`), and `4e3c3b9` (`test: extend tui timeout budgets`).
+- Task 6 scope: finalize PTY stability for full-suite execution by moving serialization into the PTY session layer, keeping the PTY lock held across close timeouts until exit is confirmed, and extending timeout budgets where the Windows full suite needs more headroom.
+- Task 6 verification in root:
+  - `npm run build` passed
+  - `npm run test:tui-e2e` passed with 16 tests
+  - `npm test` passed with 162 tests
+  - `npm run typecheck` passed
+  - `git diff --check` passed
+- Task 6 stability note: mocked explorer unit tests no longer contend on the repo PTY lock, direct real-PTY callers such as the smoke scenario do serialize, and a timed-out `close()` keeps the PTY lock until a later close confirms process exit.
+- Task 6 timeout note: the PTY lock wait budget is 30000 ms and the async `tui-lazy-loading` tests now declare explicit 15000 ms timeouts so the full-suite run stays stable under Windows worker load.
+- Repository cleanup note: the stale `.worktrees/tui-implementation` worktree has been removed and the stale local lifecycle/TUI/task branches have been deleted, leaving the root repo as the only active checkout and `main` as the remaining delivery target.
+- The PTY exploration implementation slice is complete; next product work can build on the accepted harness instead of adding more manual TUI-only checks.
 - TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
 - Design followed `$using-superpowers` and the brainstorming hard gate; the written spec is approved.
 - The TUI design stage is using `$tui-design`; implementation will additionally use `$terminal-ui`.

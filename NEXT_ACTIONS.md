@@ -259,4 +259,10 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Start Task 5: build the high-level explorer API and real lifecycle/usability scenarios
 - [x] Run Task 5 through subagent implementation, spec review, code-quality review, the lock-recovery/confirm-race fix loop, and fresh root verification
 - [x] Accept Task 5 in the root repo and record the explorer lock plus confirm-dialog synchronization notes
-- [ ] Start Task 6: finalize docs/tracking and run the full PTY plus repository verification gate
+- [x] Fix PTY stability by moving real-session serialization from `tests/tui-e2e/explorer.ts` to `tests/tui-e2e/pty-session.ts`, with regression coverage for mocked explorer tests and direct smoke sessions
+- [x] Keep the PTY lock held across close timeouts, add retry-path coverage, and widen the PTY/full-suite timeout budgets where Windows worker load needs them
+- [x] Start Task 6: finalize docs/tracking and run the full PTY plus repository verification gate
+- [x] Complete Task 6 fresh verification in the root repo: `npm run build`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, `git diff --check`
+- [x] Remove the stale `.worktrees/tui-implementation` checkout after PTY acceptance
+- [x] Delete the stale local lifecycle/TUI/task branch refs after PTY acceptance
+- [ ] Fast-forward the accepted PTY exploration state onto `main` and remove stale local branch refs
