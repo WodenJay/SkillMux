@@ -203,7 +203,7 @@ export async function createPtySession(options: {
 const ptyLockDir = join(process.cwd(), ".artifacts", "tui-e2e", ".pty-lock");
 const ptyLockOwnerFile = join(ptyLockDir, "owner.json");
 
-async function acquirePtyLock(timeoutMs = 15000): Promise<() => Promise<void>> {
+async function acquirePtyLock(timeoutMs = 30000): Promise<() => Promise<void>> {
   const deadline = Date.now() + timeoutMs;
   await fs.mkdir(dirname(ptyLockDir), { recursive: true });
 
