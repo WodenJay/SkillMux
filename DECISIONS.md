@@ -357,3 +357,5 @@ Record key product and implementation decisions so later sessions do not lose th
 - Mutating TUI actions such as `toggle`, `adopt`, `remove`, and `scan` should execute for real, but only inside a fresh temporary sandbox that contains test-only home, agent, and SkillMux-store paths.
 - Exploration artifacts must include both structured event logs and named screen snapshots, plus filesystem checks for mutating flows.
 - The approved written spec for this slice is `docs/superpowers/specs/2026-04-21-skillmux-tui-pty-exploration-design.md`.
+- The implementation plan for this slice is `docs/superpowers/plans/2026-04-21-skillmux-tui-pty-exploration-implementation-plan.md`.
+- Because this repo does not currently include a TypeScript script runner such as `tsx`, the implementation plan uses a small Node `.mjs` runner that builds first and then launches the PTY scenarios through Vitest.

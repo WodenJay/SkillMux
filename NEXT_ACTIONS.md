@@ -237,4 +237,10 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Present and approve the PTY exploration design sections
 - [x] Write the PTY exploration design spec under `docs/superpowers/specs/`
 - [x] Ask for user review of `docs/superpowers/specs/2026-04-21-skillmux-tui-pty-exploration-design.md`
-- [ ] After spec approval, invoke `$writing-plans` and draft the implementation plan
+- [x] After spec approval, invoke `$writing-plans` and draft the implementation plan
+
+## TUI PTY Exploration Implementation
+
+- [x] Write the implementation plan at `docs/superpowers/plans/2026-04-21-skillmux-tui-pty-exploration-implementation-plan.md`
+- [ ] Choose the execution mode for the PTY exploration plan
+- [ ] Start Task 1: add PTY dependencies, artifact ignore, runner script, and the first smoke scenario

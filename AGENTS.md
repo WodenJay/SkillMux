@@ -53,3 +53,5 @@
 - The next TUI design slice is a PTY-driven exploration and end-to-end test harness for `skillmux tui`.
 - That harness is intentionally scoped to terminal semantics, not Windows Terminal desktop automation.
 - The approved design direction is: real TUI actions in a temporary sandbox, scriptable exploratory sessions, and artifacts that include event logs plus screen snapshots.
+- The approved implementation plan for that slice is `docs/superpowers/plans/2026-04-21-skillmux-tui-pty-exploration-implementation-plan.md`.
+- The current execution choice has not been made yet; after planning, offer subagent-driven execution first.

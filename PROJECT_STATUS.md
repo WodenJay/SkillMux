@@ -12,7 +12,8 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - The design goal is to let the agent drive the real TUI in a temporary sandbox, detect UX issues directly, and then convert those findings into regression scenarios.
 - The approved design focuses on terminal semantics only; Windows Terminal desktop automation is explicitly out of scope for the first version.
 - The written design spec is `docs/superpowers/specs/2026-04-21-skillmux-tui-pty-exploration-design.md`.
-- The next gate is user review of that spec before writing an implementation plan.
+- The written implementation plan is `docs/superpowers/plans/2026-04-21-skillmux-tui-pty-exploration-implementation-plan.md`.
+- The next gate is choosing the execution mode for that implementation plan.
 - TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
 - Design followed `$using-superpowers` and the brainstorming hard gate; the written spec is approved.
 - The TUI design stage is using `$tui-design`; implementation will additionally use `$terminal-ui`.
