@@ -42,7 +42,16 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
   - `npm run typecheck` passed
   - `git diff --check` passed
 - Task 4 fixture note: accepted fixtures now write through `writeManifest`, reject undeclared agents and conflicting duplicate declarations, and keep `lastScan.at` at `null` until a scenario explicitly models a completed scan.
-- The next implementation slice is PTY exploration Task 5: high-level explorer API and real lifecycle/usability scenarios.
+- PTY exploration Task 5 is accepted in the root repo at commits `c7aa8c6` (`test: add tui explorer scenarios`) and `cd8092c` (`test: harden explorer lock recovery`).
+- Task 5 scope: a high-level PTY explorer wrapper, lifecycle/usability PTY scenarios, filesystem-side effect checks, and a Windows-safe serialization lock for real TUI sessions.
+- Task 5 verification in root:
+  - `npm run build` passed
+  - `npm test -- --run tests/tui-e2e/explorer.test.ts tests/tui-e2e/scenarios/lifecycle-flow.test.ts tests/tui-e2e/scenarios/usability-probes.test.ts` passed with 5 tests
+  - `npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts` passed
+  - `npm run typecheck` passed
+  - `git diff --check` passed
+- Task 5 reliability note: explorer startup now recovers from stale or corrupt PTY lock metadata, and lifecycle scenarios synchronize on confirm-dialog text before sending `y`.
+- The next implementation slice is PTY exploration Task 6: finalize docs/tracking and run the full PTY plus repository verification gate.
 - TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
 - Design followed `$using-superpowers` and the brainstorming hard gate; the written spec is approved.
 - The TUI design stage is using `$tui-design`; implementation will additionally use `$terminal-ui`.

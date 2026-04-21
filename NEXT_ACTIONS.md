@@ -256,4 +256,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Start Task 4: add scenario fixtures and temporary sandbox control
 - [x] Run Task 4 through subagent implementation, spec review, code-quality review, the fixture-validation fix loop, and fresh root verification
 - [x] Accept Task 4 in the root repo and record the fail-fast fixture rules plus the unscanned default manifest state
-- [ ] Start Task 5: build the high-level explorer API and real lifecycle/usability scenarios
+- [x] Start Task 5: build the high-level explorer API and real lifecycle/usability scenarios
+- [x] Run Task 5 through subagent implementation, spec review, code-quality review, the lock-recovery/confirm-race fix loop, and fresh root verification
+- [x] Accept Task 5 in the root repo and record the explorer lock plus confirm-dialog synchronization notes
+- [ ] Start Task 6: finalize docs/tracking and run the full PTY plus repository verification gate

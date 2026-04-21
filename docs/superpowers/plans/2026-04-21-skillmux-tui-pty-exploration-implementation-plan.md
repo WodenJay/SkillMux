@@ -722,7 +722,7 @@ Implementation note: the shared smoke scenario now asserts that the enabled mana
 - Create: `tests/tui-e2e/scenarios/lifecycle-flow.test.ts`
 - Create: `tests/tui-e2e/scenarios/usability-probes.test.ts`
 
-- [ ] **Step 1: Write failing explorer tests**
+- [x] **Step 1: Write failing explorer tests**
 
 Create `tests/tui-e2e/explorer.test.ts`:
 
@@ -763,7 +763,7 @@ describe("startExplorer", () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify the red state**
+- [x] **Step 2: Run the test to verify the red state**
 
 Run:
 
@@ -781,7 +781,7 @@ npm test -- --run tests/tui-e2e/explorer.test.ts
 
 Expected: FAIL because `tests/tui-e2e/explorer.ts` does not exist.
 
-- [ ] **Step 3: Implement the high-level explorer wrapper**
+- [x] **Step 3: Implement the high-level explorer wrapper**
 
 Create `tests/tui-e2e/explorer.ts`:
 
@@ -840,7 +840,7 @@ export async function startExplorer(options: {
 }
 ```
 
-- [ ] **Step 4: Add the lifecycle and usability scenarios**
+- [x] **Step 4: Add the lifecycle and usability scenarios**
 
 Create `tests/tui-e2e/scenarios/lifecycle-flow.test.ts`:
 
@@ -959,7 +959,7 @@ describe("tui usability probes", () => {
 });
 ```
 
-- [ ] **Step 5: Run targeted scenarios and commit**
+- [x] **Step 5: Run targeted scenarios and commit**
 
 Run:
 
@@ -991,6 +991,12 @@ Commit:
 git add tests/tui-e2e/explorer.ts tests/tui-e2e/explorer.test.ts tests/tui-e2e/scenarios/lifecycle-flow.test.ts tests/tui-e2e/scenarios/usability-probes.test.ts
 git commit -m "test: add tui explorer scenarios"
 ```
+
+Implementation note: the accepted explorer wrapper adds scenario-friendly key helpers, path/fs probes, and a repo-local PTY serialization lock so real Windows PTY scenarios do not race each other.
+
+Implementation note: the accepted lifecycle scenario covers the disabled managed path first, then re-disable, adopt, and remove, while checking real filesystem side effects inside the temporary sandbox.
+
+Implementation note: after code review, Task 5 acceptance also required treating corrupt PTY lock metadata as stale and waiting for the rendered confirm dialog text before sending `y` in lifecycle scenarios.
 
 ### Task 6: Finalize Docs, Tracking, And Full Verification
 

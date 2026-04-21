@@ -80,4 +80,13 @@
   - `git diff --check` passes
 - Task 4 fixture note: scenario fixtures now write typed manifests through the real manifest writer, reject undeclared-agent references and conflicting duplicate declarations up front, and keep `lastScan.at` at `null` unless a later scenario explicitly opts into scanned state.
 - Task 4 smoke note: the real PTY smoke path now asserts that the enabled managed skill row renders, not only that the dashboard header appears.
-- The next PTY exploration slice is Task 5: high-level explorer API and real lifecycle/usability scenarios.
+- PTY exploration Task 5 is accepted at root commits `c7aa8c6` (`test: add tui explorer scenarios`) and `cd8092c` (`test: harden explorer lock recovery`).
+- Task 5 verification in the root repo is:
+  - `npm run build` passes
+  - `npm test -- --run tests/tui-e2e/explorer.test.ts tests/tui-e2e/scenarios/lifecycle-flow.test.ts tests/tui-e2e/scenarios/usability-probes.test.ts` passes with 5 tests
+  - `npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts` passes
+  - `npm run typecheck` passes
+  - `git diff --check` passes
+- Task 5 explorer note: the high-level PTY explorer now wraps the raw session with key helpers, path/fs probes, and a repo-local PTY lock so real Windows PTY scenarios do not stampede each other.
+- Task 5 reliability note: stale or corrupt PTY lock metadata is treated as recoverable, and lifecycle scenarios wait for the rendered confirm dialog text before sending `y`.
+- The next PTY exploration slice is Task 6: finalize docs/tracking and run the full PTY plus repository verification gate.
