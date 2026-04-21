@@ -61,4 +61,9 @@
   - `npm run build` passes
   - `npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts` fails on missing `tests/tui-e2e/fixtures.ts` / `tests/tui-e2e/explorer.ts`, as intended for this bootstrap slice
   - `node scripts/run-tui-e2e.mjs regression` builds and then fails on the same missing harness modules
-- The next PTY exploration slice is Task 2: screen and artifact primitives.
+- PTY exploration Task 2 is accepted at root commit `714e328` (`test: add tui screen artifact primitives`).
+- Task 2 verification in the root repo is:
+  - `npm test -- --run tests/tui-e2e/screen.test.ts` passes with 5 tests
+  - `npm run typecheck` still fails only on the pre-existing Task 1 placeholder imports in `tests/tui-e2e/scenarios/smoke.test.ts`
+  - `git diff --check` passes
+- The next PTY exploration slice is Task 3: PTY session driver.

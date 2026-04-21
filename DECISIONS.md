@@ -363,3 +363,4 @@ Record key product and implementation decisions so later sessions do not lose th
 - Implementation execution mode for this slice is subagent-driven development.
 - On the current Windows PowerShell + Vitest setup, passing `tests/tui-e2e/**/*.test.ts` through `npm test -- --run` does not match any tests. The accepted regression runner enumerates concrete `.test.ts` files under `tests/tui-e2e/` instead of relying on that literal glob.
 - PTY exploration Task 1 is intentionally a bootstrap red slice: the smoke scenario and regression runner are expected to fail on missing `fixtures.ts` / `explorer.ts` until later tasks land those modules.
+- PTY exploration Task 2 hardens artifacts at the file-writer boundary: artifact scenario roots and snapshot names must stay within `.artifacts/tui-e2e/`, blank scenario names are invalid, and each scenario run clears only its own directory before writing fresh outputs.

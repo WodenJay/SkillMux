@@ -232,7 +232,7 @@ git commit -m "test: bootstrap tui pty runner"
 - Create: `tests/tui-e2e/artifacts.ts`
 - Test: `tests/tui-e2e/screen.test.ts`
 
-- [ ] **Step 1: Write failing screen-buffer tests**
+- [x] **Step 1: Write failing screen-buffer tests**
 
 Create `tests/tui-e2e/screen.test.ts`:
 
@@ -261,7 +261,7 @@ describe("createScreenBuffer", () => {
 });
 ```
 
-- [ ] **Step 2: Run the test to verify the red state**
+- [x] **Step 2: Run the test to verify the red state**
 
 Run:
 
@@ -271,7 +271,7 @@ npm test -- --run tests/tui-e2e/screen.test.ts
 
 Expected: FAIL because `tests/tui-e2e/screen.ts` does not exist.
 
-- [ ] **Step 3: Implement the screen buffer with `@xterm/headless`**
+- [x] **Step 3: Implement the screen buffer with `@xterm/headless`**
 
 Create `tests/tui-e2e/screen.ts`:
 
@@ -312,7 +312,7 @@ export function createScreenBuffer({
 }
 ```
 
-- [ ] **Step 4: Add artifact helpers for logs and snapshots**
+- [x] **Step 4: Add artifact helpers for logs and snapshots**
 
 Create `tests/tui-e2e/artifacts.ts`:
 
@@ -359,7 +359,7 @@ export async function createArtifactRecorder({
 }
 ```
 
-- [ ] **Step 5: Run targeted tests and commit**
+- [x] **Step 5: Run targeted tests and commit**
 
 Run:
 
@@ -376,6 +376,8 @@ npm run typecheck
 ```
 
 Expected: PASS.
+
+Implementation note: while Task 2 was being accepted, `npm run typecheck` still failed for the same pre-existing Task 1 bootstrap imports in `tests/tui-e2e/scenarios/smoke.test.ts` (`../fixtures` and `../explorer`). Task 2 acceptance therefore required confirming that the new screen/artifact files did not introduce any additional typecheck failures.
 
 Commit:
 

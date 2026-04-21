@@ -247,4 +247,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Start Task 1: add PTY dependencies, artifact ignore, runner script, and the first smoke scenario
 - [x] Run Task 1 through spec review and code-quality review, including the Windows runner-target check
 - [x] Accept Task 1 in the root repo and record the runner's Windows-specific file-enumeration adaptation
-- [ ] Start Task 2: build screen and artifact primitives
+- [x] Start Task 2: build screen and artifact primitives
+- [x] Run Task 2 through spec review, code-quality review, and the artifact-safety fix loop
+- [x] Accept Task 2 in the root repo and record the remaining Task 1 typecheck blocker explicitly
+- [ ] Start Task 3: build the PTY session driver

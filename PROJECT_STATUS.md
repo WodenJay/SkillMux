@@ -21,7 +21,13 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
   - `npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts` failed on missing `tests/tui-e2e/fixtures.ts` / `tests/tui-e2e/explorer.ts`, which is the intended red state for this bootstrap slice
   - `node scripts/run-tui-e2e.mjs regression` built successfully and then failed on the same missing harness modules
 - Windows compatibility note: `npm test -- --run tests/tui-e2e/**/*.test.ts` returns `No test files found` in the current PowerShell/Vitest environment, so the accepted runner enumerates PTY test files explicitly for regression mode instead of passing the literal glob through npm.
-- The next implementation slice is PTY exploration Task 2: screen and artifact primitives.
+- PTY exploration Task 2 is accepted in the root repo at commit `714e328` (`test: add tui screen artifact primitives`).
+- Task 2 scope: xterm-backed screen serialization, artifact recording, artifact-path confinement, and clean rerun behavior for one scenario directory.
+- Task 2 verification in root:
+  - `npm test -- --run tests/tui-e2e/screen.test.ts` passed with 5 tests
+  - `npm run typecheck` still fails only on the pre-existing missing `../fixtures` / `../explorer` imports from the Task 1 smoke scaffold
+  - `git diff --check` passed
+- The next implementation slice is PTY exploration Task 3: PTY session driver.
 - TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
 - Design followed `$using-superpowers` and the brainstorming hard gate; the written spec is approved.
 - The TUI design stage is using `$tui-design`; implementation will additionally use `$terminal-ui`.
