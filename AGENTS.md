@@ -54,4 +54,11 @@
 - That harness is intentionally scoped to terminal semantics, not Windows Terminal desktop automation.
 - The approved design direction is: real TUI actions in a temporary sandbox, scriptable exploratory sessions, and artifacts that include event logs plus screen snapshots.
 - The approved implementation plan for that slice is `docs/superpowers/plans/2026-04-21-skillmux-tui-pty-exploration-implementation-plan.md`.
-- The current execution choice has not been made yet; after planning, offer subagent-driven execution first.
+- The user selected subagent-driven execution for the PTY exploration implementation.
+- PTY exploration Task 1 is accepted at root commit `606217b` (`test: bootstrap tui pty runner`).
+- On the current Windows PowerShell + Vitest setup, passing `tests/tui-e2e/**/*.test.ts` through `npm test -- --run` returns `No test files found`; the accepted runner enumerates the current PTY `.test.ts` files explicitly for regression mode instead.
+- Task 1 verification in the root repo is:
+  - `npm run build` passes
+  - `npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts` fails on missing `tests/tui-e2e/fixtures.ts` / `tests/tui-e2e/explorer.ts`, as intended for this bootstrap slice
+  - `node scripts/run-tui-e2e.mjs regression` builds and then fails on the same missing harness modules
+- The next PTY exploration slice is Task 2: screen and artifact primitives.

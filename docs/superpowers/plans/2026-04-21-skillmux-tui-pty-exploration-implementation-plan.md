@@ -65,7 +65,7 @@ Build the PTY exploration layer in six slices. Each slice ends with the targeted
 - Create: `scripts/run-tui-e2e.mjs`
 - Test: `tests/tui-e2e/scenarios/smoke.test.ts`
 
-- [ ] **Step 1: Add the PTY and terminal-buffer dependencies**
+- [x] **Step 1: Add the PTY and terminal-buffer dependencies**
 
 Update `package.json`:
 
@@ -94,7 +94,7 @@ Update `package.json`:
 
 Expected: `package-lock.json` records the new packages and the two new npm scripts.
 
-- [ ] **Step 2: Ignore exploration artifacts**
+- [x] **Step 2: Ignore exploration artifacts**
 
 Update `.gitignore`:
 
@@ -109,7 +109,7 @@ skills-lock.json
 
 Expected: local screen snapshots and event logs can live under `.artifacts/` without showing up in `git status`.
 
-- [ ] **Step 3: Write the first failing smoke scenario**
+- [x] **Step 3: Write the first failing smoke scenario**
 
 Create `tests/tui-e2e/scenarios/smoke.test.ts`:
 
@@ -153,7 +153,7 @@ describe("tui pty smoke", () => {
 });
 ```
 
-- [ ] **Step 4: Run the smoke scenario to verify the red state**
+- [x] **Step 4: Run the smoke scenario to verify the red state**
 
 Run:
 
@@ -171,7 +171,7 @@ npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts
 
 Expected: FAIL because `fixtures.ts` and `explorer.ts` do not exist.
 
-- [ ] **Step 5: Add the runner script for regression and exploration modes**
+- [x] **Step 5: Add the runner script for regression and exploration modes**
 
 Create `scripts/run-tui-e2e.mjs`:
 
@@ -206,7 +206,9 @@ run(
 );
 ```
 
-- [ ] **Step 6: Run the new developer entrypoint and commit**
+Implementation note: in the current Windows PowerShell + Vitest environment, passing the literal regression glob above through `npm test -- --run` returns `No test files found`. The accepted implementation enumerates concrete `.test.ts` files under `tests/tui-e2e/` for regression mode while keeping the same explore target and environment-variable contract.
+
+- [x] **Step 6: Run the new developer entrypoint and commit**
 
 Run:
 

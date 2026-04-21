@@ -13,7 +13,15 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - The approved design focuses on terminal semantics only; Windows Terminal desktop automation is explicitly out of scope for the first version.
 - The written design spec is `docs/superpowers/specs/2026-04-21-skillmux-tui-pty-exploration-design.md`.
 - The written implementation plan is `docs/superpowers/plans/2026-04-21-skillmux-tui-pty-exploration-implementation-plan.md`.
-- The next gate is choosing the execution mode for that implementation plan.
+- Execution mode for that implementation plan is subagent-driven development.
+- PTY exploration Task 1 is accepted in the root repo at commit `606217b` (`test: bootstrap tui pty runner`).
+- Task 1 scope: PTY dependencies, `.artifacts/` ignore, the first intentionally red smoke scenario, and the first build-then-run PTY runner entrypoints.
+- Task 1 verification in root:
+  - `npm run build` passed
+  - `npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts` failed on missing `tests/tui-e2e/fixtures.ts` / `tests/tui-e2e/explorer.ts`, which is the intended red state for this bootstrap slice
+  - `node scripts/run-tui-e2e.mjs regression` built successfully and then failed on the same missing harness modules
+- Windows compatibility note: `npm test -- --run tests/tui-e2e/**/*.test.ts` returns `No test files found` in the current PowerShell/Vitest environment, so the accepted runner enumerates PTY test files explicitly for regression mode instead of passing the literal glob through npm.
+- The next implementation slice is PTY exploration Task 2: screen and artifact primitives.
 - TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
 - Design followed `$using-superpowers` and the brainstorming hard gate; the written spec is approved.
 - The TUI design stage is using `$tui-design`; implementation will additionally use `$terminal-ui`.

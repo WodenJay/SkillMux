@@ -360,3 +360,6 @@ Record key product and implementation decisions so later sessions do not lose th
 - The approved written spec for this slice is `docs/superpowers/specs/2026-04-21-skillmux-tui-pty-exploration-design.md`.
 - The implementation plan for this slice is `docs/superpowers/plans/2026-04-21-skillmux-tui-pty-exploration-implementation-plan.md`.
 - Because this repo does not currently include a TypeScript script runner such as `tsx`, the implementation plan uses a small Node `.mjs` runner that builds first and then launches the PTY scenarios through Vitest.
+- Implementation execution mode for this slice is subagent-driven development.
+- On the current Windows PowerShell + Vitest setup, passing `tests/tui-e2e/**/*.test.ts` through `npm test -- --run` does not match any tests. The accepted regression runner enumerates concrete `.test.ts` files under `tests/tui-e2e/` instead of relying on that literal glob.
+- PTY exploration Task 1 is intentionally a bootstrap red slice: the smoke scenario and regression runner are expected to fail on missing `fixtures.ts` / `explorer.ts` until later tasks land those modules.

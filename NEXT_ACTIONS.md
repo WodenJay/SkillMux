@@ -243,5 +243,8 @@ Track the next concrete actions. Mark done items with `[x]`.
 ## TUI PTY Exploration Implementation
 
 - [x] Write the implementation plan at `docs/superpowers/plans/2026-04-21-skillmux-tui-pty-exploration-implementation-plan.md`
-- [ ] Choose the execution mode for the PTY exploration plan
-- [ ] Start Task 1: add PTY dependencies, artifact ignore, runner script, and the first smoke scenario
+- [x] Choose the execution mode for the PTY exploration plan
+- [x] Start Task 1: add PTY dependencies, artifact ignore, runner script, and the first smoke scenario
+- [x] Run Task 1 through spec review and code-quality review, including the Windows runner-target check
+- [x] Accept Task 1 in the root repo and record the runner's Windows-specific file-enumeration adaptation
+- [ ] Start Task 2: build screen and artifact primitives
