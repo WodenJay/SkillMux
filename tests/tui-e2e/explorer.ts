@@ -1,5 +1,5 @@
 import * as fs from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { join } from "node:path";
 import {
   createPtySession,
   type PtySession
@@ -69,21 +69,13 @@ export type TuiExplorer = {
 export async function startExplorer(
   options: StartExplorerOptions
 ): Promise<TuiExplorer> {
-  const releaseLock = await acquireExplorerLock();
-  let session: PtySession | null = null;
-
-  try {
-    session = await createPtySession({
-      homeDir: options.homeDir,
-      skillmuxHome: options.skillmuxHome,
-      cols: options.cols ?? 100,
-      rows: options.rows ?? 30,
-      scenarioName: options.scenarioName
-    });
-  } catch (error) {
-    await releaseLock();
-    throw error;
-  }
+  const session = await createPtySession({
+    homeDir: options.homeDir,
+    skillmuxHome: options.skillmuxHome,
+    cols: options.cols ?? 100,
+    rows: options.rows ?? 30,
+    scenarioName: options.scenarioName
+  });
 
   const paths = {
     managedSkill(skillName: string) {
@@ -187,7 +179,7 @@ export async function startExplorer(
       return session.flushArtifacts();
     },
     close(timeoutMs) {
-      return closeExplorer(session, releaseLock, timeoutMs);
+      return session.close(timeoutMs);
     },
     paths,
     fs: {
@@ -234,122 +226,4 @@ export async function startExplorer(
   };
 
   return explorer;
-}
-
-const explorerLockDir = join(process.cwd(), ".artifacts", "tui-e2e", ".pty-lock");
-const explorerLockOwnerFile = join(explorerLockDir, "owner.json");
-
-async function acquireExplorerLock(timeoutMs = 15000): Promise<() => Promise<void>> {
-  const deadline = Date.now() + timeoutMs;
-  await fs.mkdir(dirname(explorerLockDir), { recursive: true });
-
-  while (true) {
-    try {
-      await fs.mkdir(explorerLockDir);
-      await fs.writeFile(
-        explorerLockOwnerFile,
-        JSON.stringify({ pid: process.pid, acquiredAt: new Date().toISOString() }),
-        "utf8"
-      );
-      break;
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== "EEXIST") {
-        throw error;
-      }
-
-      if (await clearStaleExplorerLock()) {
-        continue;
-      }
-
-      if (Date.now() >= deadline) {
-        throw new Error("Timed out waiting for PTY explorer lock");
-      }
-
-      await sleep(100);
-    }
-  }
-
-  let released = false;
-
-  return async () => {
-    if (released) {
-      return;
-    }
-
-    released = true;
-    await fs.rm(explorerLockDir, { recursive: true, force: true });
-  };
-}
-
-async function closeExplorer(
-  session: PtySession,
-  releaseLock: () => Promise<void>,
-  timeoutMs?: number
-): Promise<void> {
-  try {
-    await session.close(timeoutMs);
-  } finally {
-    await releaseLock();
-  }
-}
-
-async function sleep(ms: number): Promise<void> {
-  await new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-async function clearStaleExplorerLock(): Promise<boolean> {
-  const owner = await readExplorerLockOwner();
-  if (owner !== "unknown" && owner !== null && isProcessAlive(owner.pid)) {
-    return false;
-  }
-
-  if (owner === "unknown" || owner !== null || (await lockLooksAbandoned())) {
-    await fs.rm(explorerLockDir, { recursive: true, force: true });
-    return true;
-  }
-
-  return false;
-}
-
-async function readExplorerLockOwner(): Promise<{ pid: number } | "unknown" | null> {
-  try {
-    const value = await fs.readFile(explorerLockOwnerFile, "utf8");
-    let parsed: { pid?: unknown };
-
-    try {
-      parsed = JSON.parse(value) as { pid?: unknown };
-    } catch {
-      return "unknown";
-    }
-
-    return typeof parsed.pid === "number" ? { pid: parsed.pid } : null;
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return null;
-    }
-
-    throw error;
-  }
-}
-
-function isProcessAlive(pid: number): boolean {
-  try {
-    process.kill(pid, 0);
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-async function lockLooksAbandoned(): Promise<boolean> {
-  try {
-    const stats = await fs.stat(explorerLockDir);
-    return Date.now() - stats.mtimeMs > 500;
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return false;
-    }
-
-    throw error;
-  }
 }

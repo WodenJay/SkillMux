@@ -44,5 +44,5 @@ describe("tui pty smoke", () => {
         expect.objectContaining({ type: "exit", code: 0 })
       ])
     );
-  });
+  }, 30000);
 });

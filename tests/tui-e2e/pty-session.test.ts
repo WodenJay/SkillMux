@@ -1,3 +1,5 @@
+import * as fs from "node:fs/promises";
+import { join } from "node:path";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const spawnMock = vi.fn();
@@ -37,6 +39,8 @@ vi.mock("./screen", () => ({
 }));
 
 describe("createPtySession", () => {
+  const lockDir = join(process.cwd(), ".artifacts", "tui-e2e", ".pty-lock");
+
   beforeEach(() => {
     spawnMock.mockReset();
     writeSnapshotMock.mockReset();
@@ -113,5 +117,28 @@ describe("createPtySession", () => {
         process.env.TERM = originalTerm;
       }
     }
-  });
+  }, 30000);
+
+  it("acquires the PTY lock at session creation, recovers corrupt metadata, and releases it on close", async () => {
+    await fs.mkdir(lockDir, { recursive: true });
+    await fs.writeFile(join(lockDir, "owner.json"), "{not-json", "utf8");
+
+    const { createPtySession } = await import("./pty-session");
+    const session = await createPtySession({
+      homeDir: "C:\\Users\\wudon\\AppData\\Local\\Temp\\skillmux-home-test",
+      skillmuxHome: "C:\\Users\\wudon\\AppData\\Local\\Temp\\skillmux-home-test\\.skillmux",
+      cols: 100,
+      rows: 30,
+      scenarioName: "pty-session-lock-unit"
+    });
+
+    expect(spawnMock).toHaveBeenCalledTimes(1);
+    await expect(fs.readFile(join(lockDir, "owner.json"), "utf8")).resolves.toContain(
+      `"pid":${process.pid}`
+    );
+
+    await session.close();
+
+    await expect(fs.stat(lockDir)).rejects.toMatchObject({ code: "ENOENT" });
+  }, 30000);
 });

@@ -5,10 +5,26 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const createPtySessionMock = vi.fn();
+const { rmMock } = vi.hoisted(() => ({
+  rmMock: vi.fn()
+}));
 
 vi.mock("./pty-session", () => ({
   createPtySession: createPtySessionMock
 }));
+
+vi.mock("node:fs/promises", async () => {
+  const actual = await vi.importActual<typeof import("node:fs/promises")>(
+    "node:fs/promises"
+  );
+
+  rmMock.mockImplementation((...args: Parameters<typeof actual.rm>) => actual.rm(...args));
+
+  return {
+    ...actual,
+    rm: rmMock
+  };
+});
 
 describe("startExplorer", () => {
   let rootDir: string;
@@ -44,6 +60,7 @@ describe("startExplorer", () => {
     eventLogMock = vi.fn(() => []);
 
     createPtySessionMock.mockReset();
+    rmMock.mockClear();
     createPtySessionMock.mockResolvedValue({
       press: pressMock,
       resize: resizeMock,
@@ -151,11 +168,8 @@ describe("startExplorer", () => {
     await explorer.close();
   });
 
-  it("treats corrupt lock owner metadata as stale and recovers", async () => {
+  it("does not depend on the repo PTY lock when the PTY session is mocked", async () => {
     const lockDir = join(process.cwd(), ".artifacts", "tui-e2e", ".pty-lock");
-    await fs.mkdir(lockDir, { recursive: true });
-    await fs.writeFile(join(lockDir, "owner.json"), "{not-json", "utf8");
-
     const { startExplorer } = await import("./explorer");
     const explorer = await startExplorer({
       homeDir,
@@ -166,6 +180,6 @@ describe("startExplorer", () => {
 
     expect(createPtySessionMock).toHaveBeenCalledTimes(1);
     await explorer.close();
-    await expect(fs.stat(lockDir)).rejects.toMatchObject({ code: "ENOENT" });
+    expect(rmMock).not.toHaveBeenCalledWith(lockDir, expect.anything());
   });
 });
