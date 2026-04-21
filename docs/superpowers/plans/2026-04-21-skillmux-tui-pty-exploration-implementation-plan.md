@@ -392,7 +392,7 @@ git commit -m "test: add tui screen artifact primitives"
 - Create: `tests/tui-e2e/pty-session.ts`
 - Modify: `tests/tui-e2e/scenarios/smoke.test.ts`
 
-- [ ] **Step 1: Extend the smoke scenario to depend on a real PTY session**
+- [x] **Step 1: Extend the smoke scenario to depend on a real PTY session**
 
 Update `tests/tui-e2e/scenarios/smoke.test.ts` so it expects a spawned CLI process, not a fake buffer-only explorer:
 
@@ -406,7 +406,7 @@ expect(explorer.eventLog()).toEqual(
 );
 ```
 
-- [ ] **Step 2: Run the smoke scenario to verify the red state**
+- [x] **Step 2: Run the smoke scenario to verify the red state**
 
 Run:
 
@@ -422,9 +422,9 @@ Run:
 npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts
 ```
 
-Expected: FAIL because the PTY session layer does not exist yet.
+Expected: FAIL until the PTY session/environment is correct. Accepted red run timed out waiting for `Skills for codex`, which exposed that the PTY harness still was not rendering the dashboard.
 
-- [ ] **Step 3: Implement the PTY session**
+- [x] **Step 3: Implement the PTY session**
 
 Create `tests/tui-e2e/pty-session.ts`:
 
@@ -484,7 +484,7 @@ export async function createPtySession(options: {
 }
 ```
 
-- [ ] **Step 4: Add settle and exit helpers**
+- [x] **Step 4: Add settle and exit helpers**
 
 Extend `tests/tui-e2e/pty-session.ts` with:
 
@@ -511,7 +511,11 @@ async function waitForText(
 
 Expected: the session object exposes `waitForText`, `waitForExit`, `exitCode`, and `flushArtifacts`.
 
-- [ ] **Step 5: Run the smoke scenario and commit**
+Implementation note: the accepted Windows PTY session sets `TERM` to `xterm-256color` when the parent process does not already provide one. Without that terminal type, the harness can spawn `skillmux tui` and still miss the rendered dashboard output.
+
+Implementation note: the accepted smoke fixture writes a valid `agents.codex` manifest record alongside the activation entry so the read-only dashboard loader passes manifest validation and reaches the real dashboard.
+
+- [x] **Step 5: Run the smoke scenario and commit**
 
 Run:
 

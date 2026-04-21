@@ -250,4 +250,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Start Task 2: build screen and artifact primitives
 - [x] Run Task 2 through spec review, code-quality review, and the artifact-safety fix loop
 - [x] Accept Task 2 in the root repo and record the remaining Task 1 typecheck blocker explicitly
-- [ ] Start Task 3: build the PTY session driver
+- [x] Start Task 3: build the PTY session driver
+- [x] Run Task 3 through the red-state reproduction, PTY env fix, and smoke-fixture validation fix
+- [x] Accept Task 3 in the root repo and record the TERM requirement for Windows PTY rendering
+- [ ] Start Task 4: add scenario fixtures and temporary sandbox control

@@ -66,4 +66,10 @@
   - `npm test -- --run tests/tui-e2e/screen.test.ts` passes with 5 tests
   - `npm run typecheck` still fails only on the pre-existing Task 1 placeholder imports in `tests/tui-e2e/scenarios/smoke.test.ts`
   - `git diff --check` passes
-- The next PTY exploration slice is Task 3: PTY session driver.
+- PTY exploration Task 3 is accepted at root commit `15ea9c2` (`test: add tui pty session driver`).
+- Task 3 verification in the root repo is:
+  - `npm run build` passes
+  - `npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts` passes with the real PTY session path
+- Task 3 implementation note: on this Windows PTY path, `skillmux tui` must be spawned with `TERM=xterm-256color` (or an inherited `TERM`) or Ink can sit without rendering dashboard output under the harness.
+- Task 3 smoke-fixture note: the manifest used by the real PTY smoke path must define the `codex` agent record as well as the activation, because the read-only dashboard loader validates activation agent references before rendering.
+- The next PTY exploration slice is Task 4: scenario fixtures and temporary sandbox control.

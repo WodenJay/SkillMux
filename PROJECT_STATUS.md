@@ -27,7 +27,14 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
   - `npm test -- --run tests/tui-e2e/screen.test.ts` passed with 5 tests
   - `npm run typecheck` still fails only on the pre-existing missing `../fixtures` / `../explorer` imports from the Task 1 smoke scaffold
   - `git diff --check` passed
-- The next implementation slice is PTY exploration Task 3: PTY session driver.
+- PTY exploration Task 3 is accepted in the root repo at commit `15ea9c2` (`test: add tui pty session driver`).
+- Task 3 scope: real `node-pty` session driving around the built CLI, xterm-backed screen accumulation, artifact/event capture for PTY lifecycle events, and the first real smoke scenario that quits with `q`.
+- Task 3 verification in root:
+  - `npm run build` passed
+  - `npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts` passed
+- Windows PTY note: the accepted session driver sets `TERM` to `xterm-256color` when the parent environment does not already provide one, because the harness otherwise can spawn the TUI without visible dashboard output.
+- Smoke-fixture note: the real PTY smoke fixture now writes a valid manifest agent record for `codex` in addition to the activation entry, so the read-only dashboard loader can pass manifest validation and render the dashboard.
+- The next implementation slice is PTY exploration Task 4: scenario fixtures and temporary sandbox control.
 - TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
 - Design followed `$using-superpowers` and the brainstorming hard gate; the written spec is approved.
 - The TUI design stage is using `$tui-design`; implementation will additionally use `$terminal-ui`.
