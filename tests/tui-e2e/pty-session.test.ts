@@ -141,4 +141,34 @@ describe("createPtySession", () => {
 
     await expect(fs.stat(lockDir)).rejects.toMatchObject({ code: "ENOENT" });
   }, 30000);
+
+  it("keeps the PTY lock held when close times out and retries termination on a later close", async () => {
+    let killAttempts = 0;
+    killMock.mockReset();
+    killMock.mockImplementation(() => {
+      killAttempts += 1;
+      if (killAttempts >= 2) {
+        onExitHandler?.({ exitCode: 0 });
+      }
+    });
+
+    const { createPtySession } = await import("./pty-session");
+    const session = await createPtySession({
+      homeDir: "C:\\Users\\wudon\\AppData\\Local\\Temp\\skillmux-home-test",
+      skillmuxHome: "C:\\Users\\wudon\\AppData\\Local\\Temp\\skillmux-home-test\\.skillmux",
+      cols: 100,
+      rows: 30,
+      scenarioName: "pty-session-close-timeout-unit"
+    });
+
+    await expect(session.close(10)).rejects.toThrow("Timed out waiting for process exit");
+    expect(killAttempts).toBe(1);
+    await expect(fs.readFile(join(lockDir, "owner.json"), "utf8")).resolves.toContain(
+      `"pid":${process.pid}`
+    );
+
+    await expect(session.close(10)).resolves.toBeUndefined();
+    expect(killAttempts).toBe(2);
+    await expect(fs.stat(lockDir)).rejects.toMatchObject({ code: "ENOENT" });
+  }, 30000);
 });

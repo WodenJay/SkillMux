@@ -1,7 +1,7 @@
 import * as fs from "node:fs/promises";
 import { dirname, join } from "node:path";
 import * as pty from "node-pty";
-import { createArtifactRecorder } from "./artifacts";
+import { createArtifactRecorder, type ArtifactRecorder } from "./artifacts";
 import { createScreenBuffer } from "./screen";
 
 type PtySessionEvent =
@@ -54,7 +54,7 @@ export async function createPtySession(options: {
   const command = process.execPath;
   const args = [join(process.cwd(), "dist", "cli.js"), "tui"];
   const screen = createScreenBuffer({ cols: options.cols, rows: options.rows });
-  let artifacts;
+  let artifacts: ArtifactRecorder;
   try {
     artifacts = await createArtifactRecorder({
       scenarioName: options.scenarioName
@@ -68,6 +68,7 @@ export async function createPtySession(options: {
   let exited = false;
   let recordedExitCode: number | null = null;
   let closed = false;
+  let closeInFlight: Promise<void> | null = null;
 
   function record(event: PtySessionEvent): void {
     events.push(event);
@@ -173,17 +174,27 @@ export async function createPtySession(options: {
         return;
       }
 
-      closed = true;
+      if (closeInFlight !== null) {
+        return closeInFlight;
+      }
 
-      try {
+      closeInFlight = (async () => {
         if (!exited) {
           child.kill();
           await waitForPromise(exitPromise, timeoutMs, "process exit");
         }
 
         await settle(writeQueue);
-      } finally {
         await releaseLock();
+        closed = true;
+      })();
+
+      try {
+        await closeInFlight;
+      } finally {
+        if (!closed) {
+          closeInFlight = null;
+        }
       }
     }
   };
