@@ -430,8 +430,9 @@ skillmux doctor
 skillmux tui
 ```
 
-这个界面适合在交互式终端里使用。它会显示当前选中的 agent，以及这个 agent 能看到的 skills，并允许你直接做常见管理操作。
+这个界面适合在交互式终端里使用。它会直接占住当前终端，把 Agents、Skills 和详情信息放在同一个工作区里，方便你一边看状态一边操作。
 
+- `Left` / `Right` 在 Agents 和 Skills 两栏之间切换焦点。
 - `Space` 启用或停用当前选中的已托管 skill。
 - `a` 在确认后接管一个未托管 skill。
 - `r` 在确认后移除一个已停用的已托管 skill。
@@ -439,5 +440,7 @@ skillmux tui
 - `/` 在当前聚焦的列表里搜索。
 - `?` 打开帮助。
 - `q` 退出界面。
+
+底部会直接标出列表里图标的含义。切到 Skills 时，当前选中的 agent 也会继续保持高亮，方便你一直看清自己正在管理谁。
 
 如果输出是脚本重定向，或者当前终端不是交互式终端，请改用 `skillmux list`、`skillmux scan` 或 `skillmux doctor`。

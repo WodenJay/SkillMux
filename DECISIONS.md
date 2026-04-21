@@ -346,6 +346,7 @@ Record key product and implementation decisions so later sessions do not lose th
 - This follow-up is a polish slice on top of the accepted TUI architecture, not a redesign of lifecycle behavior or command semantics.
 - The applied follow-up keeps the existing three-panel layout but makes the root dashboard consume the full provided terminal width and height so the session reads like an active terminal workspace.
 - The footer and help overlay are now part of the user contract for icon discovery: they explain agent status icons and skill markers instead of removing the symbols entirely.
+- Confirm dialogs should expose a shared exported height constant so dashboard overlay budgeting stays aligned with the dialog's actual rendered height.
 
 ## 2026-04-21
 

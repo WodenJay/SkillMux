@@ -300,3 +300,7 @@ Task 10 passed fresh in the root repo with:
 - Task 8 readiness exposed a non-interactive CLI issue: `node dist\cli.js tui` wrote the friendly terminal message and then surfaced a Node stack trace. The CLI action now catches only the typed TUI non-interactive error, sets exit code 1, and lets unexpected errors propagate.
 - Task 8 automated verification passed in the root repo with `npm test`, `npm run typecheck`, `npm run build`, and `npm pack --dry-run`.
 - Non-interactive `skillmux tui` checks passed for redirected output and `NO_COLOR`; true Windows Terminal 80x24/120x40 visual checks and `Ctrl+C` terminal restoration remain pending because this tool session is non-TTY.
+- Current TUI review follow-up fix pass:
+  - footer/help legend now explains the yellow `*` warning state in user-facing language
+  - confirm dialog height budgeting now uses the dialog's shared height constant
+  - targeted verification passed with `npm test -- --run tests/tui/components.test.tsx tests/tui/state.test.ts tests/tui/focus-input.test.tsx`

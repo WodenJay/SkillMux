@@ -5,6 +5,8 @@ export type DetailPaneProps = {
   selectedAgent: TuiAgentRow | null;
   selectedSkill: TuiSkillRow | null;
   focused: boolean;
+  width?: number;
+  height?: number;
 };
 
 function detailLines(skill: TuiSkillRow): Array<[string, string]> {
@@ -47,11 +49,14 @@ function detailLines(skill: TuiSkillRow): Array<[string, string]> {
 export function DetailPane({
   selectedAgent,
   selectedSkill,
-  focused
+  focused: _focused,
+  width = 28
+  ,
+  height = 18
 }: DetailPaneProps) {
   return (
-    <Box flexDirection="column" width={28} height={18}>
-      <Text bold color={focused ? "cyan" : undefined}>
+    <Box flexDirection="column" width={width} height={height}>
+      <Text bold>
         Detail
       </Text>
       {selectedAgent === null ? (

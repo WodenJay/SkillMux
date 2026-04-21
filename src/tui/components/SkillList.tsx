@@ -6,6 +6,8 @@ export type SkillListProps = {
   skills: TuiSkillRow[];
   selectedSkillId: string | null;
   focused: boolean;
+  width?: number;
+  height?: number;
 };
 
 function markerColor(skill: TuiSkillRow): string {
@@ -36,10 +38,12 @@ export function SkillList({
   agentId,
   skills,
   selectedSkillId,
-  focused
+  focused,
+  width = 28,
+  height = 18
 }: SkillListProps) {
   return (
-    <Box flexDirection="column" width={28} height={18}>
+    <Box flexDirection="column" width={width} height={height}>
       <Text bold color={focused ? "cyan" : undefined}>
         Skills for {agentId ?? "none"}
       </Text>

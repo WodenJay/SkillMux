@@ -8,6 +8,8 @@ export type ConfirmDialogProps = {
   >;
 };
 
+export const confirmDialogHeight = 4;
+
 function confirmationText(modal: ConfirmDialogProps["modal"]): string {
   if (modal.kind === "confirm-adopt") {
     return `Adopt ${modal.skillId} for ${modal.agentId}?`;
@@ -18,7 +20,7 @@ function confirmationText(modal: ConfirmDialogProps["modal"]): string {
 
 export function ConfirmDialog({ modal }: ConfirmDialogProps) {
   return (
-    <Box flexDirection="column" height={4}>
+    <Box flexDirection="column" height={confirmDialogHeight}>
       <Text bold color={modal.kind === "confirm-remove" ? "yellow" : "cyan"}>
         Confirm
       </Text>

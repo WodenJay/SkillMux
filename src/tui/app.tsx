@@ -375,10 +375,19 @@ export function App({
       return;
     }
 
-    if (key.tab) {
+    if (key.rightArrow) {
       setState(
         updateTuiState(state, {
-          type: key.shift ? "focus-previous" : "focus-next"
+          type: "focus-next"
+        })
+      );
+      return;
+    }
+
+    if (key.leftArrow) {
+      setState(
+        updateTuiState(state, {
+          type: "focus-previous"
         })
       );
       return;

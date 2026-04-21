@@ -5,6 +5,8 @@ export type AgentListProps = {
   agents: TuiAgentRow[];
   selectedAgentId: string | null;
   focused: boolean;
+  width?: number;
+  height?: number;
 };
 
 function statusMarker(agent: TuiAgentRow): string {
@@ -34,10 +36,12 @@ function statusColor(agent: TuiAgentRow): string | undefined {
 export function AgentList({
   agents,
   selectedAgentId,
-  focused
+  focused,
+  width = 24,
+  height = 18
 }: AgentListProps) {
   return (
-    <Box flexDirection="column" width={24} height={18}>
+    <Box flexDirection="column" width={width} height={height}>
       <Text bold color={focused ? "cyan" : undefined}>
         Agents
       </Text>
@@ -46,13 +50,12 @@ export function AgentList({
       ) : (
         agents.map((agent) => {
           const selected = agent.id === selectedAgentId;
-          const counts = `E${agent.enabledCount} D${agent.disabledCount} U${agent.unmanagedCount} !${agent.issueCount}`;
+          const selectionPrefix = selected ? ">" : " ";
 
           return (
-            <Text key={agent.id} inverse={focused && selected}>
+            <Text key={agent.id} inverse={selected}>
               <Text color={statusColor(agent)}>{statusMarker(agent)}</Text>
-              <Text> {agent.name}</Text>
-              <Text dimColor> {counts}</Text>
+              <Text>{selectionPrefix} {agent.name}</Text>
             </Text>
           );
         })

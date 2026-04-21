@@ -57,7 +57,7 @@ export type TuiAvailableActions = {
   help: boolean;
 };
 
-const focusOrder: TuiFocus[] = ["agents", "skills", "detail"];
+const focusOrder: TuiFocus[] = ["agents", "skills"];
 
 function clampCursor(cursor: number, rowCount: number): number {
   if (rowCount <= 0) {

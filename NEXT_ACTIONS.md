@@ -226,6 +226,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Remove noisy `E0` / `D1` counters and add visible legend/help text for the remaining status icons
 - [x] Keep the selected agent visibly highlighted while Skills has focus
 - [x] Refresh tests, help text, and docs to match the updated TUI interaction contract
+- [x] Fix the remaining TUI review follow-up issues: explain the yellow `*` warning state and align confirm dialog height budgeting
 
 ## TUI PTY Exploration Design
 

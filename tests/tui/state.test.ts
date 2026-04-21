@@ -127,19 +127,33 @@ function model(overrides: Partial<DashboardModel> = {}): DashboardModel {
 }
 
 describe("TUI state reducer", () => {
-  it("cycles focus forward and backward", () => {
+  it("cycles focus only between agents and skills", () => {
     const initial = createInitialTuiState(model());
 
     const skillsFocused = updateTuiState(initial, { type: "focus-next" });
-    const detailFocused = updateTuiState(skillsFocused, { type: "focus-next" });
-    const agentsFocused = updateTuiState(detailFocused, { type: "focus-next" });
+    const agentsFocused = updateTuiState(skillsFocused, { type: "focus-next" });
 
     expect(skillsFocused.focus).toBe("skills");
-    expect(detailFocused.focus).toBe("detail");
     expect(agentsFocused.focus).toBe("agents");
     expect(updateTuiState(agentsFocused, { type: "focus-previous" }).focus).toBe(
-      "detail"
+      "skills"
     );
+  });
+
+  it("keeps the selected agent while skills has focus", () => {
+    const initial = createInitialTuiState(
+      model({
+        agents: [agent("codex"), agent("claude")],
+        selectedAgentId: "claude",
+        selectedSkillId: null,
+        skills: []
+      })
+    );
+
+    const skillsFocused = updateTuiState(initial, { type: "focus-next" });
+
+    expect(skillsFocused.focus).toBe("skills");
+    expect(skillsFocused.model.selectedAgentId).toBe("claude");
   });
 
   it("opens remove confirmation only for disabled managed rows", () => {

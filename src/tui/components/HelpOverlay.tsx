@@ -2,15 +2,21 @@ import { Box, Text } from "ink";
 
 export function HelpOverlay() {
   return (
-    <Box flexDirection="column" height={7}>
+    <Box flexDirection="column" height={8}>
       <Text bold>Help</Text>
       <Text>
         <Text bold>Navigation</Text>
-        <Text>: Tab focus, j/k or arrows move, g/G jump.</Text>
+        <Text>: Left/Right switch panels, j/k or Up/Down move, g/G jump.</Text>
       </Text>
       <Text>
         <Text bold>Actions</Text>
         <Text>: Space toggles managed skills, a adopts, r removes, s scans.</Text>
+      </Text>
+      <Text>
+        <Text bold>Icons</Text>
+        <Text>
+          : * ready, yellow warning on issues, ? missing, ! unsupported; filled circle enabled, hollow circle disabled, ? unmanaged, ! issue.
+        </Text>
       </Text>
       <Text>
         <Text bold>Search</Text>

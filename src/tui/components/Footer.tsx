@@ -8,7 +8,7 @@ export type FooterProps = {
 
 export function Footer({ actions, search }: FooterProps) {
   const shortcuts = [
-    "[Tab]focus",
+    "[Left/Right]focus",
     actions.toggle ? "[Space]toggle" : null,
     actions.adopt ? "[a]adopt" : null,
     actions.remove ? "[r]remove" : null,
@@ -20,7 +20,12 @@ export function Footer({ actions, search }: FooterProps) {
   return (
     <Box flexDirection="column" height={3}>
       {search === null ? (
-        <Text>{shortcuts.join("   ")}</Text>
+        <>
+          <Text>{shortcuts.join("   ")}</Text>
+          <Text dimColor>
+            Agent icons: * ready, yellow warning on issues, ? missing, ! unsupported | Skill markers: filled circle enabled, hollow circle disabled, ? unmanaged, ! issue
+          </Text>
+        </>
       ) : (
         <Text>
           <Text color="cyan">/</Text>

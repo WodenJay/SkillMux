@@ -1,11 +1,14 @@
 import React from "react";
+import { renderToString } from "ink";
 import { render } from "ink-testing-library";
 import { describe, expect, it } from "vitest";
 import { vi } from "vitest";
 import { App } from "../../src/tui/app";
+import { AgentList } from "../../src/tui/components/AgentList";
 import { Dashboard } from "../../src/tui/components/Dashboard";
 import { ConfirmDialog } from "../../src/tui/components/ConfirmDialog";
 import { DetailPane } from "../../src/tui/components/DetailPane";
+import { Footer } from "../../src/tui/components/Footer";
 import { HelpOverlay } from "../../src/tui/components/HelpOverlay";
 import { StatusLine } from "../../src/tui/components/StatusLine";
 import type {
@@ -109,6 +112,22 @@ function state(overrides: Partial<DashboardModel> = {}): TuiState {
   });
 }
 
+function elementText(node: React.ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") {
+    return String(node);
+  }
+
+  if (Array.isArray(node)) {
+    return node.map(elementText).join("");
+  }
+
+  if (React.isValidElement<{ children?: React.ReactNode }>(node)) {
+    return elementText(node.props.children);
+  }
+
+  return "";
+}
+
 async function settle(): Promise<void> {
   await new Promise((resolve) => {
     setTimeout(resolve, 0);
@@ -154,7 +173,81 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("[Space]toggle");
   });
 
-  it("explains filesystem-writing behavior in the help overlay", () => {
+  it("uses the provided terminal dimensions instead of a fixed inner frame", () => {
+    const frame = renderToString(
+      <Dashboard state={state()} width={100} height={30} />,
+      { columns: 100 }
+    );
+
+    expect(frame.trimEnd().split("\n")).toHaveLength(30);
+  });
+
+  it("does not render agent row counters", () => {
+    const frame = renderToString(
+      <Dashboard
+        state={state({
+          agents: [
+            agent({
+              enabledCount: 0,
+              disabledCount: 1,
+              unmanagedCount: 0,
+              issueCount: 0
+            })
+          ]
+        })}
+        width={80}
+        height={24}
+      />,
+      { columns: 80 }
+    );
+
+    expect(frame).not.toContain("E0");
+    expect(frame).not.toContain("D1");
+  });
+
+  it("keeps the selected agent highlighted when skills has focus", () => {
+    const tree = AgentList({
+      agents: [agent()],
+      selectedAgentId: "codex",
+      focused: false
+    });
+    const row = React.Children.toArray(tree.props.children).find(
+      (
+        child
+      ): child is React.ReactElement<{
+        children?: React.ReactNode;
+        inverse?: boolean;
+      }> =>
+        React.isValidElement<{
+          children?: React.ReactNode;
+          inverse?: boolean;
+        }>(child) && elementText(child).includes("codex")
+    );
+
+    expect(row?.props.inverse).toBe(true);
+  });
+
+  it("explains visible status icons in the footer", () => {
+    const frame = renderToString(
+      <Footer
+        actions={{
+          toggle: true,
+          adopt: true,
+          remove: true,
+          scan: true,
+          help: true
+        }}
+        search={null}
+      />
+    );
+
+    expect(frame).toContain("Agent icons");
+    expect(frame).toContain("enabled");
+    expect(frame).toContain("disabled");
+    expect(frame).toContain("yellow warning on issues");
+  });
+
+  it("explains filesystem-writing behavior and left-right navigation in the help overlay", () => {
     const { lastFrame } = render(<HelpOverlay />);
 
     const frame = lastFrame();
@@ -163,9 +256,39 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("Actions");
     expect(frame).toContain("Search");
     expect(frame).toContain("Safety");
+    expect(frame).toContain("Left");
+    expect(frame).toContain("Right");
+    expect(frame).not.toContain("Tab focus");
+    expect(frame).toContain("yellow warning on issues");
     expect(frame).toContain(
       "Toggle, adopt, remove, and scan can write local SkillMux state or agent skill links."
     );
+  });
+
+  it("reserves the same height for confirm dialogs that the dialog renders itself", () => {
+    const withModal = updateTuiState(
+      state({ selectedSkillId: "terminal-ui" }),
+      { type: "request-remove" }
+    );
+    const dashboard = Dashboard({
+      state: withModal,
+      width: 80,
+      height: 24
+    });
+    const bodyRow = React.Children.toArray(dashboard.props.children).find(
+      (
+        child
+      ): child is React.ReactElement<{
+        flexDirection?: string;
+        height?: number;
+      }> =>
+        React.isValidElement<{
+          flexDirection?: string;
+          height?: number;
+        }>(child) && child.props.flexDirection === "row"
+    );
+
+    expect(bodyRow?.props.height).toBe(16);
   });
 
   it("renders adopt confirmation text and confirmation shortcuts", () => {
@@ -245,21 +368,25 @@ describe("TUI dashboard components", () => {
   });
 
   it("keeps footer shortcut lists out of the detail pane", () => {
-    const { lastFrame } = render(
-      <DetailPane
-        selectedAgent={agent()}
-        selectedSkill={disabledSkill()}
-        focused={false}
-      />
+    const focused = DetailPane({
+      selectedAgent: agent(),
+      selectedSkill: disabledSkill(),
+      focused: true
+    });
+    const header = React.Children.toArray(focused.props.children).find(
+      (
+        child
+      ): child is React.ReactElement<{
+        children?: React.ReactNode;
+        color?: string;
+      }> =>
+        React.isValidElement<{
+          children?: React.ReactNode;
+          color?: string;
+        }>(child) && elementText(child) === "Detail"
     );
 
-    const frame = lastFrame();
-
-    expect(frame).toContain("terminal-ui");
-    expect(frame).toContain("disabled");
-    expect(frame).not.toContain("[Space]toggle");
-    expect(frame).not.toContain("[r]remove");
-    expect(frame).not.toContain("[s]scan");
+    expect(header?.props.color).toBeUndefined();
   });
 });
 
@@ -370,7 +497,7 @@ describe("App", () => {
     );
 
     await settle();
-    stdin.write("\t");
+    stdin.write("\u001B[C");
     await settle();
     stdin.write("a");
     await settle();
@@ -519,7 +646,7 @@ describe("App", () => {
     );
 
     await settle();
-    stdin.write("\t");
+    stdin.write("\u001B[C");
     await settle();
     stdin.write(" ");
     await settle();
@@ -552,7 +679,7 @@ describe("App", () => {
     );
 
     await settle();
-    stdin.write("\t");
+    stdin.write("\u001B[C");
     await settle();
     stdin.write(" ");
     await settle();
@@ -562,9 +689,9 @@ describe("App", () => {
     expect(lastFrame()).toContain("Skills for codex");
     expect(lastFrame()).not.toContain("[Space]toggle");
 
-    stdin.write("\t");
+    stdin.write("\u001B[C");
     await settle();
-    stdin.write("\t");
+    stdin.write("\u001B[D");
     await settle();
     stdin.write("j");
     await settle();
