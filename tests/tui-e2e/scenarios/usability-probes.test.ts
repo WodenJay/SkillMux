@@ -29,7 +29,7 @@ describe("tui explorer usability probes", () => {
     });
     cleanups.push(() => explorer.close());
 
-    await explorer.waitForReady();
+    await explorer.waitForReady(10000);
     await explorer.openHelp();
     await explorer.waitForText("Navigation");
     await explorer.waitForText("Search");

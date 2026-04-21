@@ -27,7 +27,7 @@ describe("tui pty smoke", () => {
     });
     cleanups.push(() => session.close());
 
-    await session.waitForText("Skills for codex");
+    await session.waitForText("Skills for codex", 10000);
     await session.waitForText("● using-superpowers");
     await session.saveSnapshot("initial-dashboard");
     await session.press("q");

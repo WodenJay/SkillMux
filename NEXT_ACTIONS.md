@@ -265,4 +265,4 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Complete Task 6 fresh verification in the root repo: `npm run build`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, `git diff --check`
 - [x] Remove the stale `.worktrees/tui-implementation` checkout after PTY acceptance
 - [x] Delete the stale local lifecycle/TUI/task branch refs after PTY acceptance
-- [ ] Fast-forward the accepted PTY exploration state onto `main` and remove stale local branch refs
+- [x] Fast-forward the accepted PTY exploration state onto `main` and remove stale local branch refs

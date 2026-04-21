@@ -1107,7 +1107,7 @@ Expected: no whitespace or unresolved-merge-marker errors.
 
 Implementation note: Task 6 acceptance required a focused PTY stability pass after Task 5. The accepted root code commits are `624e7f3` (`test: stabilize pty session serialization`), `04abc2c` (`test: keep pty lock on close timeout`), and `4e3c3b9` (`test: extend tui timeout budgets`).
 
-Implementation note: real-session serialization now lives in `tests/tui-e2e/pty-session.ts`, `close()` keeps the PTY lock until exit is confirmed and retries safely after a timeout, the PTY lock wait budget is 30000 ms, and the async `tui-lazy-loading` tests use explicit 15000 ms budgets so the full Windows suite remains stable.
+Implementation note: real-session serialization now lives in `tests/tui-e2e/pty-session.ts`, `close()` keeps the PTY lock until exit is confirmed and retries safely after a timeout, the PTY lock wait budget is 30000 ms, the async `tui-lazy-loading` tests use explicit 15000 ms budgets, and the real PTY scenarios use explicit 10000 ms initial-ready waits so the full Windows suite remains stable.
 
 ## Execution Handoff
 

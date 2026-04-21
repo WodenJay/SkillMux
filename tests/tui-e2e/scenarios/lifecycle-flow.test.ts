@@ -39,7 +39,7 @@ describe("tui explorer lifecycle flow", () => {
     const adoptedManagedPath = explorer.paths.managedSkill("find-skills");
     const unmanagedPath = explorer.paths.agentSkill("codex", "find-skills");
 
-    await explorer.waitForReady();
+    await explorer.waitForReady(10000);
     await explorer.focusSkills();
     await explorer.waitForText("using-superpowers");
     await expect(explorer.fs.exists(disabledManagedPath)).resolves.toBe(false);

@@ -98,5 +98,5 @@
   - `git diff --check` passes
 - Task 6 PTY stability note: real-session serialization now lives in `tests/tui-e2e/pty-session.ts`, so direct PTY callers such as `smoke.test.ts` serialize correctly while mocked explorer unit tests stay lock-free.
 - Task 6 close-timeout note: PTY session close keeps the lock until exit is confirmed and retries termination on a later close if the first close attempt times out.
-- Task 6 timeout-budget note: the PTY session lock wait budget is now 30000 ms, and the async `tui-lazy-loading` tests carry explicit 15000 ms test budgets so the full-suite run is stable under Windows worker load.
-- Repository cleanup note: `.worktrees/tui-implementation` has been removed and the stale local lifecycle/TUI/task branches have been deleted; keep the accepted root state on `main` after Task 6 closeout.
+- Task 6 timeout-budget note: the PTY session lock wait budget is now 30000 ms, the async `tui-lazy-loading` tests carry explicit 15000 ms test budgets, and the real PTY scenarios use explicit 10000 ms initial-ready waits so the full-suite run is stable under Windows worker load.
+- Repository cleanup note: `.worktrees/tui-implementation` has been removed, the stale local lifecycle/TUI/task branches have been deleted, and the accepted PTY exploration state now lives on `main`.

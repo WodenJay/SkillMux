@@ -60,8 +60,8 @@ Active development worktree: `(none)`
   - `npm run typecheck` passed
   - `git diff --check` passed
 - Task 6 stability note: mocked explorer unit tests no longer contend on the repo PTY lock, direct real-PTY callers such as the smoke scenario do serialize, and a timed-out `close()` keeps the PTY lock until a later close confirms process exit.
-- Task 6 timeout note: the PTY lock wait budget is 30000 ms and the async `tui-lazy-loading` tests now declare explicit 15000 ms timeouts so the full-suite run stays stable under Windows worker load.
-- Repository cleanup note: the stale `.worktrees/tui-implementation` worktree has been removed and the stale local lifecycle/TUI/task branches have been deleted, leaving the root repo as the only active checkout and `main` as the remaining delivery target.
+- Task 6 timeout note: the PTY lock wait budget is 30000 ms, the async `tui-lazy-loading` tests now declare explicit 15000 ms timeouts, and the real PTY scenarios now use explicit 10000 ms initial-ready waits so the full-suite run stays stable under Windows worker load.
+- Repository cleanup note: the stale `.worktrees/tui-implementation` worktree has been removed, the stale local lifecycle/TUI/task branches have been deleted, and the accepted PTY exploration state now lives on `main`.
 - The PTY exploration implementation slice is complete; next product work can build on the accepted harness instead of adding more manual TUI-only checks.
 - TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
 - Design followed `$using-superpowers` and the brainstorming hard gate; the written spec is approved.
