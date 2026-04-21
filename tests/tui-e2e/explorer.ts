@@ -299,11 +299,11 @@ async function sleep(ms: number): Promise<void> {
 
 async function clearStaleExplorerLock(): Promise<boolean> {
   const owner = await readExplorerLockOwner();
-  if (owner !== null && isProcessAlive(owner.pid)) {
+  if (owner !== "unknown" && owner !== null && isProcessAlive(owner.pid)) {
     return false;
   }
 
-  if (owner !== null || (await lockLooksAbandoned())) {
+  if (owner === "unknown" || owner !== null || (await lockLooksAbandoned())) {
     await fs.rm(explorerLockDir, { recursive: true, force: true });
     return true;
   }
@@ -311,10 +311,16 @@ async function clearStaleExplorerLock(): Promise<boolean> {
   return false;
 }
 
-async function readExplorerLockOwner(): Promise<{ pid: number } | null> {
+async function readExplorerLockOwner(): Promise<{ pid: number } | "unknown" | null> {
   try {
     const value = await fs.readFile(explorerLockOwnerFile, "utf8");
-    const parsed = JSON.parse(value) as { pid?: unknown };
+    let parsed: { pid?: unknown };
+
+    try {
+      parsed = JSON.parse(value) as { pid?: unknown };
+    } catch {
+      return "unknown";
+    }
 
     return typeof parsed.pid === "number" ? { pid: parsed.pid } : null;
   } catch (error) {

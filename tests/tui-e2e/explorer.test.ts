@@ -150,4 +150,22 @@ describe("startExplorer", () => {
     await expect(explorer.fs.readLinkTarget(linkPath)).resolves.toBeNull();
     await explorer.close();
   });
+
+  it("treats corrupt lock owner metadata as stale and recovers", async () => {
+    const lockDir = join(process.cwd(), ".artifacts", "tui-e2e", ".pty-lock");
+    await fs.mkdir(lockDir, { recursive: true });
+    await fs.writeFile(join(lockDir, "owner.json"), "{not-json", "utf8");
+
+    const { startExplorer } = await import("./explorer");
+    const explorer = await startExplorer({
+      homeDir,
+      skillmuxHome,
+      agentId: "codex",
+      scenarioName: "explorer-corrupt-lock-unit"
+    });
+
+    expect(createPtySessionMock).toHaveBeenCalledTimes(1);
+    await explorer.close();
+    await expect(fs.stat(lockDir)).rejects.toMatchObject({ code: "ENOENT" });
+  });
 });

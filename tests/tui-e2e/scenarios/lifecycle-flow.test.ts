@@ -61,6 +61,8 @@ describe("tui explorer lifecycle flow", () => {
     await explorer.nextRow();
     await explorer.waitForText("find-skills");
     await explorer.adopt();
+    await explorer.waitForText("Confirm");
+    await explorer.waitForText("Adopt find-skills for codex?");
     await explorer.confirm();
     await explorer.waitForText("Adopted find-skills for codex");
     await expect(explorer.fs.exists(adoptedManagedPath)).resolves.toBe(true);
@@ -71,6 +73,8 @@ describe("tui explorer lifecycle flow", () => {
 
     await explorer.lastRow();
     await explorer.remove();
+    await explorer.waitForText("Confirm");
+    await explorer.waitForText("Remove using-superpowers from SkillMux?");
     await explorer.confirm();
     await explorer.waitForText("Removed using-superpowers from");
     await expect(explorer.fs.exists(managedSkillPath)).resolves.toBe(false);
