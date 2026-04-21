@@ -266,3 +266,11 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Remove the stale `.worktrees/tui-implementation` checkout after PTY acceptance
 - [x] Delete the stale local lifecycle/TUI/task branch refs after PTY acceptance
 - [x] Fast-forward the accepted PTY exploration state onto `main` and remove stale local branch refs
+- [x] Approve the PTY-driven TUI audit and polish direction: scan all four usability categories, but only repair the highest-priority findings in each round
+- [x] Write the PTY audit/polish design spec under `docs/superpowers/specs/`
+- [x] Write the PTY audit/polish implementation plan under `docs/superpowers/plans/`
+- [x] Start PTY audit/polish Round 1: run exploratory sessions and collect the first high-priority issue batch
+- [x] Fix the first PTY-audited high-priority TUI issue batch and add regression coverage
+- [x] Run Round 1 verification and stop for `/compact`
+- [ ] Start PTY audit/polish Round 2: inspect remaining first-screen density and detail-pane path sprawl under PTY snapshots
+- [ ] Fix the next PTY-audited high-priority TUI issue batch and add regression coverage

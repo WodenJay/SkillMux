@@ -100,3 +100,9 @@
 - Task 6 close-timeout note: PTY session close keeps the lock until exit is confirmed and retries termination on a later close if the first close attempt times out.
 - Task 6 timeout-budget note: the PTY session lock wait budget is now 30000 ms, the async `tui-lazy-loading` tests carry explicit 15000 ms test budgets, and the real PTY scenarios use explicit 10000 ms initial-ready waits so the full-suite run is stable under Windows worker load.
 - Repository cleanup note: `.worktrees/tui-implementation` has been removed, the stale local lifecycle/TUI/task branches have been deleted, and the accepted PTY exploration state now lives on `main`.
+- The next TUI product slice is PTY-driven audit and polish on top of the accepted harness, not additional harness construction.
+- The written design spec for that slice is `docs/superpowers/specs/2026-04-21-skillmux-tui-pty-audit-polish-design.md`.
+- The written implementation plan for that slice is `docs/superpowers/plans/2026-04-21-skillmux-tui-pty-audit-polish-implementation-plan.md`.
+- Audit rounds should scan interaction/focus, layout, state feedback, and terminal behavior together, but only repair the highest-priority findings in each round before stopping for `/compact`.
+- PTY audit/polish Round 1 is complete in root. It rewrote the overly dense footer/help legends for the 80x24 baseline and tightened regression coverage around the user-requested circle markers, then verified those changes with targeted TUI tests, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `npm run build`.
+- The next PTY audit/polish round should start from the accepted Round 1 state and focus on remaining first-screen layout density, especially the detail pane under real PTY snapshots.

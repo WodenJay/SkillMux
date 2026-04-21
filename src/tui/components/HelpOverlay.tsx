@@ -10,22 +10,24 @@ export function HelpOverlay() {
       </Text>
       <Text>
         <Text bold>Actions</Text>
-        <Text>: Space toggles managed skills, a adopts, r removes, s scans.</Text>
-      </Text>
-      <Text>
-        <Text bold>Icons</Text>
-        <Text>
-          : * ready, yellow warning on issues, ? missing, ! unsupported; filled circle enabled, hollow circle disabled, ? unmanaged, ! issue.
-        </Text>
+        <Text>: Space toggles, a adopts, r removes, s scans.</Text>
       </Text>
       <Text>
         <Text bold>Search</Text>
         <Text>: / filters the focused list, Esc closes search.</Text>
       </Text>
       <Text>
+        <Text bold>Agent icons</Text>
+        <Text>: * ready, yellow * issues, ? missing, ! unsupported.</Text>
+      </Text>
+      <Text>
+        <Text bold>Skill markers</Text>
+        <Text>: ● enabled, ○ disabled, ? unmanaged, ! issue.</Text>
+      </Text>
+      <Text>
         <Text bold>Safety</Text>
         <Text>
-          : Toggle, adopt, remove, and scan can write local SkillMux state or agent skill links.
+          : Toggle, adopt, remove, and scan can update SkillMux state and agent links.
         </Text>
       </Text>
     </Box>

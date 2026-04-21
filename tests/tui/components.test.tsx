@@ -46,7 +46,7 @@ function enabledSkill(
   return {
     id: "using-superpowers",
     kind: "enabled",
-    marker: "*" as TuiEnabledSkillRow["marker"],
+    marker: "●",
     skillId: "using-superpowers",
     name: "using-superpowers",
     path: "C:\\Users\\me\\.skillmux\\skills\\using-superpowers",
@@ -62,7 +62,7 @@ function disabledSkill(
   return {
     id: "terminal-ui",
     kind: "disabled",
-    marker: "-" as TuiDisabledSkillRow["marker"],
+    marker: "○",
     skillId: "terminal-ui",
     name: "terminal-ui",
     path: "C:\\Users\\me\\.skillmux\\skills\\terminal-ui",
@@ -169,7 +169,7 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("Agents");
     expect(frame).toContain("Skills for codex");
     expect(frame).toContain("Detail");
-    expect(frame).toContain("* using-superpowers");
+    expect(frame).toContain("● using-superpowers");
     expect(frame).toContain("[Space]toggle");
   });
 
@@ -244,7 +244,9 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("Agent icons");
     expect(frame).toContain("enabled");
     expect(frame).toContain("disabled");
-    expect(frame).toContain("yellow warning on issues");
+    expect(frame).toContain("yellow * issues");
+    expect(frame).toContain("● enabled");
+    expect(frame).toContain("○ disabled");
   });
 
   it("explains filesystem-writing behavior and left-right navigation in the help overlay", () => {
@@ -259,9 +261,9 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("Left");
     expect(frame).toContain("Right");
     expect(frame).not.toContain("Tab focus");
-    expect(frame).toContain("yellow warning on issues");
+    expect(frame).toContain("yellow * issues");
     expect(frame).toContain(
-      "Toggle, adopt, remove, and scan can write local SkillMux state or agent skill links."
+      "Toggle, adopt, remove, and scan can update SkillMux state and agent links."
     );
   });
 

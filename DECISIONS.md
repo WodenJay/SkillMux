@@ -376,3 +376,12 @@ Record key product and implementation decisions so later sessions do not lose th
 - PTY serialization belongs at the real session layer, not the explorer wrapper. `createPtySession` must own the repo-local PTY lock so direct callers such as the smoke scenario serialize correctly while mocked explorer unit tests stay lock-free.
 - A timed-out PTY `close()` must keep the PTY lock held and leave the session retryable. Releasing the lock before exit is confirmed reopens the race this harness is trying to prevent.
 - Under the full Windows suite, the serialized PTY queue can legitimately exceed 15 seconds. The PTY session lock budget is therefore 30000 ms, slow async tests such as `tui-lazy-loading` declare explicit larger per-test budgets instead of relying on Vitest's default 5-second timeout, and the real PTY scenarios use explicit 10000 ms initial-ready waits instead of depending on the harness default.
+
+### TUI PTY audit and polish
+
+- The PTY harness is complete enough to become the primary product-audit tool for `skillmux tui`; the next slice is product polish, not more test scaffolding.
+- Audit rounds should scan four areas together: interaction/keys/focus, layout/information density, state feedback, and terminal compatibility/exit behavior.
+- Each round should fix only the highest-priority findings from that audit pass, then stop for a compact-ready handoff instead of growing into an unbounded polish branch.
+- PTY exploratory artifacts under `.artifacts/tui-e2e/` are diagnostic evidence for this slice, while lasting protection should come from targeted PTY scenarios or the narrowest focused regression tests that cover the repaired behavior.
+- Round 1 focused on first-screen readability. The accepted changes rewrote footer/help legend copy into short dedicated lines instead of one long sentence that wrapped badly at the 80x24 baseline.
+- Round 1 also tightened focused TUI and PTY smoke coverage around the user's requested circle markers (`●` enabled, `○` disabled) so later polish work does not silently drift away from that contract.

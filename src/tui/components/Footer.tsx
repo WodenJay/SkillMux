@@ -1,6 +1,10 @@
 import { Box, Text } from "ink";
 import type { TuiAvailableActions, TuiSearch } from "../state";
 
+const agentLegend =
+  "Agent icons: * ready  yellow * issues  ? missing  ! unsupported";
+const skillLegend = "Skill markers: ● enabled  ○ disabled  ? unmanaged  ! issue";
+
 export type FooterProps = {
   actions: TuiAvailableActions;
   search: TuiSearch | null;
@@ -22,9 +26,8 @@ export function Footer({ actions, search }: FooterProps) {
       {search === null ? (
         <>
           <Text>{shortcuts.join("   ")}</Text>
-          <Text dimColor>
-            Agent icons: * ready, yellow warning on issues, ? missing, ! unsupported | Skill markers: filled circle enabled, hollow circle disabled, ? unmanaged, ! issue
-          </Text>
+          <Text dimColor>{agentLegend}</Text>
+          <Text dimColor>{skillLegend}</Text>
         </>
       ) : (
         <Text>

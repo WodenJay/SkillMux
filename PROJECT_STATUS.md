@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI PTY exploration complete
+Phase: TUI PTY audit and polish round 1 complete
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -63,6 +63,15 @@ Active development worktree: `(none)`
 - Task 6 timeout note: the PTY lock wait budget is 30000 ms, the async `tui-lazy-loading` tests now declare explicit 15000 ms timeouts, and the real PTY scenarios now use explicit 10000 ms initial-ready waits so the full-suite run stays stable under Windows worker load.
 - Repository cleanup note: the stale `.worktrees/tui-implementation` worktree has been removed, the stale local lifecycle/TUI/task branches have been deleted, and the accepted PTY exploration state now lives on `main`.
 - The PTY exploration implementation slice is complete; next product work can build on the accepted harness instead of adding more manual TUI-only checks.
+- The next TUI product slice uses the accepted PTY harness to audit the real dashboard, find high-priority usability defects, and repair the TUI in compact-sized rounds.
+- The written design spec for that product slice is `docs/superpowers/specs/2026-04-21-skillmux-tui-pty-audit-polish-design.md`.
+- The written implementation plan for that product slice is `docs/superpowers/plans/2026-04-21-skillmux-tui-pty-audit-polish-implementation-plan.md`.
+- PTY audit/polish Round 1 is complete in the root repo.
+- Round 1 findings fixed:
+  - footer and help legend copy was too dense for the 80x24 baseline and wrapped into a harder-to-scan block
+  - regression coverage around the user-requested circle markers is now explicit in focused TUI tests and the PTY smoke path
+- Round 1 verification passed with `npm run build`, targeted TUI model/component tests, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check` (warnings only, no whitespace errors).
+- The next likely Round 2 polish targets are first-screen detail density and other PTY-audited layout issues that remain after the marker/legend cleanup.
 - TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
 - Design followed `$using-superpowers` and the brainstorming hard gate; the written spec is approved.
 - The TUI design stage is using `$tui-design`; implementation will additionally use `$terminal-ui`.
