@@ -333,3 +333,27 @@ Record key product and implementation decisions so later sessions do not lose th
 - The action key map is part of the user contract: `Space` toggles the selected managed skill, `a` adopts after confirmation, `r` removes after confirmation, `s` refreshes, `/` searches the focused list, `?` opens help, and `q` exits.
 - The docs-only Task 8 slice must not claim verification or release completion until those steps actually run.
 - Release readiness checks should treat non-interactive `skillmux tui` as a user-facing CLI path, not just a unit-test path. It should write the existing friendly terminal requirement message, set exit code 1, and avoid surfacing a Node stack trace; unexpected TUI errors should still propagate.
+
+## 2026-04-19
+
+### TUI usability follow-up
+
+- Manual user review identified a focused usability pass that should happen before treating the TUI as visually settled.
+- The dashboard should feel like a full-terminal workspace that reads like the current terminal session has been taken over, rather than a small inner block.
+- Focus switching should move to left/right arrows, and the Detail pane should leave the focus cycle because it has no direct interaction.
+- The selected agent must stay clearly highlighted even while the Skills panel has focus.
+- User-facing list chrome should be simplified by removing noisy `E0` / `D1` counters, while keeping status icons and explaining them clearly in footer/help text.
+- This follow-up is a polish slice on top of the accepted TUI architecture, not a redesign of lifecycle behavior or command semantics.
+- The applied follow-up keeps the existing three-panel layout but makes the root dashboard consume the full provided terminal width and height so the session reads like an active terminal workspace.
+- The footer and help overlay are now part of the user contract for icon discovery: they explain agent status icons and skill markers instead of removing the symbols entirely.
+
+## 2026-04-21
+
+### TUI PTY exploration harness
+
+- The next TUI design slice is not more component tests. It is a new PTY-driven exploration harness that can drive `skillmux tui` like a real user.
+- The testing target is terminal semantics only. Windows Terminal or PowerShell desktop automation is out of scope for the first version because it adds host-terminal noise without helping validate SkillMux's own behavior.
+- The first version should prioritize scriptable exploratory sessions over strict snapshot-only regression gates. The agent needs to use the TUI, notice UX problems, and then turn the important findings into stable scenarios.
+- Mutating TUI actions such as `toggle`, `adopt`, `remove`, and `scan` should execute for real, but only inside a fresh temporary sandbox that contains test-only home, agent, and SkillMux-store paths.
+- Exploration artifacts must include both structured event logs and named screen snapshots, plus filesystem checks for mutating flows.
+- The approved written spec for this slice is `docs/superpowers/specs/2026-04-21-skillmux-tui-pty-exploration-design.md`.

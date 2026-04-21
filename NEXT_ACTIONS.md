@@ -216,3 +216,25 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Run the Task 8 non-interactive terminal checks for redirected output and `NO_COLOR`
 - [ ] Run the Task 8 real Windows Terminal checks at 80x24 and 120x40, including `Ctrl+C` terminal restoration
 - [x] Commit the Task 8 docs, readiness updates, and non-interactive TUI fix
+
+## TUI Usability Follow-Up
+
+- [x] Record the user-reported TUI usability issues in the tracking docs
+- [x] Write the follow-up plan at `docs/superpowers/plans/2026-04-19-skillmux-tui-usability-follow-up-plan.md`
+- [x] Implement full-terminal dashboard rendering so `skillmux tui` reads like it has taken over the current terminal session
+- [x] Change focus switching to left/right arrows and remove the Detail pane from the focus cycle
+- [x] Remove noisy `E0` / `D1` counters and add visible legend/help text for the remaining status icons
+- [x] Keep the selected agent visibly highlighted while Skills has focus
+- [x] Refresh tests, help text, and docs to match the updated TUI interaction contract
+
+## TUI PTY Exploration Design
+
+- [x] Clarify whether the new TUI test layer should target terminal semantics or outer terminal-window automation
+- [x] Choose exploratory PTY sessions over CI-only fixed assertions as the first priority
+- [x] Confirm that mutating TUI actions should execute for real inside a temporary sandbox
+- [x] Confirm that the harness should keep both structured event logs and screen snapshots
+- [x] Propose PTY harness design approaches and select the PTY-driven exploration harness
+- [x] Present and approve the PTY exploration design sections
+- [x] Write the PTY exploration design spec under `docs/superpowers/specs/`
+- [x] Ask for user review of `docs/superpowers/specs/2026-04-21-skillmux-tui-pty-exploration-design.md`
+- [ ] After spec approval, invoke `$writing-plans` and draft the implementation plan

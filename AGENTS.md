@@ -49,3 +49,7 @@
   - keep user-facing status icons, but explain them clearly in the footer/help area
   - keep the selected agent clearly highlighted while Skills has focus
   - remove the Detail pane from the focus cycle
+- The follow-up implementation is now applied in the root repo and verified with targeted TUI tests plus `npm test`, `npm run typecheck`, and `npm run build`.
+- The next TUI design slice is a PTY-driven exploration and end-to-end test harness for `skillmux tui`.
+- That harness is intentionally scoped to terminal semantics, not Windows Terminal desktop automation.
+- The approved design direction is: real TUI actions in a temporary sandbox, scriptable exploratory sessions, and artifacts that include event logs plus screen snapshots.

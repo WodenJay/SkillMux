@@ -8,6 +8,11 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 
 ## Current TUI Design Status
 
+- A new TUI testing design slice is in progress: a PTY-driven exploration harness for `skillmux tui`.
+- The design goal is to let the agent drive the real TUI in a temporary sandbox, detect UX issues directly, and then convert those findings into regression scenarios.
+- The approved design focuses on terminal semantics only; Windows Terminal desktop automation is explicitly out of scope for the first version.
+- The written design spec is `docs/superpowers/specs/2026-04-21-skillmux-tui-pty-exploration-design.md`.
+- The next gate is user review of that spec before writing an implementation plan.
 - TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
 - Design followed `$using-superpowers` and the brainstorming hard gate; the written spec is approved.
 - The TUI design stage is using `$tui-design`; implementation will additionally use `$terminal-ui`.
@@ -25,6 +30,16 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-imp
 - TUI implementation plan has been drafted at `docs/superpowers/plans/2026-04-16-skillmux-tui-implementation-plan.md`.
 - TUI implementation plan review passed.
 - Execution mode selected by the user: subagent-driven development.
+- A TUI usability follow-up plan is recorded at `docs/superpowers/plans/2026-04-19-skillmux-tui-usability-follow-up-plan.md`.
+- The recorded follow-up fixes are:
+  - make the dashboard occupy the full terminal and read like the current terminal session has been taken over
+  - switch panel focus with left/right arrows instead of `Tab`
+  - remove noisy `E0` / `D1` agent counters
+  - keep user-facing status icons, but explain them clearly in the footer/help area
+  - keep the selected agent visibly highlighted while Skills has focus
+  - remove the Detail pane from the focus cycle
+- The follow-up implementation is now applied in the root repo.
+- Follow-up verification passed with targeted TUI tests, `npm test`, `npm run typecheck`, and `npm run build`.
 - Selected first-version layout: persistent multi-panel dashboard with agents, selected-agent skills, and detail/action context visible together.
 - Task 1 is accepted in the root repo after implementation, spec review, code-quality re-review, root sync, full tests, typecheck, and build.
 - TUI Task 1 accepted root code commit: `f4f0f3f`.
