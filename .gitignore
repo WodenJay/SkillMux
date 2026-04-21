@@ -1,5 +1,6 @@
 .worktrees/
 .superpowers/
+.artifacts/
 node_modules/
 dist/
 skills-lock.json

@@ -15,7 +15,9 @@
   "scripts": {
     "build": "tsup",
     "test": "vitest run --configLoader runner",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test:tui-e2e": "node scripts/run-tui-e2e.mjs regression",
+    "tui:explore": "node scripts/run-tui-e2e.mjs explore"
   },
   "dependencies": {
     "commander": "^13.1.0",
@@ -24,9 +26,12 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
+    "@xterm/addon-serialize": "^0.13.0",
+    "@xterm/headless": "^5.5.0",
     "@types/node": "^22.15.21",
     "@types/react": "^19.2.14",
     "ink-testing-library": "^4.0.0",
+    "node-pty": "^1.0.0",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
     "vitest": "^3.1.4"
