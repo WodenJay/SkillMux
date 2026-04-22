@@ -119,6 +119,34 @@ describe("createPtySession", () => {
     }
   }, 30000);
 
+  it("surfaces a late clean session exit trace after the exit event", async () => {
+    const { createPtySession } = await import("./pty-session");
+    const session = await createPtySession({
+      homeDir: "C:\\Users\\wudon\\AppData\\Local\\Temp\\skillmux-home-test",
+      skillmuxHome: "C:\\Users\\wudon\\AppData\\Local\\Temp\\skillmux-home-test\\.skillmux",
+      cols: 100,
+      rows: 30,
+      scenarioName: "pty-session-clean-exit-unit",
+      traceLifecycle: true
+    });
+
+    const exitWait = session.waitForExit(500);
+    onExitHandler?.({ exitCode: 0 });
+    setTimeout(() => {
+      onDataHandler?.("[skillmux:session-exit-clean]\n");
+    }, 75);
+    await exitWait;
+
+    expect(session.eventLog()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ type: "trace", marker: "session-exit-clean" }),
+        expect.objectContaining({ type: "exit", code: 0 })
+      ])
+    );
+
+    await session.close();
+  }, 30000);
+
   it("acquires the PTY lock at session creation, recovers corrupt metadata, and releases it on close", async () => {
     await fs.mkdir(lockDir, { recursive: true });
     await fs.writeFile(join(lockDir, "owner.json"), "{not-json", "utf8");

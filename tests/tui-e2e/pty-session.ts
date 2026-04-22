@@ -13,7 +13,7 @@ type PtySessionEvent =
     }
   | {
       type: "trace";
-      marker: "alt-screen-enter" | "alt-screen-exit";
+      marker: "alt-screen-enter" | "session-exit-clean" | "alt-screen-exit";
     }
   | {
       type: "data";
@@ -76,7 +76,10 @@ export async function createPtySession(options: {
   let recordedExitCode: number | null = null;
   let closed = false;
   let closeInFlight: Promise<void> | null = null;
-  const observedTraceMarkers = new Set<"alt-screen-enter" | "alt-screen-exit">();
+  let lastDataAt = Date.now();
+  const observedTraceMarkers = new Set<
+    "alt-screen-enter" | "session-exit-clean" | "alt-screen-exit"
+  >();
 
   function record(event: PtySessionEvent): void {
     events.push(event);
@@ -84,7 +87,11 @@ export async function createPtySession(options: {
   }
 
   function observeTraceMarkers(): void {
-    for (const marker of ["alt-screen-enter", "alt-screen-exit"] as const) {
+    for (const marker of [
+      "alt-screen-enter",
+      "session-exit-clean",
+      "alt-screen-exit"
+    ] as const) {
       const token = `[skillmux:${marker}]`;
       if (!observedTraceMarkers.has(marker) && rawOutput.includes(token)) {
         observedTraceMarkers.add(marker);
@@ -124,6 +131,7 @@ export async function createPtySession(options: {
   const exitPromise = new Promise<void>((resolve) => {
     child.onData((chunk) => {
       rawOutput += chunk;
+      lastDataAt = Date.now();
       observeTraceMarkers();
       writeQueue = writeQueue.then(() => screen.write(chunk));
       record({ type: "data", size: chunk.length });
@@ -180,7 +188,7 @@ export async function createPtySession(options: {
         await waitForPromise(exitPromise, timeoutMs, "process exit");
       }
 
-      await settle(writeQueue);
+      await drainPendingOutput(() => lastDataAt, () => writeQueue);
     },
     exitCode() {
       return recordedExitCode;
@@ -208,7 +216,7 @@ export async function createPtySession(options: {
           await waitForPromise(exitPromise, timeoutMs, "process exit");
         }
 
-        await settle(writeQueue);
+        await drainPendingOutput(() => lastDataAt, () => writeQueue);
         await releaseLock();
         closed = true;
       })();
@@ -333,6 +341,31 @@ function normalizeTerm(term: string | undefined): string {
 async function settle(pendingWrites: Promise<void>, delayMs = 50): Promise<void> {
   await sleep(delayMs);
   await pendingWrites;
+}
+
+async function drainPendingOutput(
+  getLastDataAt: () => number,
+  getPendingWrites: () => Promise<void>,
+  quietWindowMs = 1000,
+  timeoutMs = 3000
+): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    const pendingWrites = getPendingWrites();
+    await sleep(25);
+    await pendingWrites;
+
+    if (pendingWrites !== getPendingWrites()) {
+      continue;
+    }
+
+    if (Date.now() - getLastDataAt() >= quietWindowMs) {
+      return;
+    }
+  }
+
+  await settle(getPendingWrites());
 }
 
 async function sleep(ms: number): Promise<void> {

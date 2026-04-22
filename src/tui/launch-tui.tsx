@@ -19,16 +19,17 @@ export async function launchTui(options: LaunchTuiOptions = {}): Promise<void> {
   try {
     process.stdout.write(alternateScreenEnter);
     process.stdout.write(cursorHide);
-    writeLifecycleTrace("alt-screen-enter");
+    await writeLifecycleTrace("alt-screen-enter");
 
     const instance = render(<App {...options} />);
     await instance.waitUntilExit();
+    await writeLifecycleTrace("session-exit-clean");
   } catch (error) {
     failure = error;
   } finally {
-    failure = runCleanup(failure, () => writeLifecycleTrace("alt-screen-exit"));
-    failure = runCleanup(failure, () => process.stdout.write(alternateScreenExit));
-    failure = runCleanup(failure, () => process.stdout.write(cursorShow));
+    failure = await runCleanup(failure, () => writeLifecycleTrace("alt-screen-exit"));
+    failure = await runCleanup(failure, () => process.stdout.write(alternateScreenExit));
+    failure = await runCleanup(failure, () => process.stdout.write(cursorShow));
   }
 
   if (failure !== undefined) {
@@ -36,22 +37,29 @@ export async function launchTui(options: LaunchTuiOptions = {}): Promise<void> {
   }
 }
 
-function writeLifecycleTrace(stage: "alt-screen-enter" | "alt-screen-exit"): void {
+function writeLifecycleTrace(
+  stage: "alt-screen-enter" | "session-exit-clean" | "alt-screen-exit"
+): Promise<void> {
   if (!lifecycleTraceEnabled) {
-    return;
+    return Promise.resolve();
   }
 
   process.stderr.write(`[skillmux:${stage}]\n`);
+  return stage === "session-exit-clean" ? sleep(0) : Promise.resolve();
 }
 
-function runCleanup(
+async function runCleanup(
   failure: unknown | undefined,
-  cleanup: () => unknown
-): unknown | undefined {
+  cleanup: () => unknown | Promise<unknown>
+): Promise<unknown | undefined> {
   try {
-    cleanup();
+    await cleanup();
     return failure;
   } catch (error) {
     return failure === undefined ? error : failure;
   }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
