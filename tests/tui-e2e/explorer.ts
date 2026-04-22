@@ -22,6 +22,7 @@ export type StartExplorerOptions = {
   scenarioName: string;
   cols?: number;
   rows?: number;
+  traceLifecycle?: boolean;
 };
 
 export type TuiExplorer = {
@@ -47,6 +48,7 @@ export type TuiExplorer = {
   confirm(): Promise<void>;
   resize(cols: number, rows: number): Promise<void>;
   snapshot(): string;
+  rawOutput(): string;
   saveSnapshot(name: string): Promise<void>;
   waitForExit(timeoutMs?: number): Promise<void>;
   quit(): Promise<void>;
@@ -74,7 +76,8 @@ export async function startExplorer(
     skillmuxHome: options.skillmuxHome,
     cols: options.cols ?? 100,
     rows: options.rows ?? 30,
-    scenarioName: options.scenarioName
+    scenarioName: options.scenarioName,
+    ...(options.traceLifecycle === true ? { traceLifecycle: true } : {})
   });
 
   const paths = {
@@ -156,6 +159,9 @@ export async function startExplorer(
     },
     snapshot() {
       return session.snapshot();
+    },
+    rawOutput() {
+      return session.rawOutput();
     },
     saveSnapshot(name) {
       return session.saveSnapshot(name);

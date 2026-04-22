@@ -60,12 +60,19 @@ export async function createPtySession(options: {
   const command = process.execPath;
   const args = [join(process.cwd(), "dist", "cli.js"), "tui"];
   const screen = createScreenBuffer({ cols: options.cols, rows: options.rows });
+  const sizeBridgePath = join(
+    process.cwd(),
+    ".artifacts",
+    "tui-e2e",
+    `${options.scenarioName}.pty-size.json`
+  );
   let rawOutput = "";
   let artifacts: ArtifactRecorder;
   try {
     artifacts = await createArtifactRecorder({
       scenarioName: options.scenarioName
     });
+    await writePtySizeBridge(sizeBridgePath, options.cols, options.rows);
   } catch (error) {
     await releaseLock();
     throw error;
@@ -111,6 +118,7 @@ export async function createPtySession(options: {
         HOME: options.homeDir,
         USERPROFILE: options.homeDir,
         SKILLMUX_HOME: options.skillmuxHome,
+        SKILLMUX_TUI_PTY_SIZE_FILE: sizeBridgePath,
         SKILLMUX_TUI_PTY_TRACE: options.traceLifecycle === true ? "1" : undefined,
         FORCE_COLOR: "0",
         TERM: normalizeTerm(process.env.TERM)
@@ -157,6 +165,7 @@ export async function createPtySession(options: {
     },
     async resize(cols, rows) {
       record({ type: "resize", cols, rows });
+      await writePtySizeBridge(sizeBridgePath, cols, rows);
       child.resize(cols, rows);
       screen.resize(cols, rows);
       await settle(writeQueue);
@@ -217,6 +226,7 @@ export async function createPtySession(options: {
         }
 
         await drainPendingOutput(() => lastDataAt, () => writeQueue);
+        await fs.rm(sizeBridgePath, { force: true });
         await releaseLock();
         closed = true;
       })();
@@ -370,6 +380,15 @@ async function drainPendingOutput(
 
 async function sleep(ms: number): Promise<void> {
   await new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function writePtySizeBridge(
+  path: string,
+  columns: number,
+  rows: number
+): Promise<void> {
+  await fs.mkdir(dirname(path), { recursive: true });
+  await fs.writeFile(path, JSON.stringify({ columns, rows }), "utf8");
 }
 
 async function waitForPromise<T>(

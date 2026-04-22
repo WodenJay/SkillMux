@@ -3,6 +3,9 @@ import { createScenarioFixture } from "../fixtures";
 import { startExplorer } from "../explorer";
 
 const cleanups: Array<() => void | Promise<void>> = [];
+const cursorHide = "\u001B[?25l";
+const cursorShow = "\u001B[?25h";
+const enabledMarker = "\u25CF using-superpowers";
 
 afterEach(async () => {
   while (cleanups.length > 0) {
@@ -14,9 +17,9 @@ describe("tui explorer usability probes", () => {
   it(
     "exercises help, search, resize, and alternate movement keys",
     async () => {
-      const fixture = await createScenarioFixture({
-        agents: ["claude", "codex"],
-        managedEnabled: [{ agentId: "codex", skillName: "using-superpowers" }],
+    const fixture = await createScenarioFixture({
+      agents: ["claude", "codex"],
+      managedEnabled: [{ agentId: "codex", skillName: "using-superpowers" }],
       managedDisabled: [{ agentId: "codex", skillName: "find-skills" }]
     });
     cleanups.push(fixture.cleanup);
@@ -25,7 +28,8 @@ describe("tui explorer usability probes", () => {
       homeDir: fixture.homeDir,
       skillmuxHome: fixture.skillmuxHome,
       agentId: "claude",
-      scenarioName: "usability-probes"
+      scenarioName: "usability-probes",
+      traceLifecycle: true
     });
     cleanups.push(() => explorer.close());
 
@@ -61,12 +65,50 @@ describe("tui explorer usability probes", () => {
     await explorer.nextRowBy("j");
     await explorer.waitForText("find-skills");
 
-    await explorer.resize(120, 40);
+    await explorer.resize(132, 40);
+    await explorer.waitForText("Skills for codex");
+    expect(explorer.snapshot()).toContain("Skills for codex");
+    expect(explorer.snapshot()).toContain("Store:");
+    expect(explorer.snapshot()).not.toContain("Terminal too small");
+
+    await explorer.resize(80, 24);
+    await explorer.waitForText("Skills for codex");
+    expect(explorer.snapshot()).toContain("Skills for codex");
+    expect(explorer.snapshot()).not.toContain("Terminal too small");
+
+    await explorer.resize(79, 24);
+    await explorer.saveSnapshot("below-floor");
+    await explorer.waitForText(
+      "Terminal too small. Resize to at least 80x24.",
+      10000
+    );
+    expect(explorer.snapshot()).toContain(
+      "Terminal too small. Resize to at least 80x24."
+    );
+
+    await explorer.resize(80, 24);
     await explorer.waitForText("Skills for codex");
     expect(explorer.snapshot()).not.toContain("Terminal too small");
 
     await explorer.forceQuit();
     await explorer.waitForExit();
+    const rawOutput = explorer.rawOutput();
+    const exitMarker = "[skillmux:alt-screen-exit]";
+    const afterExitBoundary = rawOutput.slice(rawOutput.lastIndexOf(exitMarker));
+    expect(explorer.eventLog()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ type: "trace", marker: "alt-screen-enter" }),
+        expect.objectContaining({ type: "trace", marker: "alt-screen-exit" })
+      ])
+    );
+    expect(rawOutput).toContain(cursorHide);
+    expect(rawOutput).toContain(cursorShow);
+    expect(afterExitBoundary).toContain(exitMarker);
+    expect(afterExitBoundary).not.toContain("Skills for codex");
+    expect(afterExitBoundary).not.toContain(enabledMarker);
+    expect(afterExitBoundary).not.toContain(
+      "Terminal too small. Resize to at least 80x24."
+    );
 
     expect(explorer.exitCode()).toBe(0);
     },

@@ -60,7 +60,7 @@ describe("tui pty smoke", () => {
     expect(runningSnapshot).not.toContain("OpenClaw");
     expect(runningSnapshot).not.toContain("\n?  Agents");
     expect(runningSnapshot).toContain(
-      "Store: ...\\.skillmux\\skills\\using-superpowers"
+      "Store: ...\\skills\\using-superpowers"
     );
     expect(runningSnapshot).toContain(
       "Link: ...\\.codex\\skills\\using-superpowers"
@@ -70,7 +70,7 @@ describe("tui pty smoke", () => {
     expect(afterExitBoundary).not.toContain("Skills for codex");
     expect(afterExitBoundary).not.toContain(enabledMarker);
     expect(afterExitBoundary).not.toContain(
-      "Store: ...\\.skillmux\\skills\\using-superpowers"
+      "Store: ...\\skills\\using-superpowers"
     );
     expect(afterExitBoundary).not.toContain(
       "Link: ...\\.codex\\skills\\using-superpowers"

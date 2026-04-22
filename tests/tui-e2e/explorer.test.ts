@@ -38,6 +38,7 @@ describe("startExplorer", () => {
   let flushArtifactsMock: ReturnType<typeof vi.fn>;
   let closeMock: ReturnType<typeof vi.fn>;
   let snapshotMock: ReturnType<typeof vi.fn>;
+  let rawOutputMock: ReturnType<typeof vi.fn>;
   let exitCodeMock: ReturnType<typeof vi.fn>;
   let eventLogMock: ReturnType<typeof vi.fn>;
 
@@ -56,6 +57,7 @@ describe("startExplorer", () => {
     flushArtifactsMock = vi.fn().mockResolvedValue(undefined);
     closeMock = vi.fn().mockResolvedValue(undefined);
     snapshotMock = vi.fn(() => "snapshot");
+    rawOutputMock = vi.fn(() => "");
     exitCodeMock = vi.fn(() => 0);
     eventLogMock = vi.fn(() => []);
 
@@ -70,6 +72,7 @@ describe("startExplorer", () => {
       flushArtifacts: flushArtifactsMock,
       close: closeMock,
       snapshot: snapshotMock,
+      rawOutput: rawOutputMock,
       exitCode: exitCodeMock,
       eventLog: eventLogMock
     });

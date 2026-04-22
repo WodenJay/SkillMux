@@ -1,5 +1,5 @@
 import React from "react";
-import { render } from "ink";
+import { render, type Instance } from "ink";
 import { App } from "./app";
 
 export type LaunchTuiOptions = {
@@ -15,18 +15,30 @@ const lifecycleTraceEnabled = process.env.SKILLMUX_TUI_PTY_TRACE === "1";
 
 export async function launchTui(options: LaunchTuiOptions = {}): Promise<void> {
   let failure: unknown;
+  let instance: Instance | null = null;
+  let sigintRequested = false;
+
+  const handleSigint = () => {
+    sigintRequested = true;
+    instance?.unmount();
+  };
 
   try {
+    process.once("SIGINT", handleSigint);
     process.stdout.write(alternateScreenEnter);
     process.stdout.write(cursorHide);
     await writeLifecycleTrace("alt-screen-enter");
 
-    const instance = render(<App {...options} />);
+    instance = render(<App {...options} />);
+    if (sigintRequested) {
+      instance.unmount();
+    }
     await instance.waitUntilExit();
     await writeLifecycleTrace("session-exit-clean");
   } catch (error) {
     failure = error;
   } finally {
+    process.removeListener("SIGINT", handleSigint);
     failure = await runCleanup(failure, () => writeLifecycleTrace("alt-screen-exit"));
     failure = await runCleanup(failure, () => process.stdout.write(alternateScreenExit));
     failure = await runCleanup(failure, () => process.stdout.write(cursorShow));

@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { Text, useApp, useInput } from "ink";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -87,6 +88,130 @@ function isTextInput(input: string): boolean {
   return input.length > 0 && !/[\u0000-\u001F\u007F]/u.test(input);
 }
 
+function parseBridgedSize(value: string): { columns: number; rows: number } | null {
+  try {
+    const parsed = JSON.parse(value) as {
+      columns?: unknown;
+      rows?: unknown;
+    };
+
+    if (
+      typeof parsed.columns === "number" &&
+      typeof parsed.rows === "number" &&
+      Number.isFinite(parsed.columns) &&
+      Number.isFinite(parsed.rows)
+    ) {
+      return {
+        columns: parsed.columns,
+        rows: parsed.rows
+      };
+    }
+  } catch {
+    return null;
+  }
+
+  return null;
+}
+
+function liveTerminalSize(): { columns: number; rows: number } {
+  return {
+    columns: process.stdout.columns ?? 80,
+    rows: process.stdout.rows ?? 24
+  };
+}
+
+type AppViewportProps = {
+  state: TuiState;
+  terminalWidth?: number;
+  terminalHeight?: number;
+};
+
+type BridgedDashboardViewportProps = AppViewportProps & {
+  bridgePath: string | null;
+};
+
+function readSizeFile(path: string): { columns: number; rows: number } | null {
+  try {
+    return parseBridgedSize(readFileSync(path, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+function useBridgedTerminalSize(path: string | null): { columns: number; rows: number } | null {
+  const [size, setSize] = useState<{ columns: number; rows: number } | null>(() =>
+    path === null ? null : readSizeFile(path)
+  );
+
+  useEffect(() => {
+    if (path === null) {
+      setSize(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    const refresh = () => {
+      if (cancelled) {
+        return;
+      }
+
+      const nextSize = readSizeFile(path);
+      setSize((current) =>
+        nextSize === null
+          ? current
+          : current !== null &&
+              current.columns === nextSize.columns &&
+              current.rows === nextSize.rows
+            ? current
+            : nextSize
+      );
+    };
+
+    refresh();
+    const timer = setInterval(refresh, 50);
+
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [path]);
+
+  return size;
+}
+
+function LiveDashboardViewport({
+  state,
+  terminalWidth,
+  terminalHeight
+}: AppViewportProps) {
+  return (
+    <Dashboard
+      state={state}
+      width={terminalWidth ?? liveTerminalSize().columns}
+      height={terminalHeight ?? liveTerminalSize().rows}
+    />
+  );
+}
+
+function BridgedDashboardViewport({
+  state,
+  terminalWidth,
+  terminalHeight,
+  bridgePath
+}: BridgedDashboardViewportProps) {
+  const bridgedTerminalSize = useBridgedTerminalSize(bridgePath ?? null);
+  const fallbackSize = liveTerminalSize();
+
+  return (
+    <Dashboard
+      state={state}
+      width={terminalWidth ?? bridgedTerminalSize?.columns ?? fallbackSize.columns}
+      height={terminalHeight ?? bridgedTerminalSize?.rows ?? fallbackSize.rows}
+    />
+  );
+}
+
 export function App({
   homeDir,
   skillmuxHome,
@@ -106,6 +231,8 @@ export function App({
     () => ({ ...defaultServices, ...serviceOverrides }),
     [serviceOverrides]
   );
+  const sizeBridgePath = process.env.SKILLMUX_TUI_PTY_SIZE_FILE?.trim() ?? null;
+  const sizeBridgeEnabled = sizeBridgePath !== null && sizeBridgePath.length > 0;
 
   const beginRequest = useCallback((): number => {
     requestSequence.current += 1;
@@ -471,11 +598,18 @@ export function App({
     return <Text>loading dashboard...</Text>;
   }
 
-  return (
-    <Dashboard
+  return sizeBridgeEnabled ? (
+    <BridgedDashboardViewport
       state={state}
-      width={terminalWidth ?? process.stdout.columns ?? 80}
-      height={terminalHeight ?? process.stdout.rows ?? 24}
+      terminalWidth={terminalWidth}
+      terminalHeight={terminalHeight}
+      bridgePath={sizeBridgePath}
+    />
+  ) : (
+    <LiveDashboardViewport
+      state={state}
+      terminalWidth={terminalWidth}
+      terminalHeight={terminalHeight}
     />
   );
 }
