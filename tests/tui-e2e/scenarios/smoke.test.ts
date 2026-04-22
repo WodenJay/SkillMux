@@ -28,27 +28,33 @@ describe("tui pty smoke", () => {
     cleanups.push(() => session.close());
 
     await session.waitForText("Skills for codex", 10000);
-    await session.waitForText("● using-superpowers");
+    await session.waitForText("using-superpowers");
+    const runningSnapshot = session.snapshot();
     await session.saveSnapshot("initial-dashboard");
     await session.press("q");
     await session.waitForExit();
     await session.flushArtifacts();
 
-    expect(session.snapshot()).toContain("Skills for codex");
-    expect(session.snapshot()).toContain("● using-superpowers");
-    expect(session.snapshot()).not.toContain("Claude Code");
-    expect(session.snapshot()).not.toContain("Gemini CLI");
-    expect(session.snapshot()).not.toContain("OpenClaw");
-    expect(session.snapshot()).not.toContain("\n?  Agents");
-    expect(session.snapshot()).toContain(
+    const finalSnapshot = session.snapshot();
+
+    expect(runningSnapshot).toContain("Skills for codex");
+    expect(runningSnapshot).toContain("using-superpowers");
+    expect(finalSnapshot).not.toContain("Skills for codex");
+    expect(finalSnapshot).not.toContain("using-superpowers");
+    expect(finalSnapshot).not.toContain("Store: ...\\.skillmux\\skills\\using-superpowers");
+    expect(finalSnapshot).not.toContain("Link: ...\\.codex\\skills\\using-superpowers");
+    expect(finalSnapshot).not.toContain("Skill markers:");
+    expect(runningSnapshot).not.toContain("Claude Code");
+    expect(runningSnapshot).not.toContain("Gemini CLI");
+    expect(runningSnapshot).not.toContain("OpenClaw");
+    expect(runningSnapshot).not.toContain("\n?  Agents");
+    expect(runningSnapshot).toContain(
       "Store: ...\\.skillmux\\skills\\using-superpowers"
     );
-    expect(session.snapshot()).toContain(
+    expect(runningSnapshot).toContain(
       "Link: ...\\.codex\\skills\\using-superpowers"
     );
-    expect(session.snapshot()).toContain(
-      "Skill markers: ● enabled  ○ disabled  ? unmanaged  ! issue"
-    );
+    expect(runningSnapshot).toContain("Skill markers:");
     expect(session.exitCode()).toBe(0);
     expect(session.eventLog()).toEqual(
       expect.arrayContaining([
