@@ -25,7 +25,8 @@ describe("tui pty smoke", () => {
       skillmuxHome: fixture.skillmuxHome,
       cols: 100,
       rows: 30,
-      scenarioName: "smoke-launch-quit"
+      scenarioName: "smoke-launch-quit",
+      traceLifecycle: true
     });
     cleanups.push(() => session.close());
 
@@ -42,8 +43,12 @@ describe("tui pty smoke", () => {
 
     expect(rawOutput).toContain(cursorHide);
     expect(rawOutput).toContain(cursorShow);
-    expect(rawOutput.startsWith(cursorHide)).toBe(true);
-    expect(rawOutput.endsWith(cursorShow)).toBe(true);
+    expect(session.eventLog()).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ type: "trace", marker: "alt-screen-enter" }),
+        expect.objectContaining({ type: "trace", marker: "alt-screen-exit" })
+      ])
+    );
     expect(runningSnapshot).toContain("Skills for codex");
     expect(runningSnapshot).toContain("● using-superpowers");
     expect(runningSnapshot).not.toContain("Claude Code");

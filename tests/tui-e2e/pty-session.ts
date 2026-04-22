@@ -12,6 +12,10 @@ type PtySessionEvent =
       pid: number;
     }
   | {
+      type: "trace";
+      marker: "alt-screen-enter" | "alt-screen-exit";
+    }
+  | {
       type: "data";
       size: number;
     }
@@ -50,6 +54,7 @@ export async function createPtySession(options: {
   cols: number;
   rows: number;
   scenarioName: string;
+  traceLifecycle?: boolean;
 }): Promise<PtySession> {
   const releaseLock = await acquirePtyLock();
   const command = process.execPath;
@@ -71,10 +76,21 @@ export async function createPtySession(options: {
   let recordedExitCode: number | null = null;
   let closed = false;
   let closeInFlight: Promise<void> | null = null;
+  const observedTraceMarkers = new Set<"alt-screen-enter" | "alt-screen-exit">();
 
   function record(event: PtySessionEvent): void {
     events.push(event);
     artifacts.recordEvent(event);
+  }
+
+  function observeTraceMarkers(): void {
+    for (const marker of ["alt-screen-enter", "alt-screen-exit"] as const) {
+      const token = `[skillmux:${marker}]`;
+      if (!observedTraceMarkers.has(marker) && rawOutput.includes(token)) {
+        observedTraceMarkers.add(marker);
+        record({ type: "trace", marker });
+      }
+    }
   }
 
   let child: pty.IPty;
@@ -88,6 +104,7 @@ export async function createPtySession(options: {
         HOME: options.homeDir,
         USERPROFILE: options.homeDir,
         SKILLMUX_HOME: options.skillmuxHome,
+        SKILLMUX_TUI_PTY_TRACE: options.traceLifecycle === true ? "1" : undefined,
         FORCE_COLOR: "0",
         TERM: normalizeTerm(process.env.TERM)
       }
@@ -107,6 +124,7 @@ export async function createPtySession(options: {
   const exitPromise = new Promise<void>((resolve) => {
     child.onData((chunk) => {
       rawOutput += chunk;
+      observeTraceMarkers();
       writeQueue = writeQueue.then(() => screen.write(chunk));
       record({ type: "data", size: chunk.length });
     });
