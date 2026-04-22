@@ -83,6 +83,20 @@ function includesQuery(values: Array<string | null>, query: string): boolean {
   );
 }
 
+function isRelevantAgentRow(
+  row: TuiAgentRow,
+  selectedAgentId: string | null
+): boolean {
+  return (
+    row.id === selectedAgentId ||
+    row.exists ||
+    (row.activationCount ?? 0) > 0 ||
+    row.enabledCount > 0 ||
+    row.unmanagedCount > 0 ||
+    row.issueCount > 0
+  );
+}
+
 function skillMatchesQuery(row: TuiSkillRow, query: string): boolean {
   if (row.kind === "issue") {
     return includesQuery(
@@ -243,7 +257,9 @@ function isModalBackgroundEvent(event: TuiStateEvent): boolean {
 
 export function getVisibleAgents(state: TuiState): TuiAgentRow[] {
   if (state.search?.panel !== "agents") {
-    return state.model.agents;
+    return state.model.agents.filter((row) =>
+      isRelevantAgentRow(row, state.model.selectedAgentId)
+    );
   }
 
   return state.model.agents.filter((row) =>

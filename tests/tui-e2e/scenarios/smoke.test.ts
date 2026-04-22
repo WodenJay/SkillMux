@@ -36,6 +36,10 @@ describe("tui pty smoke", () => {
 
     expect(session.snapshot()).toContain("Skills for codex");
     expect(session.snapshot()).toContain("● using-superpowers");
+    expect(session.snapshot()).not.toContain("Claude Code");
+    expect(session.snapshot()).not.toContain("Gemini CLI");
+    expect(session.snapshot()).not.toContain("OpenClaw");
+    expect(session.snapshot()).not.toContain("\n?  Agents");
     expect(session.snapshot()).toContain(
       "Store: ...\\.skillmux\\skills\\using-superpowers"
     );

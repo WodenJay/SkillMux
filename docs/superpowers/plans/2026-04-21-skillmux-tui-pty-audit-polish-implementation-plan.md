@@ -57,6 +57,19 @@ Each implementation round should follow the same shape:
 - compacted long managed and agent-link paths to single-line tail summaries so the Detail pane stops consuming multiple wrapped rows on the first screen
 - added focused TUI coverage plus PTY smoke assertions for the compact detail output
 
+## Round 3
+
+**Planned focus:**
+
+- re-audit the first screen after the detail compaction landed
+- remove the next highest-priority source of first-screen noise without hiding useful local state
+
+**Round 3 outcome:**
+
+- the default Agents list now hides built-in agents that are neither present locally nor carrying activation history, unmanaged entries, or issues
+- explicit agent search still searches the full discovered agent set, so hidden built-ins remain discoverable when the user asks for them
+- the fix is backed by a focused TUI state regression plus a real PTY smoke assertion that the codex-only first screen no longer lists irrelevant missing agents
+
 ## Verification Gate Per Round
 
 Run the narrowest useful checks first, then broaden as risk grows:

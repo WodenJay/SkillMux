@@ -367,3 +367,17 @@ Task 10 passed fresh in the root repo with:
   - footer/help legend now explains the yellow `*` warning state in user-facing language
   - confirm dialog height budgeting now uses the dialog's shared height constant
   - targeted verification passed with `npm test -- --run tests/tui/components.test.tsx tests/tui/state.test.ts tests/tui/focus-input.test.tsx`
+- PTY audit/polish Round 1 is accepted in root:
+  - footer/help legends were rewritten into shorter dedicated lines for the 80x24 baseline
+  - focused TUI tests and PTY smoke now lock the user-requested circle-marker contract
+  - verification passed with `npm run build`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
+- PTY audit/polish Round 2 is accepted in root:
+  - the Detail pane now compresses managed-store and agent-link paths into one-line `Store` / `Link` summaries
+  - verification passed with `npm run build`, targeted TUI + PTY smoke checks, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
+- PTY audit/polish Round 3 is accepted in root:
+  - the default Agents list now hides built-in agents that are neither present locally nor carrying activation history, unmanaged entries, or issues
+  - explicit agent search still searches the full discovered agent set, so hidden built-ins remain discoverable on demand
+  - verification passed with `npm run build`, `npm test -- --run tests/tui/state.test.ts tests/tui-e2e/scenarios/smoke.test.ts`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
+- Next PTY audit/polish focus:
+  - continue from the accepted Round 3 first screen
+  - rank and fix the next highest-priority interaction/state-feedback issue batch before another `/compact`

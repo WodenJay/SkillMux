@@ -198,6 +198,44 @@ describe("TUI state reducer", () => {
     expect(getVisibleAgents(filteredSkills)).toHaveLength(3);
   });
 
+  it("hides missing agents without local state from the default list but keeps them searchable", () => {
+    const initial = createInitialTuiState(
+      model({
+        agents: [
+          agent("codex", "OpenAI Codex"),
+          {
+            ...agent("gemini", "Gemini CLI"),
+            exists: false
+          },
+          {
+            ...agent("openclaw", "OpenClaw"),
+            exists: false
+          },
+          {
+            ...agent("agents", "Agents"),
+            exists: false,
+            issueCount: 1
+          },
+          {
+            ...agent("claude", "Claude Code"),
+            exists: false
+          }
+        ]
+      })
+    );
+    const search = updateTuiState(initial, { type: "open-search" });
+    const filtered = updateTuiState(search, {
+      type: "search-query-changed",
+      query: "claude"
+    });
+
+    expect(getVisibleAgents(initial).map((row) => row.id)).toEqual([
+      "codex",
+      "agents"
+    ]);
+    expect(getVisibleAgents(filtered).map((row) => row.id)).toEqual(["claude"]);
+  });
+
   it("closes search with close without changing selection", () => {
     const searching = updateTuiState(createInitialTuiState(model()), {
       type: "open-search"

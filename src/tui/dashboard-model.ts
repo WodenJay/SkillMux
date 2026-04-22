@@ -13,6 +13,7 @@ export type TuiAgentRow = {
   discovery: "builtin" | "custom";
   exists: boolean;
   supported: boolean;
+  activationCount?: number;
   enabledCount: number;
   disabledCount: number;
   unmanagedCount: number;
@@ -287,6 +288,14 @@ function countsForRows(rows: TuiSkillRow[]): RowCounts {
   return counts;
 }
 
+function countActivationsForAgent(
+  manifest: Manifest,
+  agentId: string
+): number {
+  return manifest.activations.filter((activation) => activation.agentId === agentId)
+    .length;
+}
+
 function buildAgentRows(input: BuildDashboardModelInput): TuiAgentRow[] {
   return sortById(input.agents).map((agent) => {
     const counts = countsForRows(buildSkillRowsForAgent(input, agent.id));
@@ -298,6 +307,7 @@ function buildAgentRows(input: BuildDashboardModelInput): TuiAgentRow[] {
       discovery: agent.discovery,
       exists: agent.exists,
       supported: agent.supportedOnPlatform,
+      activationCount: countActivationsForAgent(input.manifest, agent.id),
       ...counts
     };
   });
