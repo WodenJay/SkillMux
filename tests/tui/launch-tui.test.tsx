@@ -128,4 +128,29 @@ describe("launchTui", () => {
       cursorShow
     ]);
   });
+
+  it("restores alternate screen and cursor when the second pre-render terminal write throws", async () => {
+    const writeFailure = new Error("cursor hide failed");
+    const writes: string[] = [];
+    const writeSpy = vi.spyOn(process.stdout, "write").mockImplementation((chunk: unknown) => {
+      writes.push(String(chunk));
+      if (writes.length === 2) {
+        throw writeFailure;
+      }
+
+      return true;
+    });
+
+    await expect(launchTui()).rejects.toThrow(writeFailure);
+
+    expect(writeSpy).toHaveBeenCalledTimes(4);
+    expect(renderMock).not.toHaveBeenCalled();
+    expect(waitUntilExitMock).not.toHaveBeenCalled();
+    expect(writes).toEqual([
+      alternateScreenEnter,
+      cursorHide,
+      alternateScreenExit,
+      cursorShow
+    ]);
+  });
 });

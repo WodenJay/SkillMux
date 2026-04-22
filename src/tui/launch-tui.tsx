@@ -14,17 +14,20 @@ const cursorShow = "\u001B[?25h";
 const lifecycleTraceEnabled = process.env.SKILLMUX_TUI_PTY_TRACE === "1";
 
 export async function launchTui(options: LaunchTuiOptions = {}): Promise<void> {
-  process.stdout.write(alternateScreenEnter);
-  process.stdout.write(cursorHide);
-  writeLifecycleTrace("alt-screen-enter");
-
   try {
+    process.stdout.write(alternateScreenEnter);
+    process.stdout.write(cursorHide);
+    writeLifecycleTrace("alt-screen-enter");
+
     const instance = render(<App {...options} />);
     await instance.waitUntilExit();
   } finally {
-    writeLifecycleTrace("alt-screen-exit");
-    process.stdout.write(alternateScreenExit);
-    process.stdout.write(cursorShow);
+    try {
+      writeLifecycleTrace("alt-screen-exit");
+    } finally {
+      process.stdout.write(alternateScreenExit);
+      process.stdout.write(cursorShow);
+    }
   }
 }
 
