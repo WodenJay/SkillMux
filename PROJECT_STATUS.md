@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI PTY audit and polish round 4 complete
+Phase: TUI PTY audit and polish round 5 complete
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -383,6 +383,10 @@ Task 10 passed fresh in the root repo with:
   - `Esc` now cancels a filtered search and restores the previous selection, while `Enter` closes search and keeps the current filtered selection
   - footer/help copy now explains the search commit-versus-cancel behavior
   - verification passed with `npm run build`, `npm test -- --run tests/tui/state.test.ts tests/tui/components.test.tsx tests/tui-e2e/scenarios/usability-probes.test.ts`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
+- PTY audit/polish Round 5 is accepted in root:
+  - switching agents no longer makes the Skills pane briefly claim `No skills for this agent` while the new agent reload is still pending
+  - the Detail pane now shows a loading placeholder during that pending reload instead of falling back to `Select a skill row`
+  - verification passed with `npm run build`, `npm test -- --run tests/tui/components.test.tsx`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
 - Next PTY audit/polish focus:
-  - continue from the accepted Round 4 state
-  - rank and fix the next highest-priority interaction/state-feedback issue batch beyond the repaired search cancel/commit flows before another `/compact`
+  - continue from the accepted Round 5 state
+  - rank and fix the next highest-priority interaction/state-feedback issue batch beyond the repaired agent-switch loading feedback before another `/compact`

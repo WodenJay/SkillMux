@@ -7,6 +7,7 @@ export type SkillListProps = {
   selectedSkillId: string | null;
   focused: boolean;
   searchQuery?: string;
+  loadingAgentName?: string | null;
   width?: number;
   height?: number;
 };
@@ -41,11 +42,14 @@ export function SkillList({
   selectedSkillId,
   focused,
   searchQuery,
+  loadingAgentName = null,
   width = 28,
   height = 18
 }: SkillListProps) {
   const emptyMessage =
-    agentId === null
+    loadingAgentName !== null
+      ? `Loading skills for ${loadingAgentName}...`
+      : agentId === null
       ? "Select an agent"
       : searchQuery !== undefined && searchQuery.trim().length > 0
         ? "No matching skills"

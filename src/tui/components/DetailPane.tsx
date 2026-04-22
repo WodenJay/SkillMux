@@ -5,6 +5,7 @@ export type DetailPaneProps = {
   selectedAgent: TuiAgentRow | null;
   selectedSkill: TuiSkillRow | null;
   focused: boolean;
+  loadingAgentName?: string | null;
   width?: number;
   height?: number;
 };
@@ -92,6 +93,7 @@ export function DetailPane({
   selectedAgent,
   selectedSkill,
   focused: _focused,
+  loadingAgentName = null,
   width = 28,
   height = 18
 }: DetailPaneProps) {
@@ -106,7 +108,11 @@ export function DetailPane({
         <Text dimColor>Agent: {selectedAgent.name}</Text>
       )}
       {selectedSkill === null ? (
+        loadingAgentName !== null ? (
+          <Text dimColor>Loading details for {loadingAgentName}...</Text>
+        ) : (
         <Text dimColor>Select a skill row</Text>
+        )
       ) : (
         detailLines(selectedSkill).map(({ label, value, compact }) => {
           const valueWidth = Math.max(width - (label.length + 2), 8);

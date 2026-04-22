@@ -390,3 +390,4 @@ Record key product and implementation decisions so later sessions do not lose th
 - The accepted Round 3 relevance rule is: show a built-in agent by default when it is present locally, has activation history, has unmanaged entries, has issues, or is currently selected. Explicit agent search still searches the full discovered-agent set.
 - Round 4 focused on search interaction and feedback. Empty-result search states must describe the filter result, not pretend the dashboard has no data.
 - Search close semantics are now split intentionally: `Esc` cancels search and restores the pre-search selection, while `Enter` commits the currently filtered selection and exits search mode.
+- Round 5 focused on pending agent reload feedback. When the selected agent has changed but the async reload for that agent has not returned yet, the dashboard should render loading placeholders instead of misleading empty-state copy.

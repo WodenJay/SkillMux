@@ -281,5 +281,8 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Start PTY audit/polish Round 4: audit the accepted Round 3 screen and rank the next interaction/state-feedback issue batch
 - [x] Fix the Round 4 PTY-audited high-priority TUI issue batch and add regression coverage
 - [x] Run Round 4 verification and stop for `/compact`
-- [ ] Start PTY audit/polish Round 5: continue from the accepted Round 4 search behavior and rank the next interaction/state-feedback issue batch
-- [ ] Fix the Round 5 PTY-audited high-priority TUI issue batch and add regression coverage
+- [x] Start PTY audit/polish Round 5: continue from the accepted Round 4 search behavior and rank the next interaction/state-feedback issue batch
+- [x] Fix the Round 5 PTY-audited high-priority TUI issue batch and add regression coverage
+- [x] Run Round 5 verification and stop for `/compact`
+- [ ] Start PTY audit/polish Round 6: continue from the accepted Round 5 loading-feedback behavior and rank the next interaction/state-feedback issue batch
+- [ ] Fix the Round 6 PTY-audited high-priority TUI issue batch and add regression coverage

@@ -84,6 +84,19 @@ Each implementation round should follow the same shape:
 - `Enter` now commits the current search result, and the footer/help copy explains the `Enter` versus `Esc` search behavior
 - the fix is backed by focused state/component regressions plus a real PTY usability probe that exercises empty-result cancel and commit flows
 
+## Round 5
+
+**Planned focus:**
+
+- continue from the accepted Round 4 search behavior and rank the next interaction/state-feedback defect batch
+- prioritize misleading dashboard states during agent switching, where the selected agent changes before the async reload returns
+
+**Round 5 outcome:**
+
+- while a new agent is loading, the Skills pane now shows `Loading skills for <agent>...` instead of the misleading `No skills for this agent`
+- while that same reload is pending, the Detail pane now shows a loading placeholder instead of `Select a skill row`
+- the fix is backed by a focused App regression that reproduces the pending-load state and verifies the loading placeholders
+
 ## Verification Gate Per Round
 
 Run the narrowest useful checks first, then broaden as risk grows:

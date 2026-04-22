@@ -537,6 +537,58 @@ describe("App", () => {
     expect(lastFrame()).toContain("claude-skill");
   });
 
+  it("shows loading placeholders instead of empty-state copy while switching agents", async () => {
+    const pendingAgentLoad = deferred<DashboardModel>();
+    const loadDashboardState = vi
+      .fn()
+      .mockResolvedValueOnce(
+        model({
+          agents: [agent(), agent({ id: "claude", name: "claude" })],
+          selectedAgentId: "codex",
+          selectedSkillId: "using-superpowers",
+          skills: [enabledSkill()]
+        })
+      )
+      .mockReturnValueOnce(pendingAgentLoad.promise);
+    const { lastFrame, stdin } = render(
+      <App
+        services={{ loadDashboardState }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("j");
+    await settle();
+
+    expect(lastFrame()).toContain("Skills for claude");
+    expect(lastFrame()).toContain("Loading skills for claude...");
+    expect(lastFrame()).toContain("Loading details for");
+    expect(lastFrame()).toContain("claude...");
+    expect(lastFrame()).not.toContain("No skills for this agent");
+    expect(lastFrame()).not.toContain("Select a skill row");
+
+    pendingAgentLoad.resolve(
+      model({
+        agents: [agent(), agent({ id: "claude", name: "claude" })],
+        selectedAgentId: "claude",
+        skills: [
+          enabledSkill({
+            id: "claude-skill",
+            skillId: "claude-skill",
+            name: "claude-skill",
+            agentId: "claude"
+          })
+        ]
+      })
+    );
+    await settle();
+    await settle();
+
+    expect(lastFrame()).toContain("claude-skill");
+  });
+
   it("closes adopt confirmation immediately and ignores duplicate y while write is pending", async () => {
     const pendingAdopt = deferred<{
       model: DashboardModel;

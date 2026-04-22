@@ -38,6 +38,15 @@ export function Dashboard({
     state.model.agents.find((agent) => agent.id === state.model.selectedAgentId) ??
     null;
   const selectedSkill = getSelectedSkill(state);
+  const loadingAgentName =
+    state.pendingAgentId ??
+    (state.busy && state.statusMessage === "loading agent..."
+      ? state.model.selectedAgentId
+      : null);
+  const loadingAgent =
+    loadingAgentName === null
+      ? null
+      : state.model.agents.find((agent) => agent.id === loadingAgentName) ?? null;
   const actions = getAvailableActions(state);
   const footerHeight = 3;
   const overlayHeight =
@@ -75,6 +84,7 @@ export function Dashboard({
           selectedSkillId={state.model.selectedSkillId}
           focused={state.focus === "skills"}
           searchQuery={state.search?.panel === "skills" ? state.search.query : undefined}
+          loadingAgentName={loadingAgent?.name ?? null}
           width={skillWidth}
           height={bodyHeight}
         />
@@ -82,6 +92,7 @@ export function Dashboard({
           selectedAgent={selectedAgent}
           selectedSkill={selectedSkill}
           focused={state.focus === "detail"}
+          loadingAgentName={loadingAgent?.name ?? null}
           width={detailWidth}
           height={bodyHeight}
         />
