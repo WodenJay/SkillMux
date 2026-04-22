@@ -296,7 +296,10 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Verify alternate-screen/fullscreen Task 1 with focused TUI tests, PTY scenarios, `npm test`, `npm run typecheck`, `npm run build`, and `git diff --check`
 - [x] Implement alternate-screen/fullscreen Task 2 in root: responsive fullscreen layout
 - [x] Verify alternate-screen/fullscreen Task 2 with focused TUI tests, `npm run typecheck`, `npm run build`, and `git diff --check`
-- [ ] Start alternate-screen/fullscreen Task 3 in the isolated worktree: PTY resize and restore assertions
-- [ ] Verify alternate-screen/fullscreen Task 3 with focused PTY scenarios, `npm run test:tui-e2e`, `npm run typecheck`, `npm run build`, and `git diff --check`
+- [x] Start alternate-screen/fullscreen Task 3 in the isolated worktree: PTY resize and restore assertions
+- [x] Verify alternate-screen/fullscreen Task 3 with focused PTY scenarios, `npm run test:tui-e2e`, `npm run typecheck`, `npm run build`, and `git diff --check`
+- [x] Update alternate-screen/fullscreen tracking docs and plan checkboxes after Task 3 acceptance
+- [x] Run the alternate-screen/fullscreen Task 4 full verification gate in the root repo
+- [x] Commit the alternate-screen/fullscreen Task 4 tracking state in the root repo
 - [ ] Add a later usability/lifecycle slice for one-key adoption of all unmanaged skills
 - [ ] Resume or discard the paused PTY audit/polish Round 8 search-cancel debugging explicitly before touching those WIP files again

@@ -1,10 +1,10 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI alternate-screen/fullscreen Task 2 accepted in root; PTY resize/restore Task 3 pending
+Phase: TUI alternate-screen/fullscreen slice accepted in root; next usability slice pending
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
-Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-alt-screen-task2`
+Active development worktree: `(none)`
 
 ## Current TUI Design Status
 
@@ -42,7 +42,28 @@ Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-alt
   - `Dashboard` now allocates pane widths responsively with ratio-based widths plus minimum guards instead of fixed 24/28 column panes.
   - the Detail pane yields width first as the terminal narrows, while Agents and Skills stay within supported minimum widths.
   - below `80x24`, the dashboard now shows a centered fullscreen resize prompt instead of rendering an inline one-line fallback inside the normal layout.
-- The next step for this slice is Task 3: PTY resize/restore verification, still without mixing in the paused Round 8 search-cancel WIP.
+- Alternate-screen/fullscreen Task 3 is accepted in the root repo.
+- Task 3 accepted root commit:
+  - `38b819e` `test: verify tui fullscreen pty behavior`
+- Task 3 verification in root passed with:
+  - `npm run build`
+  - `npm run typecheck`
+  - `npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts tests/tui-e2e/scenarios/usability-probes.test.ts`
+  - `npm run test:tui-e2e`
+  - `git diff --check`
+- Task 3 PTY/runtime notes:
+  - On the current Windows `node-pty` path, child `stdout` APIs do not receive live resize dimensions, so PTY resize verification uses a narrow test-only size bridge via `SKILLMUX_TUI_PTY_SIZE_FILE`.
+  - The bridged size reader keeps the last known good dimensions if the bridge file is briefly malformed during rewrite, avoiding false fallback states during PTY resize tests.
+  - `launch-tui.tsx` now traps `SIGINT` at the launch boundary so Ctrl+C exits still unmount Ink and restore the main screen plus cursor before process termination.
+  - The PTY usability scenario now proves cleanup on Ctrl+C with trace markers, cursor hide/show sequences, and no dashboard residue after the `alt-screen-exit` boundary.
+- Task 4 full verification gate passed in root with:
+  - `npm run build`
+  - `npm run test:tui-e2e`
+  - `npm test`
+  - `npm run typecheck`
+  - `git diff --check`
+- The alternate-screen/fullscreen slice is complete in the root repo.
+- The next follow-up slice is the later usability/lifecycle request for a one-key way to adopt all unmanaged skills.
 - The requested "adopt all unmanaged skills" shortcut is accepted as a later lifecycle/usability slice, not part of the alternate-screen/fullscreen runtime change.
 - The previously attempted PTY audit/polish Round 8 search-cancel debugging is currently paused and should not be mixed into the new alternate-screen/layout slice accidentally.
 

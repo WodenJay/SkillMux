@@ -200,7 +200,7 @@ git commit -m "feat: make tui layout responsive"
 - Modify: `tests/tui-e2e/scenarios/smoke.test.ts`
 - Modify: `src/tui/launch-tui.ts` and/or `src/tui/app.tsx` only if PTY verification exposes real terminal-semantics defects
 
-- [ ] **Step 1: Extend the PTY usability probes with resize and restore assertions**
+- [x] **Step 1: Extend the PTY usability probes with resize and restore assertions**
 
 Update `tests/tui-e2e/scenarios/usability-probes.test.ts` so the real PTY path verifies:
 
@@ -210,7 +210,7 @@ Update `tests/tui-e2e/scenarios/usability-probes.test.ts` so the real PTY path v
 - resizing below the supported floor shows the resize prompt
 - exiting via `q` or `Ctrl+C` restores the session cleanly
 
-- [ ] **Step 2: Run the targeted PTY scenarios to verify the red state**
+- [x] **Step 2: Run the targeted PTY scenarios to verify the red state**
 
 Run:
 
@@ -220,7 +220,7 @@ npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts tests/tui-e2e/scenarios/
 
 Expected: FAIL until the responsive/fullscreen runtime behavior is fully aligned with the PTY contract.
 
-- [ ] **Step 3: Fix any real PTY-only defects exposed by the scenarios**
+- [x] **Step 3: Fix any real PTY-only defects exposed by the scenarios**
 
 Keep fixes narrow. Only change runtime/rendering code where the PTY path proves the behavior is still wrong.
 
@@ -230,7 +230,7 @@ Likely examples:
 - resize prompt not replacing the full dashboard cleanly
 - residual frame content still visible after exit in the PTY capture
 
-- [ ] **Step 4: Run targeted verification**
+- [x] **Step 4: Run targeted verification**
 
 Run:
 
@@ -256,7 +256,7 @@ npm run test:tui-e2e
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit Task 3**
+- [x] **Step 5: Commit Task 3**
 
 ```powershell
 git add tests/tui-e2e/scenarios/smoke.test.ts tests/tui-e2e/scenarios/usability-probes.test.ts src/tui/launch-tui.ts src/tui/app.tsx
@@ -272,7 +272,7 @@ git commit -m "test: verify tui fullscreen pty behavior"
 - Modify: `DECISIONS.md`
 - Modify: `docs/superpowers/plans/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-implementation-plan.md`
 
-- [ ] **Step 1: Update tracking docs as each task lands**
+- [x] **Step 1: Update tracking docs as each task lands**
 
 Record:
 
@@ -281,11 +281,11 @@ Record:
 - the verification status for each accepted task
 - the next follow-up slice: bulk adopt for unmanaged skills
 
-- [ ] **Step 2: Mark completed steps in this plan**
+- [x] **Step 2: Mark completed steps in this plan**
 
 As each task is accepted, change only its completed checkboxes from `[ ]` to `[x]`.
 
-- [ ] **Step 3: Run the full verification gate from the root repo**
+- [x] **Step 3: Run the full verification gate from the root repo**
 
 Run:
 
@@ -327,7 +327,7 @@ git diff --check
 
 Expected: no whitespace or merge-marker errors.
 
-- [ ] **Step 4: Commit the accepted docs/tracking state**
+- [x] **Step 4: Commit the accepted docs/tracking state**
 
 ```powershell
 git add AGENTS.md PROJECT_STATUS.md NEXT_ACTIONS.md DECISIONS.md docs/superpowers/plans/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-implementation-plan.md

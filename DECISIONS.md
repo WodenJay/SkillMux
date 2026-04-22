@@ -424,3 +424,15 @@ Record key product and implementation decisions so later sessions do not lose th
   - the Detail pane absorbs the width delta so Agents and Skills remain usable as the terminal narrows
   - below `80x24`, the fallback renders in a full-screen centered `Box`, not as an inline text row inside the dashboard
 - Root sync for Task 2 was done by manually porting the accepted worktree delta into `main` rather than cherry-picking blindly, because the paused root WIP still marked `src/tui/components/Dashboard.tsx` as modified.
+- Alternate-screen/fullscreen Task 3 implementation started in isolated worktree `.worktrees/tui-alt-screen-task3` because the paused Round 8 root WIP still touched `src/tui/app.tsx` and `tests/tui-e2e/scenarios/usability-probes.test.ts`.
+- The accepted Task 3 PTY contract is:
+  - a wider PTY resize keeps the fullscreen dashboard active
+  - `80x24` still renders the supported dashboard layout
+  - `79x24` replaces the dashboard with the fullscreen resize prompt
+  - both `q` and Ctrl+C must restore the session cleanly in PTY capture
+- On the current Windows `node-pty` path, live child-process resize dimensions are not observable through `process.stdout.columns`, `getWindowSize()`, or `resize` events inside the child. PTY resize verification therefore uses a narrow test-only size bridge file injected through `SKILLMUX_TUI_PTY_SIZE_FILE`.
+- The bridged-size runtime path is only for PTY verification. The normal interactive runtime still reads terminal dimensions from the live process TTY.
+- The bridged-size reader keeps the last known good width/height if a bridge-file rewrite is transiently malformed, which avoids false `null` fallbacks during PTY resize races.
+- Task 3 also adds a launch-boundary `SIGINT` handler so Ctrl+C unmounts Ink before alternate-screen and cursor restoration run, preserving the Task 1 cleanup contract on that exit path too.
+- Task 4 root acceptance for this slice requires a fresh full-repository gate from `main`: `npm run build`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`.
+- After that gate passed, the alternate-screen/fullscreen slice was considered complete in root. The next product slice is the later one-key unmanaged-skill adoption request, still separate from the paused Round 8 search-cancel WIP.

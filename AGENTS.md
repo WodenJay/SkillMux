@@ -140,4 +140,21 @@
   - `git diff --check`
 - Task 2 layout note: `Dashboard.tsx` now uses ratio-based pane widths with minimum guards and a fullscreen centered resize fallback below `80x24`.
 - Task 2 execution note: implementation and review happened in `.worktrees/tui-alt-screen-task2`, then the accepted delta was synced back to root manually because the paused Round 8 root WIP still marked `src/tui/components/Dashboard.tsx` as modified.
-- The next slice for this implementation plan is Task 3: PTY resize/restore verification.
+- Alternate-screen/fullscreen Task 3 is now accepted in root at commit `38b819e` (`test: verify tui fullscreen pty behavior`).
+- Task 3 verification in root passed with:
+  - `npm run build`
+  - `npm run typecheck`
+  - `npm test -- --run tests/tui-e2e/scenarios/smoke.test.ts tests/tui-e2e/scenarios/usability-probes.test.ts`
+  - `npm run test:tui-e2e`
+  - `git diff --check`
+- Task 3 execution note: implementation and review happened in `.worktrees/tui-alt-screen-task3`, then the accepted delta was synced back to root manually because the paused Round 8 root WIP still marked `src/tui/app.tsx` and `tests/tui-e2e/scenarios/usability-probes.test.ts` as modified.
+- Task 3 PTY note: on this Windows `node-pty` path, child TTY APIs do not reflect live resize dimensions, so PTY resize verification uses a narrow test-only size bridge via `SKILLMUX_TUI_PTY_SIZE_FILE`.
+- Task 3 cleanup note: Ctrl+C cleanup is now proven with trace markers, cursor hide/show output, and no dashboard residue after `alt-screen-exit`.
+- Task 4 final verification gate passed in root with:
+  - `npm run build`
+  - `npm run test:tui-e2e`
+  - `npm test`
+  - `npm run typecheck`
+  - `git diff --check`
+- The alternate-screen/fullscreen slice is now complete in root.
+- The next follow-up slice is the later usability/lifecycle request for one-key adoption of all unmanaged skills.
