@@ -406,3 +406,5 @@ Record key product and implementation decisions so later sessions do not lose th
 - Help and confirmation overlays remain part of the current interaction model; this slice changes runtime/layout semantics, not the keyboard contract.
 - The user-requested one-key "adopt all unmanaged skills" action is accepted as a later slice and is intentionally not coupled to the alternate-screen/fullscreen runtime change.
 - The partially explored PTY audit/polish Round 8 search-cancel debugging thread is paused. Any uncommitted WIP from that thread should be resumed or discarded deliberately, not mixed accidentally into this new slice.
+- The written implementation plan for this slice is `docs/superpowers/plans/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-implementation-plan.md`.
+- The execution order for this slice is: alternate-screen session lifecycle first, responsive fullscreen layout second, PTY resize/restore verification third, and final repo verification plus tracking last.

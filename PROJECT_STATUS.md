@@ -10,7 +10,8 @@ Active development worktree: `(none)`
 
 - A new TUI runtime/layout design slice is now approved in conversation: make `skillmux tui` enter the alternate screen by default, occupy the full terminal viewport responsively, and restore the previous shell screen on exit.
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`.
-- The next step for that slice is written-spec review by the user, then an implementation plan under `docs/superpowers/plans/`.
+- The written implementation plan for that slice is `docs/superpowers/plans/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-implementation-plan.md`.
+- The next step for that slice is choosing the execution mode, then implementing the runtime/layout tasks without mixing in the paused Round 8 search-cancel WIP.
 - The requested "adopt all unmanaged skills" shortcut is accepted as a later lifecycle/usability slice, not part of the alternate-screen/fullscreen runtime change.
 - The previously attempted PTY audit/polish Round 8 search-cancel debugging is currently paused and should not be mixed into the new alternate-screen/layout slice accidentally.
 

@@ -289,8 +289,9 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Run Round 6 verification and stop for `/compact`
 - [x] Start PTY audit/polish Round 7: continue from the accepted Round 6 rollback behavior and rank the next interaction/state-feedback issue batch
 - [x] Fix the Round 7 PTY-audited high-priority TUI issue batch and add regression coverage
-- [ ] Review the written alternate-screen/fullscreen TUI spec at `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`
-- [ ] After spec approval, invoke `$writing-plans` and draft the alternate-screen/fullscreen implementation plan
+- [x] Review the written alternate-screen/fullscreen TUI spec at `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`
+- [x] After spec approval, invoke `$writing-plans` and draft the alternate-screen/fullscreen implementation plan
+- [ ] Choose execution mode for `docs/superpowers/plans/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-implementation-plan.md`
 - [ ] Implement the alternate-screen/fullscreen TUI slice in root: default alternate screen, responsive fullscreen layout, and clean terminal restoration
 - [ ] Verify the alternate-screen/fullscreen slice with focused TUI tests, PTY scenarios, `npm test`, `npm run typecheck`, `npm run build`, and `git diff --check`
 - [ ] Add a later usability/lifecycle slice for one-key adoption of all unmanaged skills

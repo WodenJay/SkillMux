@@ -118,5 +118,7 @@
 - Round 7 verification in the root repo passed with `npm run build`, `npm test -- --run tests/tui/state.test.ts tests/tui/components.test.tsx`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`.
 - A new TUI runtime/layout slice is now approved in conversation: `skillmux tui` should enter the terminal alternate screen by default, occupy the full terminal viewport responsively, and restore the previous shell screen on exit.
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`.
+- The written implementation plan for that slice is `docs/superpowers/plans/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-implementation-plan.md`.
+- Execution for that slice should start by choosing execution mode, then implementing alternate-screen lifecycle before responsive layout work.
 - That slice is intentionally separate from the unfinished PTY audit/polish Round 8 search-cancel debugging thread; do not mix the uncommitted Round 8 WIP into the alternate-screen/fullscreen work accidentally.
 - The user also requested a one-key action to adopt all unmanaged skills, but that is a later usability/lifecycle slice and not part of the alternate-screen/fullscreen runtime change.
