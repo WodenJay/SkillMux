@@ -589,6 +589,45 @@ describe("App", () => {
     expect(lastFrame()).toContain("claude-skill");
   });
 
+  it("restores the last loaded agent view when a pending agent reload fails", async () => {
+    const pendingAgentLoad = deferred<DashboardModel>();
+    const loadDashboardState = vi
+      .fn()
+      .mockResolvedValueOnce(
+        model({
+          agents: [agent(), agent({ id: "claude", name: "claude" })],
+          selectedAgentId: "codex",
+          selectedSkillId: "using-superpowers",
+          skills: [enabledSkill()]
+        })
+      )
+      .mockReturnValueOnce(pendingAgentLoad.promise);
+    const { lastFrame, stdin } = render(
+      <App
+        services={{ loadDashboardState }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("j");
+    await settle();
+
+    expect(lastFrame()).toContain("Skills for claude");
+    expect(lastFrame()).toContain("Loading skills for claude...");
+
+    pendingAgentLoad.reject(new Error("claude reload failed"));
+    await settle();
+    await settle();
+
+    expect(lastFrame()).toContain("Load failed: claude reload failed");
+    expect(lastFrame()).toContain("Skills for codex");
+    expect(lastFrame()).toContain("using-superpowers");
+    expect(lastFrame()).not.toContain("Skills for claude");
+    expect(lastFrame()).not.toContain("Loading skills for claude...");
+  });
+
   it("closes adopt confirmation immediately and ignores duplicate y while write is pending", async () => {
     const pendingAdopt = deferred<{
       model: DashboardModel;

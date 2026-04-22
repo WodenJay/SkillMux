@@ -387,6 +387,10 @@ Task 10 passed fresh in the root repo with:
   - switching agents no longer makes the Skills pane briefly claim `No skills for this agent` while the new agent reload is still pending
   - the Detail pane now shows a loading placeholder during that pending reload instead of falling back to `Select a skill row`
   - verification passed with `npm run build`, `npm test -- --run tests/tui/components.test.tsx`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
+- PTY audit/polish Round 6 is accepted in root:
+  - when a pending agent reload fails, the dashboard now rolls back to the last successfully loaded agent view instead of leaving the newly selected agent on a misleading empty state
+  - the failure status remains visible as `Load failed: ...`, while the Skills and Detail panes return to the last confirmed model
+  - verification passed with `npm run build`, `npm test -- --run tests/tui/components.test.tsx`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
 - Next PTY audit/polish focus:
-  - continue from the accepted Round 5 state
-  - rank and fix the next highest-priority interaction/state-feedback issue batch beyond the repaired agent-switch loading feedback before another `/compact`
+  - continue from the accepted Round 6 state
+  - rank and fix the next highest-priority interaction/state-feedback issue batch beyond the repaired agent-switch failure rollback before another `/compact`

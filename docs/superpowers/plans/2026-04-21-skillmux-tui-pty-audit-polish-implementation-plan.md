@@ -97,6 +97,19 @@ Each implementation round should follow the same shape:
 - while that same reload is pending, the Detail pane now shows a loading placeholder instead of `Select a skill row`
 - the fix is backed by a focused App regression that reproduces the pending-load state and verifies the loading placeholders
 
+## Round 6
+
+**Planned focus:**
+
+- continue from the accepted Round 5 loading-feedback behavior and rank the next interaction/state-feedback defect batch
+- prioritize agent-switch failure handling, where the UI can currently stay on a newly selected agent even though that agent's reload failed
+
+**Round 6 outcome:**
+
+- when an agent reload fails, the dashboard now restores the last successfully loaded model instead of leaving the UI stranded on a misleading empty state for the failed target agent
+- the failure status still stays visible as `Load failed: ...`, but the Skills and Detail panes return to the last confirmed agent data
+- the fix is backed by a focused App regression that reproduces a rejected pending agent reload and verifies the stable-view rollback
+
 ## Verification Gate Per Round
 
 Run the narrowest useful checks first, then broaden as risk grows:

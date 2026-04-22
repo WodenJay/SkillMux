@@ -101,6 +101,7 @@ export function App({
   const requestSequence = useRef(0);
   const latestRequest = useRef(0);
   const activeActionRequest = useRef<number | null>(null);
+  const stableModel = useRef<DashboardModel | null>(null);
   const services = useMemo(
     () => ({ ...defaultServices, ...serviceOverrides }),
     [serviceOverrides]
@@ -136,6 +137,7 @@ export function App({
       .loadDashboardState(loadOptions({ homeDir, skillmuxHome, platform }))
       .then((model) => {
         if (!cancelled) {
+          stableModel.current = model;
           setState(createInitialTuiState(model));
           setLoadError(null);
         }
@@ -178,6 +180,7 @@ export function App({
             return;
           }
 
+          stableModel.current = result.model;
           setState((current) =>
             current === null
               ? current
@@ -237,6 +240,7 @@ export function App({
             return;
           }
 
+          stableModel.current = model;
           setState((current) =>
             current === null ? current : replaceStateModel(current, model, null)
           );
@@ -249,13 +253,19 @@ export function App({
           setState((current) =>
             current === null
               ? current
-              : updateTuiState(
-                  updateTuiState(current, { type: "set-busy", busy: false }),
-                  {
-                    type: "set-status",
-                    message: `Load failed: ${errorReason(error)}`
-                  }
-                )
+              : stableModel.current === null
+                ? updateTuiState(
+                    updateTuiState(current, { type: "set-busy", busy: false }),
+                    {
+                      type: "set-status",
+                      message: `Load failed: ${errorReason(error)}`
+                    }
+                  )
+                : replaceStateModel(
+                    current,
+                    stableModel.current,
+                    `Load failed: ${errorReason(error)}`
+                  )
           );
         });
     },
