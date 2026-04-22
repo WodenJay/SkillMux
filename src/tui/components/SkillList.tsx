@@ -6,6 +6,7 @@ export type SkillListProps = {
   skills: TuiSkillRow[];
   selectedSkillId: string | null;
   focused: boolean;
+  searchQuery?: string;
   width?: number;
   height?: number;
 };
@@ -39,16 +40,24 @@ export function SkillList({
   skills,
   selectedSkillId,
   focused,
+  searchQuery,
   width = 28,
   height = 18
 }: SkillListProps) {
+  const emptyMessage =
+    agentId === null
+      ? "Select an agent"
+      : searchQuery !== undefined && searchQuery.trim().length > 0
+        ? "No matching skills"
+        : "No skills for this agent";
+
   return (
     <Box flexDirection="column" width={width} height={height}>
       <Text bold color={focused ? "cyan" : undefined}>
         Skills for {agentId ?? "none"}
       </Text>
       {skills.length === 0 ? (
-        <Text dimColor>No skills for this agent</Text>
+        <Text dimColor>{emptyMessage}</Text>
       ) : (
         skills.map((skill) => {
           const selected = skill.id === selectedSkillId;

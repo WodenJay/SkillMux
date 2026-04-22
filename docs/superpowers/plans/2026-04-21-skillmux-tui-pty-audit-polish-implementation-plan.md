@@ -70,6 +70,20 @@ Each implementation round should follow the same shape:
 - explicit agent search still searches the full discovered agent set, so hidden built-ins remain discoverable when the user asks for them
 - the fix is backed by a focused TUI state regression plus a real PTY smoke assertion that the codex-only first screen no longer lists irrelevant missing agents
 
+## Round 4
+
+**Planned focus:**
+
+- continue from the accepted Round 3 first screen and rank the next interaction/state-feedback defect batch
+- prioritize search behavior that can strand the user in a misleading or harder-to-recover state
+
+**Round 4 outcome:**
+
+- empty search results now distinguish between "nothing is installed here" and "your current filter has no matches"
+- `Esc` cancels a filtered search and restores the previous agent/skill selection instead of leaving the dashboard stranded on a null selection
+- `Enter` now commits the current search result, and the footer/help copy explains the `Enter` versus `Esc` search behavior
+- the fix is backed by focused state/component regressions plus a real PTY usability probe that exercises empty-result cancel and commit flows
+
 ## Verification Gate Per Round
 
 Run the narrowest useful checks first, then broaden as risk grows:

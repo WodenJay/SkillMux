@@ -5,6 +5,7 @@ export type AgentListProps = {
   agents: TuiAgentRow[];
   selectedAgentId: string | null;
   focused: boolean;
+  searchQuery?: string;
   width?: number;
   height?: number;
 };
@@ -37,16 +38,22 @@ export function AgentList({
   agents,
   selectedAgentId,
   focused,
+  searchQuery,
   width = 24,
   height = 18
 }: AgentListProps) {
+  const emptyMessage =
+    searchQuery !== undefined && searchQuery.trim().length > 0
+      ? "No matching agents"
+      : "No agents found";
+
   return (
     <Box flexDirection="column" width={width} height={height}>
       <Text bold color={focused ? "cyan" : undefined}>
         Agents
       </Text>
       {agents.length === 0 ? (
-        <Text dimColor>No agents found</Text>
+        <Text dimColor>{emptyMessage}</Text>
       ) : (
         agents.map((agent) => {
           const selected = agent.id === selectedAgentId;

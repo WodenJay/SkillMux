@@ -15,6 +15,13 @@ export type TuiModal =
 export type TuiSearch = {
   panel: "agents" | "skills";
   query: string;
+  previousSelection: {
+    selectedAgentId: string | null;
+    selectedSkillId: string | null;
+    agentCursor: number;
+    skillCursor: number;
+    pendingAgentId: string | null;
+  };
 };
 
 export type TuiState = {
@@ -39,6 +46,7 @@ export type TuiStateEvent =
   | { type: "last-row" }
   | { type: "open-search" }
   | { type: "search-query-changed"; query: string }
+  | { type: "submit-search" }
   | { type: "close" }
   | { type: "open-help" }
   | { type: "request-adopt" }
@@ -133,6 +141,26 @@ function clearTransientIntent(state: TuiState): TuiState {
     ...state,
     pendingAction: null,
     statusMessage: null
+  };
+}
+
+function restoreSearchSelection(state: TuiState): TuiState {
+  if (state.search === null) {
+    return state;
+  }
+
+  const previousSelection = state.search.previousSelection;
+
+  return {
+    ...state,
+    model: {
+      ...state.model,
+      selectedAgentId: previousSelection.selectedAgentId,
+      selectedSkillId: previousSelection.selectedSkillId
+    },
+    agentCursor: previousSelection.agentCursor,
+    skillCursor: previousSelection.skillCursor,
+    pendingAgentId: previousSelection.pendingAgentId
   };
 }
 
@@ -468,7 +496,14 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
       ...readyState,
       search: {
         panel: state.focus,
-        query: ""
+        query: "",
+        previousSelection: {
+          selectedAgentId: state.model.selectedAgentId,
+          selectedSkillId: state.model.selectedSkillId,
+          agentCursor: state.agentCursor,
+          skillCursor: state.skillCursor,
+          pendingAgentId: state.pendingAgentId
+        }
       }
     };
   }
@@ -498,7 +533,7 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
   if (event.type === "close") {
     if (state.search !== null) {
       return {
-        ...readyState,
+        ...restoreSearchSelection(readyState),
         search: null
       };
     }
@@ -507,6 +542,17 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
       return {
         ...readyState,
         modal: null
+      };
+    }
+
+    return readyState;
+  }
+
+  if (event.type === "submit-search") {
+    if (state.search !== null) {
+      return {
+        ...readyState,
+        search: null
       };
     }
 

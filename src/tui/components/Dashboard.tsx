@@ -65,6 +65,7 @@ export function Dashboard({
           agents={visibleAgents}
           selectedAgentId={state.model.selectedAgentId}
           focused={state.focus === "agents"}
+          searchQuery={state.search?.panel === "agents" ? state.search.query : undefined}
           width={agentWidth}
           height={bodyHeight}
         />
@@ -73,6 +74,7 @@ export function Dashboard({
           skills={visibleSkills}
           selectedSkillId={state.model.selectedSkillId}
           focused={state.focus === "skills"}
+          searchQuery={state.search?.panel === "skills" ? state.search.query : undefined}
           width={skillWidth}
           height={bodyHeight}
         />

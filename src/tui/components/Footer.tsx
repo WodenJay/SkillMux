@@ -33,7 +33,7 @@ export function Footer({ actions, search }: FooterProps) {
         <Text>
           <Text color="cyan">/</Text>
           <Text>{search.query}</Text>
-          <Text dimColor>   [Esc]close search</Text>
+          <Text dimColor>   [Enter]keep   [Esc]cancel</Text>
         </Text>
       )}
     </Box>

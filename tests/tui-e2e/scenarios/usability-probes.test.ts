@@ -35,20 +35,31 @@ describe("tui explorer usability probes", () => {
     await explorer.waitForText("Search");
     await explorer.closeOverlay();
 
+    await explorer.search("zzz");
+    await explorer.waitForText("No matching agents");
+    await explorer.closeSearch();
+    await explorer.waitForText("Skills for claude");
+
     await explorer.search("cod");
-    await explorer.waitForText("codex");
+    await explorer.waitForText("OpenAI Codex");
     await explorer.submitSearch();
     await explorer.waitForText("Skills for codex");
 
     await explorer.focusSkills();
+    await explorer.search("zzz");
+    await explorer.waitForText("No matching skills");
+    await explorer.closeSearch();
+    await explorer.waitForText("using-superpowers");
+
     await explorer.search("find");
     await explorer.waitForText("find-skills");
-    await explorer.closeSearch();
+    await explorer.submitSearch();
     await explorer.waitForText("Skill markers:");
 
     await explorer.previousRowBy("k");
-    await explorer.nextRowBy("j");
     await explorer.waitForText("using-superpowers");
+    await explorer.nextRowBy("j");
+    await explorer.waitForText("find-skills");
 
     await explorer.resize(120, 40);
     await explorer.waitForText("Skills for codex");

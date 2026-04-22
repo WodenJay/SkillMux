@@ -303,8 +303,13 @@ export function App({
     }
 
     if (state.search !== null) {
-      if (key.escape || key.return) {
+      if (key.escape) {
         setState(updateTuiState(state, { type: "close" }));
+        return;
+      }
+
+      if (key.return) {
+        setState(updateTuiState(state, { type: "submit-search" }));
         return;
       }
 

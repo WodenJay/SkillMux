@@ -10,6 +10,7 @@ import { ConfirmDialog } from "../../src/tui/components/ConfirmDialog";
 import { DetailPane } from "../../src/tui/components/DetailPane";
 import { Footer } from "../../src/tui/components/Footer";
 import { HelpOverlay } from "../../src/tui/components/HelpOverlay";
+import { SkillList } from "../../src/tui/components/SkillList";
 import { StatusLine } from "../../src/tui/components/StatusLine";
 import type {
   DashboardModel,
@@ -407,6 +408,45 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("Link: ...\\using-superpowers");
     expect(frame).not.toContain("Skill path:");
     expect(frame).not.toContain("Agent link:");
+  });
+
+  it("distinguishes an empty agent search from having no discovered agents", () => {
+    const frame = renderToString(
+      <AgentList
+        agents={[]}
+        selectedAgentId={null}
+        focused
+        searchQuery="zzz"
+      />
+    );
+
+    expect(frame).toContain("No matching agents");
+    expect(frame).not.toContain("No agents found");
+  });
+
+  it("distinguishes empty skill search results from missing skills or agent selection", () => {
+    const noSelection = renderToString(
+      <SkillList
+        agentId={null}
+        skills={[]}
+        selectedSkillId={null}
+        focused={false}
+      />
+    );
+    const noMatches = renderToString(
+      <SkillList
+        agentId="codex"
+        skills={[]}
+        selectedSkillId={null}
+        focused
+        searchQuery="zzz"
+      />
+    );
+
+    expect(noSelection).toContain("Select an agent");
+    expect(noSelection).not.toContain("No skills for this agent");
+    expect(noMatches).toContain("No matching skills");
+    expect(noMatches).not.toContain("No skills for this agent");
   });
 });
 

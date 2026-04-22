@@ -14,7 +14,7 @@ export function HelpOverlay() {
       </Text>
       <Text>
         <Text bold>Search</Text>
-        <Text>: / filters the focused list, Esc closes search.</Text>
+        <Text>: / filters the focused list, Enter keeps the result, Esc cancels.</Text>
       </Text>
       <Text>
         <Text bold>Agent icons</Text>

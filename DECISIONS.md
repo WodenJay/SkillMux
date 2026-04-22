@@ -388,3 +388,5 @@ Record key product and implementation decisions so later sessions do not lose th
 - Round 2 focused on Detail-pane density. The accepted change compresses managed store and agent-link paths into one-line tail summaries with shorter `Store` / `Link` labels so the first screen stays readable under real PTY snapshots.
 - Round 3 focused on default agent-list noise. Missing built-in agents should not appear on the first screen just because the shared SkillMux store can theoretically enable a managed skill for them later.
 - The accepted Round 3 relevance rule is: show a built-in agent by default when it is present locally, has activation history, has unmanaged entries, has issues, or is currently selected. Explicit agent search still searches the full discovered-agent set.
+- Round 4 focused on search interaction and feedback. Empty-result search states must describe the filter result, not pretend the dashboard has no data.
+- Search close semantics are now split intentionally: `Esc` cancels search and restores the pre-search selection, while `Enter` commits the currently filtered selection and exits search mode.

@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI PTY audit and polish round 2 complete
+Phase: TUI PTY audit and polish round 4 complete
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -378,6 +378,11 @@ Task 10 passed fresh in the root repo with:
   - the default Agents list now hides built-in agents that are neither present locally nor carrying activation history, unmanaged entries, or issues
   - explicit agent search still searches the full discovered agent set, so hidden built-ins remain discoverable on demand
   - verification passed with `npm run build`, `npm test -- --run tests/tui/state.test.ts tests/tui-e2e/scenarios/smoke.test.ts`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
+- PTY audit/polish Round 4 is accepted in root:
+  - empty agent/skill search results now say `No matching agents` / `No matching skills` instead of pretending the dashboard has no data
+  - `Esc` now cancels a filtered search and restores the previous selection, while `Enter` closes search and keeps the current filtered selection
+  - footer/help copy now explains the search commit-versus-cancel behavior
+  - verification passed with `npm run build`, `npm test -- --run tests/tui/state.test.ts tests/tui/components.test.tsx tests/tui-e2e/scenarios/usability-probes.test.ts`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
 - Next PTY audit/polish focus:
-  - continue from the accepted Round 3 first screen
-  - rank and fix the next highest-priority interaction/state-feedback issue batch before another `/compact`
+  - continue from the accepted Round 4 state
+  - rank and fix the next highest-priority interaction/state-feedback issue batch beyond the repaired search cancel/commit flows before another `/compact`
