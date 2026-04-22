@@ -393,3 +393,16 @@ Record key product and implementation decisions so later sessions do not lose th
 - Round 5 focused on pending agent reload feedback. When the selected agent has changed but the async reload for that agent has not returned yet, the dashboard should render loading placeholders instead of misleading empty-state copy.
 - Round 6 focused on pending agent reload failure handling. When an agent reload rejects, the dashboard must fall back to the last successfully loaded model instead of leaving the newly selected agent on a misleading empty state.
 - Round 7 focused on empty-result search submission. When search has no visible results, pressing `Enter` must restore the previous stable selection instead of committing an empty agent or skill selection.
+
+## 2026-04-22
+
+### TUI alternate screen and fullscreen runtime
+
+- The next TUI runtime/layout slice is not more PTY audit polish. It is a direct product change so `skillmux tui` behaves like a real fullscreen terminal application.
+- `skillmux tui` should enter the terminal alternate screen by default in interactive use.
+- Exiting the TUI must restore the previous main screen and cursor state so the dashboard does not remain printed in the shell history view.
+- The dashboard layout should become responsive to live terminal width and height instead of relying on fixed column widths.
+- The supported floor remains `80x24`, but that size is only the lower bound. Below it, the TUI should show a fullscreen resize prompt instead of squeezing the normal dashboard.
+- Help and confirmation overlays remain part of the current interaction model; this slice changes runtime/layout semantics, not the keyboard contract.
+- The user-requested one-key "adopt all unmanaged skills" action is accepted as a later slice and is intentionally not coupled to the alternate-screen/fullscreen runtime change.
+- The partially explored PTY audit/polish Round 8 search-cancel debugging thread is paused. Any uncommitted WIP from that thread should be resumed or discarded deliberately, not mixed accidentally into this new slice.

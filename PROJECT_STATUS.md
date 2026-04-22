@@ -1,14 +1,20 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI PTY audit and polish round 7 complete
+Phase: TUI alternate-screen/fullscreen design spec written; implementation planning pending
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
 
 ## Current TUI Design Status
 
-- A new TUI testing design slice is in progress: a PTY-driven exploration harness for `skillmux tui`.
+- A new TUI runtime/layout design slice is now approved in conversation: make `skillmux tui` enter the alternate screen by default, occupy the full terminal viewport responsively, and restore the previous shell screen on exit.
+- The written design spec for that slice is `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`.
+- The next step for that slice is written-spec review by the user, then an implementation plan under `docs/superpowers/plans/`.
+- The requested "adopt all unmanaged skills" shortcut is accepted as a later lifecycle/usability slice, not part of the alternate-screen/fullscreen runtime change.
+- The previously attempted PTY audit/polish Round 8 search-cancel debugging is currently paused and should not be mixed into the new alternate-screen/layout slice accidentally.
+
+- The PTY-driven exploration harness for `skillmux tui` is complete and accepted in the root repo.
 - The design goal is to let the agent drive the real TUI in a temporary sandbox, detect UX issues directly, and then convert those findings into regression scenarios.
 - The approved design focuses on terminal semantics only; Windows Terminal desktop automation is explicitly out of scope for the first version.
 - The written design spec is `docs/superpowers/specs/2026-04-21-skillmux-tui-pty-exploration-design.md`.

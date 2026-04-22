@@ -116,4 +116,7 @@
 - Round 6 verification in the root repo passed with `npm run build`, `npm test -- --run tests/tui/components.test.tsx`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`.
 - PTY audit/polish Round 7 is complete in root. It repaired the empty-result search submit trap so pressing `Enter` with no visible matches restores the previous stable selection instead of committing an empty agent or skill selection.
 - Round 7 verification in the root repo passed with `npm run build`, `npm test -- --run tests/tui/state.test.ts tests/tui/components.test.tsx`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`.
-- The next PTY audit/polish round should start from the accepted Round 7 state and focus on the next highest-priority interaction/state-feedback issue batch beyond the repaired empty-result search submit trap.
+- A new TUI runtime/layout slice is now approved in conversation: `skillmux tui` should enter the terminal alternate screen by default, occupy the full terminal viewport responsively, and restore the previous shell screen on exit.
+- The written design spec for that slice is `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`.
+- That slice is intentionally separate from the unfinished PTY audit/polish Round 8 search-cancel debugging thread; do not mix the uncommitted Round 8 WIP into the alternate-screen/fullscreen work accidentally.
+- The user also requested a one-key action to adopt all unmanaged skills, but that is a later usability/lifecycle slice and not part of the alternate-screen/fullscreen runtime change.
