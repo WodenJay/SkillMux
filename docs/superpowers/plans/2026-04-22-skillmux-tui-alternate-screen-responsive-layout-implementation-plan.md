@@ -61,7 +61,7 @@ Build this slice in four tasks. Keep the paused Round 8 search-cancel WIP out of
 - Modify: `tests/tui/launch-tui.test.ts`
 - Modify: `tests/tui-e2e/scenarios/smoke.test.ts`
 
-- [ ] **Step 1: Write the failing launch lifecycle tests**
+- [x] **Step 1: Write the failing launch lifecycle tests**
 
 Extend `tests/tui/launch-tui.test.ts` to assert that interactive launch writes the alternate-screen enter sequence before the app session begins and always writes the restore sequence on normal exit and failure.
 
@@ -71,7 +71,7 @@ Cover:
 - thrown launch/render failure after alternate-screen entry
 - cursor restoration alongside screen restoration
 
-- [ ] **Step 2: Run the targeted launch test to verify the red state**
+- [x] **Step 2: Run the targeted launch test to verify the red state**
 
 Run:
 
@@ -81,7 +81,7 @@ npm test -- --run tests/tui/launch-tui.test.ts
 
 Expected: FAIL because the current launch path does not own alternate-screen entry/restore.
 
-- [ ] **Step 3: Implement centralized alternate-screen entry and teardown**
+- [x] **Step 3: Implement centralized alternate-screen entry and teardown**
 
 Update `src/tui/launch-tui.ts` so the launch path:
 
@@ -92,7 +92,7 @@ Update `src/tui/launch-tui.ts` so the launch path:
 
 Implementation note: this logic belongs in the launch/runtime boundary, not in reducer state or dashboard components.
 
-- [ ] **Step 4: Add a real PTY smoke assertion for alternate-screen behavior**
+- [x] **Step 4: Add a real PTY smoke assertion for alternate-screen behavior**
 
 Update `tests/tui-e2e/scenarios/smoke.test.ts` to verify the real CLI session:
 
@@ -100,7 +100,7 @@ Update `tests/tui-e2e/scenarios/smoke.test.ts` to verify the real CLI session:
 - exits cleanly on `q`
 - records the expected alternate-screen lifecycle events or output markers without leaving the dashboard frame as a final static shell residue
 
-- [ ] **Step 5: Run targeted verification**
+- [x] **Step 5: Run targeted verification**
 
 Run:
 
@@ -118,7 +118,7 @@ npm test -- --run tests/tui/launch-tui.test.ts tests/tui-e2e/scenarios/smoke.tes
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit Task 1**
+- [x] **Step 6: Commit Task 1**
 
 ```powershell
 git add src/tui/launch-tui.ts tests/tui/launch-tui.test.ts tests/tui-e2e/scenarios/smoke.test.ts

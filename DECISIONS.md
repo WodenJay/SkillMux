@@ -408,3 +408,12 @@ Record key product and implementation decisions so later sessions do not lose th
 - The partially explored PTY audit/polish Round 8 search-cancel debugging thread is paused. Any uncommitted WIP from that thread should be resumed or discarded deliberately, not mixed accidentally into this new slice.
 - The written implementation plan for this slice is `docs/superpowers/plans/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-implementation-plan.md`.
 - The execution order for this slice is: alternate-screen session lifecycle first, responsive fullscreen layout second, PTY resize/restore verification third, and final repo verification plus tracking last.
+- Execution mode for this slice is subagent-driven development.
+- Alternate-screen/fullscreen Task 1 acceptance used an isolated worktree first because the root repo still held paused Round 8 WIP in `src/tui/app.tsx`, `src/tui/components/Dashboard.tsx`, `src/tui/state.ts`, `tests/tui-e2e/scenarios/usability-probes.test.ts`, and `tests/tui/state.test.ts`.
+- The accepted Task 1 runtime contract is:
+  - enter alternate screen on interactive launch
+  - hide the cursor while the TUI is active
+  - always attempt trace exit, alternate-screen restore, and cursor restore during teardown
+  - preserve the original startup/render failure over later cleanup failures
+- The PTY smoke proof for Task 1 should not depend only on the raw Windows `node-pty` exit code. Accepted proof requires explicit trace markers for `alt-screen-enter`, `session-exit-clean`, and `alt-screen-exit`, plus an exit event and residue checks after the exit boundary.
+- For the Windows PTY harness, post-exit trace data can arrive after the process exit event. `tests/tui-e2e/pty-session.ts` therefore drains pending output after exit before final snapshot/event inspection.

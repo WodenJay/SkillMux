@@ -122,3 +122,14 @@
 - Execution for that slice should start by choosing execution mode, then implementing alternate-screen lifecycle before responsive layout work.
 - That slice is intentionally separate from the unfinished PTY audit/polish Round 8 search-cancel debugging thread; do not mix the uncommitted Round 8 WIP into the alternate-screen/fullscreen work accidentally.
 - The user also requested a one-key action to adopt all unmanaged skills, but that is a later usability/lifecycle slice and not part of the alternate-screen/fullscreen runtime change.
+- Execution mode for that slice is now selected: subagent-driven development.
+- Alternate-screen/fullscreen Task 1 is now accepted in root at commits `1fb88d0`, `9766496`, `b85a10d`, `7bc49eb`, `594bbce`, and `d4093ba`.
+- Task 1 verification in root passed with:
+  - `npm run build`
+  - `npm test -- --run tests/tui/launch-tui.test.tsx tests/tui-e2e/pty-session.test.ts tests/tui-e2e/scenarios/smoke.test.ts`
+  - `npm test`
+  - `npm run typecheck`
+  - `git diff --check`
+- Task 1 implementation note: `src/tui/launch-tui.tsx` now owns alternate-screen enter/exit, cursor hide/show, and preserves the original runtime failure even if cleanup also fails.
+- Task 1 PTY note: the accepted smoke proof uses trace markers `alt-screen-enter`, `session-exit-clean`, and `alt-screen-exit`, and checks raw output after the exit boundary for dashboard residue instead of relying on the final xterm-headless snapshot alone.
+- The next slice for this implementation plan is Task 2: responsive fullscreen layout.

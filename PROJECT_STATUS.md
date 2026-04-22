@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI alternate-screen/fullscreen design spec written; implementation planning pending
+Phase: TUI alternate-screen/fullscreen Task 1 accepted in root; responsive layout Task 2 pending
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -11,7 +11,26 @@ Active development worktree: `(none)`
 - A new TUI runtime/layout design slice is now approved in conversation: make `skillmux tui` enter the alternate screen by default, occupy the full terminal viewport responsively, and restore the previous shell screen on exit.
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`.
 - The written implementation plan for that slice is `docs/superpowers/plans/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-implementation-plan.md`.
-- The next step for that slice is choosing the execution mode, then implementing the runtime/layout tasks without mixing in the paused Round 8 search-cancel WIP.
+- Execution mode for that slice is subagent-driven development.
+- Alternate-screen/fullscreen Task 1 is accepted in the root repo.
+- Task 1 accepted root commits:
+  - `1fb88d0` `feat: add tui alternate-screen lifecycle`
+  - `9766496` `feat: tighten tui alternate-screen proof`
+  - `b85a10d` `feat: expose tui alternate-screen trace`
+  - `7bc49eb` `fix: guarantee tui alternate-screen cleanup`
+  - `594bbce` `fix: harden tui teardown and smoke proof`
+  - `d4093ba` `test: tighten tui clean-exit proof`
+- Task 1 verification in root passed with:
+  - `npm run build`
+  - `npm test -- --run tests/tui/launch-tui.test.tsx tests/tui-e2e/pty-session.test.ts tests/tui-e2e/scenarios/smoke.test.ts`
+  - `npm test`
+  - `npm run typecheck`
+  - `git diff --check`
+- Task 1 runtime notes:
+  - `skillmux tui` now enters the alternate screen by default and restores the main screen plus cursor on exit.
+  - The PTY harness now records a test-only `session-exit-clean` trace so Windows PTY smoke can prove a clean `q` exit without relying only on raw `node-pty` exit-code timing.
+  - The smoke residue proof now checks raw output after the `alt-screen-exit` boundary instead of trusting the final xterm-headless snapshot buffer.
+- The next step for this slice is Task 2: responsive fullscreen layout, still without mixing in the paused Round 8 search-cancel WIP.
 - The requested "adopt all unmanaged skills" shortcut is accepted as a later lifecycle/usability slice, not part of the alternate-screen/fullscreen runtime change.
 - The previously attempted PTY audit/polish Round 8 search-cancel debugging is currently paused and should not be mixed into the new alternate-screen/layout slice accidentally.
 

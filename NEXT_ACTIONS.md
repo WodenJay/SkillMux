@@ -291,8 +291,10 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Fix the Round 7 PTY-audited high-priority TUI issue batch and add regression coverage
 - [x] Review the written alternate-screen/fullscreen TUI spec at `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`
 - [x] After spec approval, invoke `$writing-plans` and draft the alternate-screen/fullscreen implementation plan
-- [ ] Choose execution mode for `docs/superpowers/plans/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-implementation-plan.md`
-- [ ] Implement the alternate-screen/fullscreen TUI slice in root: default alternate screen, responsive fullscreen layout, and clean terminal restoration
-- [ ] Verify the alternate-screen/fullscreen slice with focused TUI tests, PTY scenarios, `npm test`, `npm run typecheck`, `npm run build`, and `git diff --check`
+- [x] Choose execution mode for `docs/superpowers/plans/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-implementation-plan.md`
+- [x] Implement alternate-screen/fullscreen Task 1 in root: default alternate screen, clean terminal restoration, and PTY clean-exit proof
+- [x] Verify alternate-screen/fullscreen Task 1 with focused TUI tests, PTY scenarios, `npm test`, `npm run typecheck`, `npm run build`, and `git diff --check`
+- [ ] Implement alternate-screen/fullscreen Task 2 in root: responsive fullscreen layout
+- [ ] Verify alternate-screen/fullscreen Task 2 with focused TUI tests, PTY scenarios, `npm test`, `npm run typecheck`, `npm run build`, and `git diff --check`
 - [ ] Add a later usability/lifecycle slice for one-key adoption of all unmanaged skills
 - [ ] Resume or discard the paused PTY audit/polish Round 8 search-cancel debugging explicitly before touching those WIP files again
