@@ -390,6 +390,24 @@ describe("TUI dashboard components", () => {
 
     expect(header?.props.color).toBeUndefined();
   });
+
+  it("compresses long detail paths so the first screen stays readable", () => {
+    const frame = renderToString(
+      <DetailPane
+        selectedAgent={agent({ name: "OpenAI Codex" })}
+        selectedSkill={enabledSkill()}
+        focused={false}
+        width={28}
+        height={18}
+      />,
+      { columns: 28 }
+    );
+
+    expect(frame).toContain("Store: ...\\using-superpowers");
+    expect(frame).toContain("Link: ...\\using-superpowers");
+    expect(frame).not.toContain("Skill path:");
+    expect(frame).not.toContain("Agent link:");
+  });
 });
 
 describe("App", () => {

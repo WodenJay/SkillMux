@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI PTY audit and polish round 1 complete
+Phase: TUI PTY audit and polish round 2 complete
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -71,7 +71,12 @@ Active development worktree: `(none)`
   - footer and help legend copy was too dense for the 80x24 baseline and wrapped into a harder-to-scan block
   - regression coverage around the user-requested circle markers is now explicit in focused TUI tests and the PTY smoke path
 - Round 1 verification passed with `npm run build`, targeted TUI model/component tests, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check` (warnings only, no whitespace errors).
-- The next likely Round 2 polish targets are first-screen detail density and other PTY-audited layout issues that remain after the marker/legend cleanup.
+- Round 2 findings fixed:
+  - the Detail pane expanded managed store and agent link paths across multiple wrapped lines, which consumed too much of the first screen under PTY snapshots
+  - the Detail pane path labels were longer than needed for high-frequency dashboard metadata
+- Round 2 changed the Detail pane to render compact `Store` / `Link` path summaries that preserve the useful tail segments without flooding the first screen.
+- Round 2 verification passed with `npm run build`, `npm test -- --run tests/tui/components.test.tsx tests/tui-e2e/scenarios/smoke.test.ts`, `npm run test:tui-e2e`, `npm test`, and `npm run typecheck`.
+- The next likely Round 3 polish targets are the remaining PTY-audited first-screen pressure points after detail compaction and the next highest-priority interaction/state-feedback issues.
 - TUI design has started after the completed `skillmux@0.1.2` CLI lifecycle release.
 - Design followed `$using-superpowers` and the brainstorming hard gate; the written spec is approved.
 - The TUI design stage is using `$tui-design`; implementation will additionally use `$terminal-ui`.

@@ -272,5 +272,8 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Start PTY audit/polish Round 1: run exploratory sessions and collect the first high-priority issue batch
 - [x] Fix the first PTY-audited high-priority TUI issue batch and add regression coverage
 - [x] Run Round 1 verification and stop for `/compact`
-- [ ] Start PTY audit/polish Round 2: inspect remaining first-screen density and detail-pane path sprawl under PTY snapshots
-- [ ] Fix the next PTY-audited high-priority TUI issue batch and add regression coverage
+- [x] Start PTY audit/polish Round 2: inspect remaining first-screen density and detail-pane path sprawl under PTY snapshots
+- [x] Fix the next PTY-audited high-priority TUI issue batch and add regression coverage
+- [x] Run Round 2 verification and stop for `/compact`
+- [ ] Start PTY audit/polish Round 3: re-audit the first screen after detail compaction and rank the next highest-priority PTY findings
+- [ ] Fix the Round 3 PTY-audited high-priority TUI issue batch and add regression coverage

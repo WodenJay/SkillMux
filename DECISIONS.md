@@ -385,3 +385,4 @@ Record key product and implementation decisions so later sessions do not lose th
 - PTY exploratory artifacts under `.artifacts/tui-e2e/` are diagnostic evidence for this slice, while lasting protection should come from targeted PTY scenarios or the narrowest focused regression tests that cover the repaired behavior.
 - Round 1 focused on first-screen readability. The accepted changes rewrote footer/help legend copy into short dedicated lines instead of one long sentence that wrapped badly at the 80x24 baseline.
 - Round 1 also tightened focused TUI and PTY smoke coverage around the user's requested circle markers (`●` enabled, `○` disabled) so later polish work does not silently drift away from that contract.
+- Round 2 focused on Detail-pane density. The accepted change compresses managed store and agent-link paths into one-line tail summaries with shorter `Store` / `Link` labels so the first screen stays readable under real PTY snapshots.

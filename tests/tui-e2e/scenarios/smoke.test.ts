@@ -37,6 +37,12 @@ describe("tui pty smoke", () => {
     expect(session.snapshot()).toContain("Skills for codex");
     expect(session.snapshot()).toContain("● using-superpowers");
     expect(session.snapshot()).toContain(
+      "Store: ...\\.skillmux\\skills\\using-superpowers"
+    );
+    expect(session.snapshot()).toContain(
+      "Link: ...\\.codex\\skills\\using-superpowers"
+    );
+    expect(session.snapshot()).toContain(
       "Skill markers: ● enabled  ○ disabled  ? unmanaged  ! issue"
     );
     expect(session.exitCode()).toBe(0);

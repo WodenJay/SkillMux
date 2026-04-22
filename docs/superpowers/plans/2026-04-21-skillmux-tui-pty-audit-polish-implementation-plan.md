@@ -51,6 +51,12 @@ Each implementation round should follow the same shape:
 - inspect first-screen density after the Round 1 marker/legend cleanup
 - reduce detail-pane path sprawl or other remaining layout friction found in PTY snapshots
 
+**Round 2 outcome:**
+
+- replaced the verbose `Skill path` / `Agent link` rows with shorter `Store` / `Link` labels
+- compacted long managed and agent-link paths to single-line tail summaries so the Detail pane stops consuming multiple wrapped rows on the first screen
+- added focused TUI coverage plus PTY smoke assertions for the compact detail output
+
 ## Verification Gate Per Round
 
 Run the narrowest useful checks first, then broaden as risk grows:

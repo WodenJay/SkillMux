@@ -105,4 +105,5 @@
 - The written implementation plan for that slice is `docs/superpowers/plans/2026-04-21-skillmux-tui-pty-audit-polish-implementation-plan.md`.
 - Audit rounds should scan interaction/focus, layout, state feedback, and terminal behavior together, but only repair the highest-priority findings in each round before stopping for `/compact`.
 - PTY audit/polish Round 1 is complete in root. It rewrote the overly dense footer/help legends for the 80x24 baseline and tightened regression coverage around the user-requested circle markers, then verified those changes with targeted TUI tests, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `npm run build`.
-- The next PTY audit/polish round should start from the accepted Round 1 state and focus on remaining first-screen layout density, especially the detail pane under real PTY snapshots.
+- PTY audit/polish Round 2 is complete in root. It compressed the Detail pane's managed-store and agent-link paths into one-line `Store` / `Link` summaries, then verified the change with targeted TUI tests, PTY smoke, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `npm run build`.
+- The next PTY audit/polish round should start from the accepted Round 2 state and focus on the remaining first-screen pressure points plus the next highest-priority interaction/state-feedback issues found by PTY exploration.

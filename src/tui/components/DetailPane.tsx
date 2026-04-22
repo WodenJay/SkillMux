@@ -9,40 +9,82 @@ export type DetailPaneProps = {
   height?: number;
 };
 
-function detailLines(skill: TuiSkillRow): Array<[string, string]> {
+type DetailLine = {
+  label: string;
+  value: string;
+  compact: boolean;
+};
+
+function compactPath(value: string, maxLength: number): string {
+  if (value.length <= maxLength) {
+    return value;
+  }
+
+  const separator = value.includes("\\") ? "\\" : "/";
+  const parts = value.split(/[\\/]+/).filter((part) => part.length > 0);
+  let suffix = parts.at(-1) ?? value;
+
+  for (let index = parts.length - 2; index >= 0; index -= 1) {
+    const candidate = `${parts[index]}${separator}${suffix}`;
+
+    if (`...${separator}${candidate}`.length > maxLength) {
+      break;
+    }
+
+    suffix = candidate;
+  }
+
+  const shortened = `...${separator}${suffix}`;
+
+  if (shortened.length <= maxLength) {
+    return shortened;
+  }
+
+  if (maxLength <= 3) {
+    return ".".repeat(maxLength);
+  }
+
+  return `...${suffix.slice(-(maxLength - 3))}`;
+}
+
+function detailLines(skill: TuiSkillRow): DetailLine[] {
   if (skill.kind === "enabled") {
     return [
-      ["Name", skill.name],
-      ["Status", "enabled"],
-      ["Skill path", skill.path],
-      ["Agent link", skill.activationLinkPath]
+      { label: "Name", value: skill.name, compact: false },
+      { label: "Status", value: "enabled", compact: false },
+      { label: "Store", value: skill.path, compact: true },
+      { label: "Link", value: skill.activationLinkPath, compact: true }
     ];
   }
 
   if (skill.kind === "disabled") {
     return [
-      ["Name", skill.name],
-      ["Status", "disabled"],
-      ["Skill path", skill.path],
-      ["Agent link", skill.activationLinkPath ?? "not linked"]
+      { label: "Name", value: skill.name, compact: false },
+      { label: "Status", value: "disabled", compact: false },
+      { label: "Store", value: skill.path, compact: true },
+      {
+        label: "Link",
+        value: skill.activationLinkPath ?? "not linked",
+        compact: skill.activationLinkPath !== null
+      }
     ];
   }
 
   if (skill.kind === "unmanaged") {
     return [
-      ["Name", skill.name],
-      ["Status", "unmanaged"],
-      ["Entry", skill.entryKind],
-      ["Path", skill.path]
+      { label: "Name", value: skill.name, compact: false },
+      { label: "Status", value: "unmanaged", compact: false },
+      { label: "Entry", value: skill.entryKind, compact: false },
+      { label: "Path", value: skill.path, compact: true }
     ];
   }
 
   return [
-    ["Status", "issue"],
-    ["Code", skill.issueCode],
-    ["Severity", skill.severity],
-    ["Message", skill.message],
-    ["Path", skill.path ?? "none"]
+    { label: "Status", value: "issue", compact: false },
+    { label: "Code", value: skill.issueCode, compact: false },
+    { label: "Severity", value: skill.severity, compact: false },
+    { label: "Message", value: skill.message, compact: false },
+    { label: "Path", value: skill.path ?? "none", compact: skill.path !== null }
   ];
 }
 
@@ -50,8 +92,7 @@ export function DetailPane({
   selectedAgent,
   selectedSkill,
   focused: _focused,
-  width = 28
-  ,
+  width = 28,
   height = 18
 }: DetailPaneProps) {
   return (
@@ -67,12 +108,17 @@ export function DetailPane({
       {selectedSkill === null ? (
         <Text dimColor>Select a skill row</Text>
       ) : (
-        detailLines(selectedSkill).map(([label, value]) => (
-          <Text key={label}>
+        detailLines(selectedSkill).map(({ label, value, compact }) => {
+          const valueWidth = Math.max(width - (label.length + 2), 8);
+          const renderedValue = compact ? compactPath(value, valueWidth) : value;
+
+          return (
+            <Text key={label}>
             <Text dimColor>{label}: </Text>
-            <Text>{value}</Text>
-          </Text>
-        ))
+            <Text>{renderedValue}</Text>
+            </Text>
+          );
+        })
       )}
     </Box>
   );
