@@ -781,6 +781,34 @@ describe("App", () => {
     expect(lastFrame()).toContain("Last scan: never | issues: 0");
   });
 
+  it("restores the previous selection when Enter submits an empty-result search", async () => {
+    const loadDashboardState = vi.fn().mockResolvedValue(model());
+    const { lastFrame, stdin } = render(
+      <App
+        services={{ loadDashboardState }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("/");
+    await settle();
+    stdin.write("zzz");
+    await settle();
+
+    expect(lastFrame()).toContain("No matching agents");
+    expect(lastFrame()).toContain("Skills for none");
+
+    stdin.write("\r");
+    await settle();
+
+    expect(lastFrame()).toContain("Skills for codex");
+    expect(lastFrame()).toContain("using-superpowers");
+    expect(lastFrame()).not.toContain("No matching agents");
+    expect(lastFrame()).not.toContain("Skills for none");
+  });
+
   it("dispatches the intended toggle action from Space", async () => {
     const pendingToggle = deferred<{
       model: DashboardModel;

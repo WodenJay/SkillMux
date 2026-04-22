@@ -110,6 +110,19 @@ Each implementation round should follow the same shape:
 - the failure status still stays visible as `Load failed: ...`, but the Skills and Detail panes return to the last confirmed agent data
 - the fix is backed by a focused App regression that reproduces a rejected pending agent reload and verifies the stable-view rollback
 
+## Round 7
+
+**Planned focus:**
+
+- continue from the accepted Round 6 rollback behavior and rank the next interaction/state-feedback defect batch
+- prioritize search-submit behavior that can strand the dashboard on an empty selection after the user presses `Enter`
+
+**Round 7 outcome:**
+
+- when a search has no visible matches, pressing `Enter` now restores the previous stable selection instead of committing an empty agent or skill selection
+- cancel-versus-commit semantics stay intact: `Esc` still cancels search, while `Enter` still commits the current filtered selection when results exist
+- the fix is backed by a focused reducer regression plus an App keyboard-flow regression for the empty-result `Enter` path
+
 ## Verification Gate Per Round
 
 Run the narrowest useful checks first, then broaden as risk grows:

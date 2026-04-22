@@ -392,3 +392,4 @@ Record key product and implementation decisions so later sessions do not lose th
 - Search close semantics are now split intentionally: `Esc` cancels search and restores the pre-search selection, while `Enter` commits the currently filtered selection and exits search mode.
 - Round 5 focused on pending agent reload feedback. When the selected agent has changed but the async reload for that agent has not returned yet, the dashboard should render loading placeholders instead of misleading empty-state copy.
 - Round 6 focused on pending agent reload failure handling. When an agent reload rejects, the dashboard must fall back to the last successfully loaded model instead of leaving the newly selected agent on a misleading empty state.
+- Round 7 focused on empty-result search submission. When search has no visible results, pressing `Enter` must restore the previous stable selection instead of committing an empty agent or skill selection.

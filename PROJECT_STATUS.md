@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI PTY audit and polish round 5 complete
+Phase: TUI PTY audit and polish round 7 complete
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -391,6 +391,10 @@ Task 10 passed fresh in the root repo with:
   - when a pending agent reload fails, the dashboard now rolls back to the last successfully loaded agent view instead of leaving the newly selected agent on a misleading empty state
   - the failure status remains visible as `Load failed: ...`, while the Skills and Detail panes return to the last confirmed model
   - verification passed with `npm run build`, `npm test -- --run tests/tui/components.test.tsx`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
+- PTY audit/polish Round 7 is accepted in root:
+  - pressing `Enter` on an empty-result search no longer commits the dashboard to an empty agent or skill selection
+  - empty-result `Enter` now restores the previous stable selection, while non-empty `Enter` still commits the current filtered selection
+  - verification passed with `npm run build`, `npm test -- --run tests/tui/state.test.ts tests/tui/components.test.tsx`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
 - Next PTY audit/polish focus:
-  - continue from the accepted Round 6 state
-  - rank and fix the next highest-priority interaction/state-feedback issue batch beyond the repaired agent-switch failure rollback before another `/compact`
+  - continue from the accepted Round 7 state
+  - rank and fix the next highest-priority interaction/state-feedback issue batch beyond the repaired empty-result search submit trap before another `/compact`

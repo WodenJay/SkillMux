@@ -164,6 +164,16 @@ function restoreSearchSelection(state: TuiState): TuiState {
   };
 }
 
+function searchHasVisibleResults(state: TuiState): boolean {
+  if (state.search === null) {
+    return false;
+  }
+
+  return state.search.panel === "agents"
+    ? getVisibleAgents(state).length > 0
+    : getVisibleSkills(state).length > 0;
+}
+
 function selectedAgentIndex(model: DashboardModel): number {
   if (model.selectedAgentId === null) {
     return 0;
@@ -550,6 +560,13 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
 
   if (event.type === "submit-search") {
     if (state.search !== null) {
+      if (!searchHasVisibleResults(state)) {
+        return {
+          ...restoreSearchSelection(readyState),
+          search: null
+        };
+      }
+
       return {
         ...readyState,
         search: null

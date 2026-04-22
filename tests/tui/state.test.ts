@@ -303,6 +303,38 @@ describe("TUI state reducer", () => {
     expect(submittedSkills.model.selectedSkillId).toBe("paper-polish");
   });
 
+  it("restores the previous selection when submitting a search with no matches", () => {
+    const agentSearch = updateTuiState(createInitialTuiState(model()), {
+      type: "open-search"
+    });
+    const noMatchingAgents = updateTuiState(agentSearch, {
+      type: "search-query-changed",
+      query: "missing-agent"
+    });
+    const submittedAgents = updateTuiState(noMatchingAgents, {
+      type: "submit-search"
+    });
+    const skillsFocused = updateTuiState(createInitialTuiState(model()), {
+      type: "focus-next"
+    });
+    const skillSearch = updateTuiState(skillsFocused, { type: "open-search" });
+    const noMatchingSkills = updateTuiState(skillSearch, {
+      type: "search-query-changed",
+      query: "missing-skill"
+    });
+    const submittedSkills = updateTuiState(noMatchingSkills, {
+      type: "submit-search"
+    });
+
+    expect(submittedAgents.search).toBeNull();
+    expect(submittedAgents.model.selectedAgentId).toBe("codex");
+    expect(submittedAgents.model.selectedSkillId).toBe("terminal-ui");
+    expect(submittedAgents.pendingAgentId).toBeNull();
+    expect(submittedSkills.search).toBeNull();
+    expect(submittedSkills.model.selectedAgentId).toBe("codex");
+    expect(submittedSkills.model.selectedSkillId).toBe("terminal-ui");
+  });
+
   it("opens the help modal", () => {
     const state = createInitialTuiState(model());
 

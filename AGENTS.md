@@ -114,4 +114,6 @@
 - Round 5 verification in the root repo passed with `npm run build`, `npm test -- --run tests/tui/components.test.tsx`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`.
 - PTY audit/polish Round 6 is complete in root. It repaired agent-switch failure handling so a rejected agent reload rolls the dashboard back to the last successfully loaded model instead of leaving the failed target agent on a misleading empty state.
 - Round 6 verification in the root repo passed with `npm run build`, `npm test -- --run tests/tui/components.test.tsx`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`.
-- The next PTY audit/polish round should start from the accepted Round 6 state and focus on the next highest-priority interaction/state-feedback issue batch beyond the repaired agent-switch failure rollback.
+- PTY audit/polish Round 7 is complete in root. It repaired the empty-result search submit trap so pressing `Enter` with no visible matches restores the previous stable selection instead of committing an empty agent or skill selection.
+- Round 7 verification in the root repo passed with `npm run build`, `npm test -- --run tests/tui/state.test.ts tests/tui/components.test.tsx`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`.
+- The next PTY audit/polish round should start from the accepted Round 7 state and focus on the next highest-priority interaction/state-feedback issue batch beyond the repaired empty-result search submit trap.
