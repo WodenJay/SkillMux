@@ -135,7 +135,7 @@ git commit -m "feat: add tui alternate-screen lifecycle"
 - Modify: `src/tui/components/DetailPane.tsx`
 - Modify: `tests/tui/components.test.tsx`
 
-- [ ] **Step 1: Write the failing responsive layout tests**
+- [x] **Step 1: Write the failing responsive layout tests**
 
 Extend `tests/tui/components.test.tsx` with cases for:
 
@@ -145,7 +145,7 @@ Extend `tests/tui/components.test.tsx` with cases for:
 
 The tests should assert layout behavior through rendered text/structure, not through private implementation variables alone.
 
-- [ ] **Step 2: Run the targeted component test to verify the red state**
+- [x] **Step 2: Run the targeted component test to verify the red state**
 
 Run:
 
@@ -155,7 +155,7 @@ npm test -- --run tests/tui/components.test.tsx
 
 Expected: FAIL because `Dashboard.tsx` still hardcodes `agentWidth = 24` and `skillWidth = 28`.
 
-- [ ] **Step 3: Implement responsive pane sizing in the dashboard**
+- [x] **Step 3: Implement responsive pane sizing in the dashboard**
 
 Refactor `src/tui/components/Dashboard.tsx` so:
 
@@ -164,11 +164,11 @@ Refactor `src/tui/components/Dashboard.tsx` so:
 - the `80x24` threshold remains the hard minimum supported size
 - the fallback message uses the full screen region instead of reading like an inline one-liner inside a partially rendered dashboard
 
-- [ ] **Step 4: Align child components with the new fullscreen layout**
+- [x] **Step 4: Align child components with the new fullscreen layout**
 
 Update pane components only as needed so they behave well under wider and narrower responsive widths. Keep the current information architecture and focus model unchanged.
 
-- [ ] **Step 5: Run targeted verification**
+- [x] **Step 5: Run targeted verification**
 
 Run:
 
@@ -186,7 +186,7 @@ npm test -- --run tests/tui/components.test.tsx
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit Task 2**
+- [x] **Step 6: Commit Task 2**
 
 ```powershell
 git add src/tui/app.tsx src/tui/components/Dashboard.tsx src/tui/components/AgentList.tsx src/tui/components/SkillList.tsx src/tui/components/DetailPane.tsx tests/tui/components.test.tsx

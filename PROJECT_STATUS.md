@@ -1,10 +1,10 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI alternate-screen/fullscreen Task 1 accepted in root; responsive layout Task 2 pending
+Phase: TUI alternate-screen/fullscreen Task 2 accepted in root; PTY resize/restore Task 3 pending
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
-Active development worktree: `(none)`
+Active development worktree: `C:\Users\wudon\Desktop\SkillMux\.worktrees\tui-alt-screen-task2`
 
 ## Current TUI Design Status
 
@@ -30,7 +30,19 @@ Active development worktree: `(none)`
   - `skillmux tui` now enters the alternate screen by default and restores the main screen plus cursor on exit.
   - The PTY harness now records a test-only `session-exit-clean` trace so Windows PTY smoke can prove a clean `q` exit without relying only on raw `node-pty` exit-code timing.
   - The smoke residue proof now checks raw output after the `alt-screen-exit` boundary instead of trusting the final xterm-headless snapshot buffer.
-- The next step for this slice is Task 2: responsive fullscreen layout, still without mixing in the paused Round 8 search-cancel WIP.
+- Alternate-screen/fullscreen Task 2 is accepted in the root repo.
+- Task 2 accepted root commit:
+  - `463c970` `feat: make tui layout responsive`
+- Task 2 verification in root passed with:
+  - `npm run build`
+  - `npm run typecheck`
+  - `npm test -- --run tests/tui/components.test.tsx`
+  - `git diff --check`
+- Task 2 layout notes:
+  - `Dashboard` now allocates pane widths responsively with ratio-based widths plus minimum guards instead of fixed 24/28 column panes.
+  - the Detail pane yields width first as the terminal narrows, while Agents and Skills stay within supported minimum widths.
+  - below `80x24`, the dashboard now shows a centered fullscreen resize prompt instead of rendering an inline one-line fallback inside the normal layout.
+- The next step for this slice is Task 3: PTY resize/restore verification, still without mixing in the paused Round 8 search-cancel WIP.
 - The requested "adopt all unmanaged skills" shortcut is accepted as a later lifecycle/usability slice, not part of the alternate-screen/fullscreen runtime change.
 - The previously attempted PTY audit/polish Round 8 search-cancel debugging is currently paused and should not be mixed into the new alternate-screen/layout slice accidentally.
 

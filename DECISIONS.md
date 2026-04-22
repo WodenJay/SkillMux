@@ -417,3 +417,10 @@ Record key product and implementation decisions so later sessions do not lose th
   - preserve the original startup/render failure over later cleanup failures
 - The PTY smoke proof for Task 1 should not depend only on the raw Windows `node-pty` exit code. Accepted proof requires explicit trace markers for `alt-screen-enter`, `session-exit-clean`, and `alt-screen-exit`, plus an exit event and residue checks after the exit boundary.
 - For the Windows PTY harness, post-exit trace data can arrive after the process exit event. `tests/tui-e2e/pty-session.ts` therefore drains pending output after exit before final snapshot/event inspection.
+- Alternate-screen/fullscreen Task 2 implementation also started in the isolated `tui-alt-screen-task2` worktree because the root repo still held paused Round 8 WIP touching `Dashboard.tsx`.
+- The accepted Task 2 responsive layout contract is:
+  - pane widths use ratios `26% / 30% / 44%` with minimum guards `20 / 24 / 28`
+  - total pane widths always sum back to the current terminal width
+  - the Detail pane absorbs the width delta so Agents and Skills remain usable as the terminal narrows
+  - below `80x24`, the fallback renders in a full-screen centered `Box`, not as an inline text row inside the dashboard
+- Root sync for Task 2 was done by manually porting the accepted worktree delta into `main` rather than cherry-picking blindly, because the paused root WIP still marked `src/tui/components/Dashboard.tsx` as modified.

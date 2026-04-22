@@ -132,4 +132,12 @@
   - `git diff --check`
 - Task 1 implementation note: `src/tui/launch-tui.tsx` now owns alternate-screen enter/exit, cursor hide/show, and preserves the original runtime failure even if cleanup also fails.
 - Task 1 PTY note: the accepted smoke proof uses trace markers `alt-screen-enter`, `session-exit-clean`, and `alt-screen-exit`, and checks raw output after the exit boundary for dashboard residue instead of relying on the final xterm-headless snapshot alone.
-- The next slice for this implementation plan is Task 2: responsive fullscreen layout.
+- Alternate-screen/fullscreen Task 2 is now accepted in root at commit `463c970` (`feat: make tui layout responsive`).
+- Task 2 verification in root passed with:
+  - `npm run build`
+  - `npm run typecheck`
+  - `npm test -- --run tests/tui/components.test.tsx`
+  - `git diff --check`
+- Task 2 layout note: `Dashboard.tsx` now uses ratio-based pane widths with minimum guards and a fullscreen centered resize fallback below `80x24`.
+- Task 2 execution note: implementation and review happened in `.worktrees/tui-alt-screen-task2`, then the accepted delta was synced back to root manually because the paused Round 8 root WIP still marked `src/tui/components/Dashboard.tsx` as modified.
+- The next slice for this implementation plan is Task 3: PTY resize/restore verification.
