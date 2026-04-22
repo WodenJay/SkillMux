@@ -153,4 +153,60 @@ describe("launchTui", () => {
       cursorShow
     ]);
   });
+
+  it("attempts cursor-show when alternate-screen exit throws during teardown", async () => {
+    const cleanupFailure = new Error("alternate screen exit failed");
+    const writes: string[] = [];
+    const writeSpy = vi.spyOn(process.stdout, "write").mockImplementation((chunk: unknown) => {
+      writes.push(String(chunk));
+      if (writes.length === 3) {
+        throw cleanupFailure;
+      }
+
+      return true;
+    });
+
+    await expect(launchTui()).rejects.toThrow(cleanupFailure);
+
+    expect(writeSpy).toHaveBeenCalledTimes(4);
+    expect(renderMock).toHaveBeenCalledTimes(1);
+    expect(waitUntilExitMock).toHaveBeenCalledTimes(1);
+    expect(writes).toEqual([
+      alternateScreenEnter,
+      cursorHide,
+      alternateScreenExit,
+      cursorShow
+    ]);
+  });
+
+  it("preserves the primary failure when teardown also fails", async () => {
+    const primaryFailure = new Error("render failed");
+    const cleanupFailure = new Error("alternate screen exit failed");
+    const writes: string[] = [];
+    const writeSpy = vi.spyOn(process.stdout, "write").mockImplementation((chunk: unknown) => {
+      writes.push(String(chunk));
+      if (writes.length === 3) {
+        throw cleanupFailure;
+      }
+
+      return true;
+    });
+
+    renderMock.mockImplementationOnce(() => {
+      expect(writeSpy).toHaveBeenCalledTimes(2);
+      throw primaryFailure;
+    });
+
+    await expect(launchTui()).rejects.toThrow(primaryFailure);
+
+    expect(writeSpy).toHaveBeenCalledTimes(4);
+    expect(renderMock).toHaveBeenCalledTimes(1);
+    expect(waitUntilExitMock).not.toHaveBeenCalled();
+    expect(writes).toEqual([
+      alternateScreenEnter,
+      cursorHide,
+      alternateScreenExit,
+      cursorShow
+    ]);
+  });
 });

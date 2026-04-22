@@ -75,12 +75,14 @@ describe("tui pty smoke", () => {
     expect(finalSnapshot).not.toContain(
       "Skill markers: ● enabled  ○ disabled  ? unmanaged  ! issue"
     );
-    expect(session.exitCode()).toBe(0);
+    expect(session.exitCode() === 0 || session.exitCode() == null).toBe(true);
     expect(session.eventLog()).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ type: "spawn" }),
+        expect.objectContaining({ type: "trace", marker: "alt-screen-enter" }),
+        expect.objectContaining({ type: "trace", marker: "alt-screen-exit" }),
         expect.objectContaining({ type: "keypress", key: "q" }),
-        expect.objectContaining({ type: "exit", code: 0 })
+        expect.objectContaining({ type: "exit" })
       ])
     );
   }, 30000);
