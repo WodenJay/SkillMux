@@ -3,6 +3,8 @@ import { createScenarioFixture } from "../fixtures";
 import { createPtySession } from "../pty-session";
 
 const cleanups: Array<() => void | Promise<void>> = [];
+const cursorHide = "\u001B[?25l";
+const cursorShow = "\u001B[?25h";
 
 afterEach(async () => {
   while (cleanups.length > 0) {
@@ -28,7 +30,7 @@ describe("tui pty smoke", () => {
     cleanups.push(() => session.close());
 
     await session.waitForText("Skills for codex", 10000);
-    await session.waitForText("using-superpowers");
+    await session.waitForText("● using-superpowers");
     const runningSnapshot = session.snapshot();
     await session.saveSnapshot("initial-dashboard");
     await session.press("q");
@@ -36,14 +38,14 @@ describe("tui pty smoke", () => {
     await session.flushArtifacts();
 
     const finalSnapshot = session.snapshot();
+    const rawOutput = session.rawOutput();
 
+    expect(rawOutput).toContain(cursorHide);
+    expect(rawOutput).toContain(cursorShow);
+    expect(rawOutput.startsWith(cursorHide)).toBe(true);
+    expect(rawOutput.endsWith(cursorShow)).toBe(true);
     expect(runningSnapshot).toContain("Skills for codex");
-    expect(runningSnapshot).toContain("using-superpowers");
-    expect(finalSnapshot).not.toContain("Skills for codex");
-    expect(finalSnapshot).not.toContain("using-superpowers");
-    expect(finalSnapshot).not.toContain("Store: ...\\.skillmux\\skills\\using-superpowers");
-    expect(finalSnapshot).not.toContain("Link: ...\\.codex\\skills\\using-superpowers");
-    expect(finalSnapshot).not.toContain("Skill markers:");
+    expect(runningSnapshot).toContain("● using-superpowers");
     expect(runningSnapshot).not.toContain("Claude Code");
     expect(runningSnapshot).not.toContain("Gemini CLI");
     expect(runningSnapshot).not.toContain("OpenClaw");
@@ -54,7 +56,20 @@ describe("tui pty smoke", () => {
     expect(runningSnapshot).toContain(
       "Link: ...\\.codex\\skills\\using-superpowers"
     );
-    expect(runningSnapshot).toContain("Skill markers:");
+    expect(runningSnapshot).toContain(
+      "Skill markers: ● enabled  ○ disabled  ? unmanaged  ! issue"
+    );
+    expect(finalSnapshot).not.toContain("Skills for codex");
+    expect(finalSnapshot).not.toContain("● using-superpowers");
+    expect(finalSnapshot).not.toContain(
+      "Store: ...\\.skillmux\\skills\\using-superpowers"
+    );
+    expect(finalSnapshot).not.toContain(
+      "Link: ...\\.codex\\skills\\using-superpowers"
+    );
+    expect(finalSnapshot).not.toContain(
+      "Skill markers: ● enabled  ○ disabled  ? unmanaged  ! issue"
+    );
     expect(session.exitCode()).toBe(0);
     expect(session.eventLog()).toEqual(
       expect.arrayContaining([

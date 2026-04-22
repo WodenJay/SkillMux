@@ -34,6 +34,7 @@ export type PtySession = {
   press(data: string): Promise<void>;
   resize(cols: number, rows: number): Promise<void>;
   snapshot(): string;
+  rawOutput(): string;
   saveSnapshot(name: string): Promise<void>;
   waitForText(pattern: string, timeoutMs?: number): Promise<void>;
   waitForExit(timeoutMs?: number): Promise<void>;
@@ -54,6 +55,7 @@ export async function createPtySession(options: {
   const command = process.execPath;
   const args = [join(process.cwd(), "dist", "cli.js"), "tui"];
   const screen = createScreenBuffer({ cols: options.cols, rows: options.rows });
+  let rawOutput = "";
   let artifacts: ArtifactRecorder;
   try {
     artifacts = await createArtifactRecorder({
@@ -104,6 +106,7 @@ export async function createPtySession(options: {
 
   const exitPromise = new Promise<void>((resolve) => {
     child.onData((chunk) => {
+      rawOutput += chunk;
       writeQueue = writeQueue.then(() => screen.write(chunk));
       record({ type: "data", size: chunk.length });
     });
@@ -134,6 +137,9 @@ export async function createPtySession(options: {
     },
     snapshot() {
       return screen.snapshot();
+    },
+    rawOutput() {
+      return rawOutput;
     },
     async saveSnapshot(name) {
       await settle(writeQueue);

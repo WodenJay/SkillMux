@@ -33,16 +33,25 @@ describe("launchTui", () => {
     vi.clearAllMocks();
   });
 
-  it("enters alternate screen before rendering and restores on normal exit", async () => {
+  it("writes alternate-screen enter and cursor-hide before rendering, then restores on normal exit", async () => {
     const options = {
       homeDir: "C:/tmp/home",
       skillmuxHome: "C:/tmp/home/.skillmux"
     };
     const writes: string[] = [];
-
-    vi.spyOn(process.stdout, "write").mockImplementation((chunk: unknown) => {
+    const writeSpy = vi.spyOn(process.stdout, "write").mockImplementation((chunk: unknown) => {
       writes.push(String(chunk));
       return true;
+    });
+
+    renderMock.mockImplementationOnce(() => {
+      expect(writeSpy).toHaveBeenCalledTimes(2);
+      expect(writeSpy).toHaveBeenNthCalledWith(1, alternateScreenEnter);
+      expect(writeSpy).toHaveBeenNthCalledWith(2, cursorHide);
+
+      return {
+        waitUntilExit: waitUntilExitMock
+      };
     });
 
     await launchTui(options);
@@ -63,17 +72,19 @@ describe("launchTui", () => {
     ]);
   });
 
-  it("restores alternate screen and cursor when rendering throws", async () => {
+  it("writes alternate-screen enter and cursor-hide before rendering, then restores when rendering throws", async () => {
     const renderFailure = new Error("render failed");
     const writes: string[] = [];
-
-    renderMock.mockImplementationOnce(() => {
-      throw renderFailure;
-    });
-
-    vi.spyOn(process.stdout, "write").mockImplementation((chunk: unknown) => {
+    const writeSpy = vi.spyOn(process.stdout, "write").mockImplementation((chunk: unknown) => {
       writes.push(String(chunk));
       return true;
+    });
+
+    renderMock.mockImplementationOnce(() => {
+      expect(writeSpy).toHaveBeenCalledTimes(2);
+      expect(writeSpy).toHaveBeenNthCalledWith(1, alternateScreenEnter);
+      expect(writeSpy).toHaveBeenNthCalledWith(2, cursorHide);
+      throw renderFailure;
     });
 
     await expect(launchTui()).rejects.toThrow(renderFailure);
@@ -88,15 +99,22 @@ describe("launchTui", () => {
     ]);
   });
 
-  it("restores alternate screen and cursor when the Ink session rejects", async () => {
+  it("writes alternate-screen enter and cursor-hide before rendering, then restores when the Ink session rejects", async () => {
     const sessionFailure = new Error("session failed");
     const writes: string[] = [];
-
-    waitUntilExitMock.mockRejectedValueOnce(sessionFailure);
-
-    vi.spyOn(process.stdout, "write").mockImplementation((chunk: unknown) => {
+    const writeSpy = vi.spyOn(process.stdout, "write").mockImplementation((chunk: unknown) => {
       writes.push(String(chunk));
       return true;
+    });
+
+    renderMock.mockImplementationOnce(() => {
+      expect(writeSpy).toHaveBeenCalledTimes(2);
+      expect(writeSpy).toHaveBeenNthCalledWith(1, alternateScreenEnter);
+      expect(writeSpy).toHaveBeenNthCalledWith(2, cursorHide);
+
+      return {
+        waitUntilExit: waitUntilExitMock.mockRejectedValueOnce(sessionFailure)
+      };
     });
 
     await expect(launchTui()).rejects.toThrow(sessionFailure);
