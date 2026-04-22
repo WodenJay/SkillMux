@@ -129,6 +129,10 @@ function elementText(node: React.ReactNode): string {
   return "";
 }
 
+function normalizeFrame(frame: string): string {
+  return frame.replace(/\s+/g, " ").trim();
+}
+
 async function settle(): Promise<void> {
   await new Promise((resolve) => {
     setTimeout(resolve, 0);
@@ -294,6 +298,72 @@ describe("TUI dashboard components", () => {
     expect(bodyRow?.props.height).toBe(16);
   });
 
+  it("lets every pane grow beyond the old fixed widths on a wide terminal", () => {
+    const dashboard = Dashboard({
+      state: state(),
+      width: 160,
+      height: 30
+    });
+    const bodyRow = React.Children.toArray(dashboard.props.children).find(
+      (
+        child
+      ): child is React.ReactElement<{
+        children?: React.ReactNode;
+        flexDirection?: string;
+      }> =>
+        React.isValidElement<{
+          children?: React.ReactNode;
+          flexDirection?: string;
+        }>(child) && child.props.flexDirection === "row"
+    );
+    const [agentPane, skillPane, detailPane] = React.Children.toArray(
+      bodyRow?.props.children
+    ) as React.ReactElement<{ width?: number }>[];
+
+    expect(agentPane.props.width).toBeGreaterThan(24);
+    expect(skillPane.props.width).toBeGreaterThan(28);
+    expect(detailPane.props.width).toBeGreaterThan(28);
+    expect(
+      (agentPane.props.width ?? 0) +
+        (skillPane.props.width ?? 0) +
+        (detailPane.props.width ?? 0)
+    ).toBe(160);
+  });
+
+  it("keeps a readable proportional layout at the supported minimum size", () => {
+    const dashboard = Dashboard({
+      state: state(),
+      width: 80,
+      height: 24
+    });
+    const bodyRow = React.Children.toArray(dashboard.props.children).find(
+      (
+        child
+      ): child is React.ReactElement<{
+        children?: React.ReactNode;
+        flexDirection?: string;
+      }> =>
+        React.isValidElement<{
+          children?: React.ReactNode;
+          flexDirection?: string;
+        }>(child) && child.props.flexDirection === "row"
+    );
+    const [agentPane, skillPane, detailPane] = React.Children.toArray(
+      bodyRow?.props.children
+    ) as React.ReactElement<{ width?: number }>[];
+
+    expect(agentPane.props.width).toBeGreaterThanOrEqual(20);
+    expect(skillPane.props.width).toBeGreaterThanOrEqual(24);
+    expect(detailPane.props.width).toBeGreaterThanOrEqual(28);
+    expect(detailPane.props.width).toBeGreaterThan(skillPane.props.width ?? 0);
+    expect(skillPane.props.width).toBeGreaterThanOrEqual(agentPane.props.width ?? 0);
+    expect(
+      (agentPane.props.width ?? 0) +
+        (skillPane.props.width ?? 0) +
+        (detailPane.props.width ?? 0)
+    ).toBe(80);
+  });
+
   it("renders adopt confirmation text and confirmation shortcuts", () => {
     const { lastFrame } = render(
       <ConfirmDialog
@@ -360,14 +430,16 @@ describe("TUI dashboard components", () => {
     expect(fallback.lastFrame()).toContain("scanning...");
   });
 
-  it("renders the exact too-small terminal fallback below 80x24", () => {
-    const { lastFrame } = render(
-      <Dashboard state={state()} width={79} height={24} />
+  it("renders the resize prompt across the full screen below the minimum terminal size", () => {
+    const frame = renderToString(
+      <Dashboard state={state()} width={79} height={24} />,
+      { columns: 79 }
     );
 
-    expect(lastFrame()).toBe(
-      "Terminal too small. Resize to at least 80x24."
-    );
+    expect(frame).toContain("Terminal too small. Resize to at least 80x24.");
+    expect(frame).not.toContain("Agents");
+    expect(frame).not.toContain("Skills for codex");
+    expect(frame).not.toContain("Detail");
   });
 
   it("keeps footer shortcut lists out of the detail pane", () => {
@@ -562,12 +634,14 @@ describe("App", () => {
     stdin.write("j");
     await settle();
 
-    expect(lastFrame()).toContain("Skills for claude");
-    expect(lastFrame()).toContain("Loading skills for claude...");
-    expect(lastFrame()).toContain("Loading details for");
-    expect(lastFrame()).toContain("claude...");
-    expect(lastFrame()).not.toContain("No skills for this agent");
-    expect(lastFrame()).not.toContain("Select a skill row");
+    const frame = lastFrame() ?? "";
+
+    expect(frame).toContain("Skills for claude");
+    expect(normalizeFrame(frame)).toContain("Loading skills for");
+    expect(normalizeFrame(frame)).toContain("Loading details for");
+    expect(normalizeFrame(frame)).toContain("claude...");
+    expect(frame).not.toContain("No skills for this agent");
+    expect(frame).not.toContain("Select a skill row");
 
     pendingAgentLoad.resolve(
       model({
@@ -614,8 +688,11 @@ describe("App", () => {
     stdin.write("j");
     await settle();
 
-    expect(lastFrame()).toContain("Skills for claude");
-    expect(lastFrame()).toContain("Loading skills for claude...");
+    const frame = lastFrame() ?? "";
+
+    expect(frame).toContain("Skills for claude");
+    expect(normalizeFrame(frame)).toContain("Loading skills for");
+    expect(normalizeFrame(frame)).toContain("claude...");
 
     pendingAgentLoad.reject(new Error("claude reload failed"));
     await settle();

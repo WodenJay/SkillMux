@@ -22,6 +22,36 @@ export type DashboardProps = {
 
 const minimumWidth = 80;
 const minimumHeight = 24;
+const agentRatio = 0.26;
+const skillRatio = 0.3;
+const detailRatio = 0.44;
+const agentMinimumWidth = 20;
+const skillMinimumWidth = 24;
+const detailMinimumWidth = 28;
+
+function paneWidths(width: number): {
+  agentWidth: number;
+  skillWidth: number;
+  detailWidth: number;
+} {
+  const agentWidth = Math.max(agentMinimumWidth, Math.round(width * agentRatio));
+  const skillWidth = Math.max(skillMinimumWidth, Math.round(width * skillRatio));
+  const detailWidth = Math.max(
+    detailMinimumWidth,
+    Math.round(width * detailRatio)
+  );
+  const widthDelta = width - (agentWidth + skillWidth + detailWidth);
+
+  if (widthDelta === 0) {
+    return { agentWidth, skillWidth, detailWidth };
+  }
+
+  return {
+    agentWidth,
+    skillWidth,
+    detailWidth: detailWidth + widthDelta
+  };
+}
 
 export function Dashboard({
   state,
@@ -29,7 +59,17 @@ export function Dashboard({
   height
 }: DashboardProps) {
   if (width < minimumWidth || height < minimumHeight) {
-    return <Text>Terminal too small. Resize to at least 80x24.</Text>;
+    return (
+      <Box
+        flexDirection="column"
+        width={width}
+        height={height}
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Text>Terminal too small. Resize to at least 80x24.</Text>
+      </Box>
+    );
   }
 
   const visibleAgents = getVisibleAgents(state);
@@ -57,9 +97,7 @@ export function Dashboard({
         ? confirmDialogHeight
         : 0;
   const bodyHeight = Math.max(height - 1 - footerHeight - overlayHeight, 0);
-  const agentWidth = 24;
-  const skillWidth = 28;
-  const detailWidth = Math.max(width - agentWidth - skillWidth, 28);
+  const { agentWidth, skillWidth, detailWidth } = paneWidths(width);
 
   return (
     <Box flexDirection="column" width={width} height={height}>
