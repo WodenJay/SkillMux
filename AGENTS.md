@@ -158,3 +158,4 @@
   - `git diff --check`
 - The alternate-screen/fullscreen slice is now complete in root.
 - The next follow-up slice is the later usability/lifecycle request for one-key adoption of all unmanaged skills.
+- The remaining Round 8 root residue in `src/tui/state.ts` and `tests/tui/state.test.ts` was later reviewed and discarded because it had no substantive code delta against `HEAD`; it was mixed line-ending noise, not a pending fix.

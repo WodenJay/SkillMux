@@ -436,3 +436,4 @@ Record key product and implementation decisions so later sessions do not lose th
 - Task 3 also adds a launch-boundary `SIGINT` handler so Ctrl+C unmounts Ink before alternate-screen and cursor restoration run, preserving the Task 1 cleanup contract on that exit path too.
 - Task 4 root acceptance for this slice requires a fresh full-repository gate from `main`: `npm run build`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`.
 - After that gate passed, the alternate-screen/fullscreen slice was considered complete in root. The next product slice is the later one-key unmanaged-skill adoption request, still separate from the paused Round 8 search-cancel WIP.
+- A later review of the remaining root Round 8 residue in `src/tui/state.ts` and `tests/tui/state.test.ts` found no logic delta against `HEAD`; the files only differed by mixed line endings, so that residue was discarded instead of resumed or committed.

@@ -302,4 +302,4 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Run the alternate-screen/fullscreen Task 4 full verification gate in the root repo
 - [x] Commit the alternate-screen/fullscreen Task 4 tracking state in the root repo
 - [ ] Add a later usability/lifecycle slice for one-key adoption of all unmanaged skills
-- [ ] Resume or discard the paused PTY audit/polish Round 8 search-cancel debugging explicitly before touching those WIP files again
+- [x] Resume or discard the paused PTY audit/polish Round 8 search-cancel debugging explicitly before touching those WIP files again

@@ -65,7 +65,9 @@ Active development worktree: `(none)`
 - The alternate-screen/fullscreen slice is complete in the root repo.
 - The next follow-up slice is the later usability/lifecycle request for a one-key way to adopt all unmanaged skills.
 - The requested "adopt all unmanaged skills" shortcut is accepted as a later lifecycle/usability slice, not part of the alternate-screen/fullscreen runtime change.
-- The previously attempted PTY audit/polish Round 8 search-cancel debugging is currently paused and should not be mixed into the new alternate-screen/layout slice accidentally.
+- The previously attempted PTY audit/polish Round 8 search-cancel debugging was reviewed before the next slice resumed.
+- The remaining root edits in `src/tui/state.ts` and `tests/tui/state.test.ts` had no substantive logic delta versus `HEAD`; they were mixed-line-ending residue only and were discarded.
+- Root is back to a clean accepted state for the next slice.
 
 - The PTY-driven exploration harness for `skillmux tui` is complete and accepted in the root repo.
 - The design goal is to let the agent drive the real TUI in a temporary sandbox, detect UX issues directly, and then convert those findings into regression scenarios.
