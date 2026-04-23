@@ -1,3 +1,25 @@
+import type { RunDoctorResult } from "../commands/doctor";
+import {
+  buildRunConfigAddAgentOptions,
+  buildRunConfigUpdateAgentOptions,
+  buildRunImportOptions,
+  createConfigAddAgentForm,
+  createConfigUpdateAgentForm,
+  createConfigUpdateAgentFormFromSeed,
+  createImportSkillForm,
+  updateConfigAddAgentFormField,
+  updateConfigUpdateAgentFormField,
+  updateImportSkillFormField,
+  validateConfigAddAgentForm,
+  validateConfigUpdateAgentForm,
+  validateImportSkillForm,
+  type ConfigAddAgentForm,
+  type ConfigAddAgentFormValues,
+  type ConfigUpdateAgentForm,
+  type ConfigUpdateAgentFormValues,
+  type ImportSkillForm,
+  type ImportSkillFormValues
+} from "./forms";
 import type { TuiAction } from "./actions";
 import type {
   DashboardModel,
@@ -16,12 +38,41 @@ export type TuiModal =
       unmanagedCount: number;
     }
   | { kind: "confirm-remove"; skillId: string }
-  | { kind: "add-agent" }
-  | { kind: "edit-agent"; agentId: string }
+  | { kind: "add-agent"; form: ConfigAddAgentForm }
+  | { kind: "edit-agent"; agentId: string; form: ConfigUpdateAgentForm }
   | { kind: "confirm-remove-agent"; agentId: string }
-  | { kind: "import" }
-  | { kind: "doctor" }
-  | { kind: "confirm-discard-dirty-form" };
+  | { kind: "import"; form: ImportSkillForm }
+  | DoctorModal
+  | { kind: "confirm-discard-dirty-form"; modal: TuiFormModal };
+
+export type TuiFormModal =
+  | { kind: "add-agent"; form: ConfigAddAgentForm }
+  | { kind: "edit-agent"; agentId: string; form: ConfigUpdateAgentForm }
+  | { kind: "import"; form: ImportSkillForm };
+
+export type DoctorModal =
+  | { kind: "doctor"; status: "loading" }
+  | { kind: "doctor"; status: "ready"; report: RunDoctorResult }
+  | { kind: "doctor"; status: "error"; errorMessage: string };
+
+export type TuiPendingCommand =
+  | {
+      kind: "config-add-agent";
+      input: ReturnType<typeof buildRunConfigAddAgentOptions>;
+    }
+  | {
+      kind: "config-update-agent";
+      input: ReturnType<typeof buildRunConfigUpdateAgentOptions>;
+    }
+  | {
+      kind: "config-remove-agent";
+      input: { id: string };
+    }
+  | {
+      kind: "import-skill";
+      input: ReturnType<typeof buildRunImportOptions>;
+    }
+  | { kind: "doctor" };
 
 export type TuiSearch = {
   panel: "agents" | "skills";
@@ -45,6 +96,7 @@ export type TuiState = {
   modal: TuiModal | null;
   busy: boolean;
   pendingAction: TuiAction | null;
+  pendingCommand: TuiPendingCommand | null;
   pendingAgentId: string | null;
 };
 
@@ -66,6 +118,28 @@ export type TuiStateEvent =
   | { type: "open-import" }
   | { type: "open-doctor" }
   | { type: "open-discard-dirty-form" }
+  | {
+      type: "add-agent-form-field-changed";
+      field: keyof ConfigAddAgentFormValues;
+      value: ConfigAddAgentFormValues[keyof ConfigAddAgentFormValues];
+    }
+  | {
+      type: "edit-agent-form-field-changed";
+      field: keyof ConfigUpdateAgentFormValues;
+      value: ConfigUpdateAgentFormValues[keyof ConfigUpdateAgentFormValues];
+    }
+  | {
+      type: "import-form-field-changed";
+      field: keyof ImportSkillFormValues;
+      value: ImportSkillFormValues[keyof ImportSkillFormValues];
+    }
+  | { type: "submit-add-agent-form" }
+  | { type: "submit-edit-agent-form" }
+  | { type: "submit-remove-agent" }
+  | { type: "submit-import-form" }
+  | { type: "doctor-result-loaded"; report: RunDoctorResult }
+  | { type: "doctor-result-failed"; errorMessage: string }
+  | { type: "confirm-discard-dirty-form" }
   | { type: "request-adopt" }
   | { type: "request-adopt-all" }
   | { type: "request-remove" }
@@ -165,8 +239,49 @@ function clearTransientIntent(state: TuiState): TuiState {
   return {
     ...state,
     pendingAction: null,
+    pendingCommand: null,
     statusMessage: null
   };
+}
+
+function isFormModal(modal: TuiModal | null): modal is TuiFormModal {
+  return modal?.kind === "add-agent" || modal?.kind === "edit-agent" || modal?.kind === "import";
+}
+
+function isDoctorModal(modal: TuiModal | null): modal is DoctorModal {
+  return modal?.kind === "doctor";
+}
+
+function dirtyFormError(modal: TuiFormModal): string | null {
+  if (modal.kind === "add-agent") {
+    return validateConfigAddAgentForm(modal.form);
+  }
+
+  if (modal.kind === "edit-agent") {
+    return validateConfigUpdateAgentForm(modal.form);
+  }
+
+  return validateImportSkillForm(modal.form);
+}
+
+function updateFormError(modal: TuiFormModal, error: string | null): TuiFormModal {
+  if (modal.kind === "add-agent") {
+    return { ...modal, form: { ...modal.form, error } };
+  }
+
+  if (modal.kind === "edit-agent") {
+    return { ...modal, form: { ...modal.form, error } };
+  }
+
+  return { ...modal, form: { ...modal.form, error } };
+}
+
+function restoreDismissedForm(modal: TuiModal): TuiModal {
+  if (modal.kind !== "confirm-discard-dirty-form") {
+    return modal;
+  }
+
+  return modal.modal;
 }
 
 function restoreSearchSelection(state: TuiState): TuiState {
@@ -326,6 +441,7 @@ function isModalBackgroundEvent(event: TuiStateEvent): boolean {
     event.type === "open-import" ||
     event.type === "open-doctor" ||
     event.type === "open-discard-dirty-form" ||
+    event.type === "submit-remove-agent" ||
     event.type === "request-adopt" ||
     event.type === "request-adopt-all" ||
     event.type === "request-remove" ||
@@ -410,6 +526,19 @@ export function consumeActionIntent(state: TuiState): {
   };
 }
 
+export function consumePendingCommandIntent(state: TuiState): {
+  state: TuiState;
+  command: TuiPendingCommand | null;
+} {
+  return {
+    state: {
+      ...state,
+      pendingCommand: null
+    },
+    command: state.pendingCommand
+  };
+}
+
 export function consumeAgentSelectionIntent(state: TuiState): {
   state: TuiState;
   agentId: string | null;
@@ -434,6 +563,7 @@ export function createInitialTuiState(model: DashboardModel): TuiState {
     modal: null,
     busy: false,
     pendingAction: null,
+    pendingCommand: null,
     pendingAgentId: null
   };
 
@@ -446,11 +576,41 @@ export function createInitialTuiState(model: DashboardModel): TuiState {
 
 export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState {
   if (state.modal !== null) {
-    if (event.type === "close") {
+    if (event.type === "confirm-discard-dirty-form") {
+      if (state.modal.kind !== "confirm-discard-dirty-form") {
+        return state;
+      }
+
       return {
         ...state,
         modal: null,
-        pendingAction: null
+        pendingCommand: null
+      };
+    }
+
+    if (event.type === "close") {
+      if (state.modal.kind === "confirm-discard-dirty-form") {
+        return {
+          ...state,
+          modal: restoreDismissedForm(state.modal)
+        };
+      }
+
+      if (isFormModal(state.modal) && state.modal.form.dirty) {
+        return {
+          ...state,
+          modal: {
+            kind: "confirm-discard-dirty-form",
+            modal: state.modal
+          }
+        };
+      }
+
+      return {
+        ...state,
+        modal: null,
+        pendingAction: null,
+        pendingCommand: null
       };
     }
 
@@ -466,6 +626,186 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
         ...state,
         statusMessage: event.message
       };
+    }
+
+    if (state.modal.kind === "doctor") {
+      if (event.type === "doctor-result-loaded") {
+        return {
+          ...state,
+          modal: {
+            kind: "doctor",
+            status: "ready",
+            report: event.report
+          }
+        };
+      }
+
+      if (event.type === "doctor-result-failed") {
+        return {
+          ...state,
+          modal: {
+            kind: "doctor",
+            status: "error",
+            errorMessage: event.errorMessage
+          }
+        };
+      }
+    }
+
+    if (state.modal.kind === "add-agent") {
+      if (event.type === "add-agent-form-field-changed") {
+        return {
+          ...state,
+          modal: {
+            ...state.modal,
+            form: updateConfigAddAgentFormField(
+              state.modal.form,
+              event.field,
+              event.value as never
+            )
+          }
+        };
+      }
+
+      if (event.type === "submit-add-agent-form") {
+        const error = validateConfigAddAgentForm(state.modal.form);
+
+        if (error !== null) {
+          return {
+            ...state,
+            modal: {
+              ...state.modal,
+              form: {
+                ...state.modal.form,
+                error
+              }
+            }
+          };
+        }
+
+        return {
+          ...state,
+          pendingCommand: {
+            kind: "config-add-agent",
+            input: buildRunConfigAddAgentOptions(state.modal.form)
+          },
+          modal: {
+            ...state.modal,
+            form: {
+              ...state.modal.form,
+              error: null
+            }
+          }
+        };
+      }
+    }
+
+    if (state.modal.kind === "edit-agent") {
+      if (event.type === "edit-agent-form-field-changed") {
+        return {
+          ...state,
+          modal: {
+            ...state.modal,
+            form: updateConfigUpdateAgentFormField(
+              state.modal.form,
+              event.field,
+              event.value as never
+            )
+          }
+        };
+      }
+
+      if (event.type === "submit-edit-agent-form") {
+        const error = validateConfigUpdateAgentForm(state.modal.form);
+
+        if (error !== null) {
+          return {
+            ...state,
+            modal: {
+              ...state.modal,
+              form: {
+                ...state.modal.form,
+                error
+              }
+            }
+          };
+        }
+
+        return {
+          ...state,
+          pendingCommand: {
+            kind: "config-update-agent",
+            input: buildRunConfigUpdateAgentOptions(state.modal.form, state.modal.agentId)
+          },
+          modal: {
+            ...state.modal,
+            form: {
+              ...state.modal.form,
+              error: null
+            }
+          }
+        };
+      }
+    }
+
+    if (state.modal.kind === "confirm-remove-agent") {
+      if (event.type === "submit-remove-agent") {
+        return {
+          ...state,
+          pendingCommand: {
+            kind: "config-remove-agent",
+            input: { id: state.modal.agentId }
+          }
+        };
+      }
+    }
+
+    if (state.modal.kind === "import") {
+      if (event.type === "import-form-field-changed") {
+        return {
+          ...state,
+          modal: {
+            ...state.modal,
+            form: updateImportSkillFormField(
+              state.modal.form,
+              event.field,
+              event.value as never
+            )
+          }
+        };
+      }
+
+      if (event.type === "submit-import-form") {
+        const error = validateImportSkillForm(state.modal.form);
+
+        if (error !== null) {
+          return {
+            ...state,
+            modal: {
+              ...state.modal,
+              form: {
+                ...state.modal.form,
+                error
+              }
+            }
+          };
+        }
+
+        return {
+          ...state,
+          pendingCommand: {
+            kind: "import-skill",
+            input: buildRunImportOptions(state.modal.form)
+          },
+          modal: {
+            ...state.modal,
+            form: {
+              ...state.modal.form,
+              error: null
+            }
+          }
+        };
+      }
     }
 
     if (isModalBackgroundEvent(event)) {
@@ -643,7 +983,10 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
   if (event.type === "open-add-agent") {
     return {
       ...readyState,
-      modal: { kind: "add-agent" }
+      modal: {
+        kind: "add-agent",
+        form: createConfigAddAgentForm()
+      }
     };
   }
 
@@ -659,7 +1002,18 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
 
     return {
       ...readyState,
-      modal: { kind: "edit-agent", agentId: selectedAgent.id }
+      modal: {
+        kind: "edit-agent",
+        agentId: selectedAgent.id,
+        form: createConfigUpdateAgentFormFromSeed({
+          id: selectedAgent.id,
+          stableName: selectedAgent.overrideStableName,
+          homeRelativeRootPath: selectedAgent.overrideHomeRelativeRootPath,
+          skillsDirectoryPath: selectedAgent.overrideSkillsDirectoryPath,
+          supportedPlatforms: selectedAgent.overrideSupportedPlatforms,
+          overrideEnabledByDefault: selectedAgent.overrideEnabledByDefault
+        })
+      }
     };
   }
 
@@ -682,21 +1036,36 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
   if (event.type === "open-import") {
     return {
       ...readyState,
-      modal: { kind: "import" }
+      modal: {
+        kind: "import",
+        form: createImportSkillForm()
+      }
     };
   }
 
   if (event.type === "open-doctor") {
     return {
       ...readyState,
-      modal: { kind: "doctor" }
+      modal: {
+        kind: "doctor",
+        status: "loading"
+      },
+      pendingCommand: {
+        kind: "doctor"
+      }
     };
   }
 
   if (event.type === "open-discard-dirty-form") {
     return {
       ...readyState,
-      modal: { kind: "confirm-discard-dirty-form" }
+      modal: {
+        kind: "confirm-discard-dirty-form",
+        modal: {
+          kind: "add-agent",
+          form: createConfigAddAgentForm()
+        }
+      }
     };
   }
 

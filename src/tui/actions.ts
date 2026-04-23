@@ -1,13 +1,31 @@
 import { runAdopt as defaultRunAdopt } from "../commands/adopt";
+import { runConfigAddAgent as defaultRunConfigAddAgent } from "../commands/config-add-agent";
+import { runConfigRemoveAgent as defaultRunConfigRemoveAgent } from "../commands/config-remove-agent";
+import { runConfigUpdateAgent as defaultRunConfigUpdateAgent } from "../commands/config-update-agent";
 import { runDisable as defaultRunDisable } from "../commands/disable";
+import { runDoctor as defaultRunDoctor } from "../commands/doctor";
 import { runEnable as defaultRunEnable } from "../commands/enable";
+import { runImport as defaultRunImport } from "../commands/import";
 import { runRemove as defaultRunRemove } from "../commands/remove";
 import { runScan as defaultRunScan } from "../commands/scan";
+import { normalizeAgentId } from "../config/agent-override-validation";
+import type { RunConfigAddAgentResult } from "../commands/config-add-agent";
+import type { RunConfigRemoveAgentResult } from "../commands/config-remove-agent";
+import type { RunConfigUpdateAgentResult } from "../commands/config-update-agent";
+import type { RunDoctorResult } from "../commands/doctor";
+import type { RunImportResult } from "../commands/import";
 import type { DashboardModel, TuiSkillRow } from "./dashboard-model";
+import {
+  normalizeRunConfigAddAgentOptions,
+  normalizeRunConfigUpdateAgentOptions
+} from "./forms";
 import {
   loadDashboardState,
   type LoadDashboardStateOptions
 } from "./load-dashboard-state";
+import type { TuiPendingCommand } from "./state";
+
+export type { TuiPendingCommand } from "./state";
 
 export type TuiAction = "toggle" | "adopt" | "adopt-all" | "remove" | "scan";
 
@@ -34,6 +52,43 @@ export type TuiActionServices = {
     agent: string;
     skill?: string;
   }) => Promise<CommandOutput>;
+  runConfigAddAgent: (options: {
+    homeDir?: string;
+    skillmuxHome?: string;
+    id: string;
+    root: string;
+    skills?: string;
+    name?: string;
+    platforms?: string[];
+    disabledByDefault?: boolean;
+  }) => Promise<Pick<RunConfigAddAgentResult, "output" | "agentId">>;
+  runConfigUpdateAgent: (options: {
+    homeDir?: string;
+    skillmuxHome?: string;
+    id: string;
+    root?: string;
+    skills?: string;
+    name?: string;
+    platforms?: string[];
+    enabledByDefault?: boolean;
+    disabledByDefault?: boolean;
+  }) => Promise<Pick<RunConfigUpdateAgentResult, "output" | "agentId">>;
+  runConfigRemoveAgent: (options: {
+    homeDir?: string;
+    skillmuxHome?: string;
+    id: string;
+  }) => Promise<Pick<RunConfigRemoveAgentResult, "output">>;
+  runImport: (options: {
+    homeDir?: string;
+    skillmuxHome?: string;
+    sourcePath: string;
+    skillName: string;
+  }) => Promise<Pick<RunImportResult, "output">>;
+  runDoctor: (options: {
+    homeDir?: string;
+    skillmuxHome?: string;
+    platform?: NodeJS.Platform;
+  }) => Promise<RunDoctorResult>;
   runRemove: (options: {
     homeDir?: string;
     skillmuxHome?: string;
@@ -48,7 +103,7 @@ export type TuiActionServices = {
 };
 
 export type DispatchTuiActionInput = {
-  action: TuiAction;
+  action: TuiAction | TuiPendingCommand;
   model: DashboardModel;
   homeDir?: string;
   skillmuxHome?: string;
@@ -59,12 +114,18 @@ export type DispatchTuiActionInput = {
 export type DispatchTuiActionResult = {
   model: DashboardModel;
   statusMessage: string;
+  doctor?: RunDoctorResult;
 };
 
 const defaultServices: TuiActionServices = {
   runEnable: defaultRunEnable,
   runDisable: defaultRunDisable,
   runAdopt: defaultRunAdopt,
+  runConfigAddAgent: defaultRunConfigAddAgent,
+  runConfigUpdateAgent: defaultRunConfigUpdateAgent,
+  runConfigRemoveAgent: defaultRunConfigRemoveAgent,
+  runImport: defaultRunImport,
+  runDoctor: defaultRunDoctor,
   runRemove: defaultRunRemove,
   runScan: defaultRunScan,
   reload: loadDashboardState
@@ -78,6 +139,26 @@ function actionLabel(action: TuiAction): string {
   return action.charAt(0).toUpperCase() + action.slice(1);
 }
 
+function commandLabel(kind: TuiPendingCommand["kind"]): string {
+  if (kind === "config-add-agent") {
+    return "Config add agent";
+  }
+
+  if (kind === "config-update-agent") {
+    return "Config update agent";
+  }
+
+  if (kind === "config-remove-agent") {
+    return "Config remove agent";
+  }
+
+  if (kind === "import-skill") {
+    return "Import skill";
+  }
+
+  return "Doctor";
+}
+
 function errorReason(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
   const firstLine = message.split(/\r?\n/u)[0]?.trim();
@@ -87,23 +168,46 @@ function errorReason(error: unknown): string {
     : firstLine;
 }
 
-function reloadOptions(input: DispatchTuiActionInput): LoadDashboardStateOptions {
+function reloadOptions(
+  input: DispatchTuiActionInput,
+  selection: {
+    selectedAgentId?: string | null;
+    selectedSkillId?: string | null;
+  } = {}
+): LoadDashboardStateOptions {
+  const hasSelectedAgentId = Object.prototype.hasOwnProperty.call(
+    selection,
+    "selectedAgentId"
+  );
+  const hasSelectedSkillId = Object.prototype.hasOwnProperty.call(
+    selection,
+    "selectedSkillId"
+  );
+
   return {
     homeDir: input.homeDir,
     skillmuxHome: input.skillmuxHome,
     platform: input.platform,
-    selectedAgentId: input.model.selectedAgentId ?? undefined,
-    selectedSkillId: input.model.selectedSkillId ?? undefined
+    selectedAgentId: hasSelectedAgentId
+      ? selection.selectedAgentId ?? undefined
+      : input.model.selectedAgentId ?? undefined,
+    selectedSkillId: hasSelectedSkillId
+      ? selection.selectedSkillId ?? undefined
+      : input.model.selectedSkillId ?? undefined
   };
 }
 
 async function reloadAfterCommand(
   input: DispatchTuiActionInput,
   services: TuiActionServices,
-  output: string
+  output: string,
+  selection: {
+    selectedAgentId?: string | null;
+    selectedSkillId?: string | null;
+  } = {}
 ): Promise<DispatchTuiActionResult> {
   return {
-    model: await services.reload(reloadOptions(input)),
+    model: await services.reload(reloadOptions(input, selection)),
     statusMessage: stripTrailingNewlines(output)
   };
 }
@@ -136,12 +240,96 @@ function resolveSelectedAgent(model: DashboardModel): {
   );
 }
 
+function isPendingCommand(action: TuiAction | TuiPendingCommand): action is TuiPendingCommand {
+  return typeof action === "object";
+}
+
 export async function dispatchTuiAction(
   input: DispatchTuiActionInput
 ): Promise<DispatchTuiActionResult> {
   const services = { ...defaultServices, ...input.services };
 
   try {
+    if (isPendingCommand(input.action)) {
+      if (input.action.kind === "config-add-agent") {
+        const normalizedInput = normalizeRunConfigAddAgentOptions(input.action.input);
+        const result = await services.runConfigAddAgent({
+          homeDir: input.homeDir,
+          skillmuxHome: input.skillmuxHome,
+          ...normalizedInput
+        });
+
+        return reloadAfterCommand(
+          input,
+          services,
+          result.output,
+          {
+            selectedAgentId: result.agentId ?? normalizeAgentId(normalizedInput.id),
+            selectedSkillId: undefined
+          }
+        );
+      }
+
+      if (input.action.kind === "config-update-agent") {
+        const normalizedInput = normalizeRunConfigUpdateAgentOptions(input.action.input);
+        const result = await services.runConfigUpdateAgent({
+          homeDir: input.homeDir,
+          skillmuxHome: input.skillmuxHome,
+          ...normalizedInput
+        });
+
+        return reloadAfterCommand(
+          input,
+          services,
+          result.output,
+          {
+            selectedAgentId: result.agentId ?? normalizedInput.id,
+            selectedSkillId: undefined
+          }
+        );
+      }
+
+      if (input.action.kind === "config-remove-agent") {
+        const result = await services.runConfigRemoveAgent({
+          homeDir: input.homeDir,
+          skillmuxHome: input.skillmuxHome,
+          ...input.action.input
+        });
+
+        return reloadAfterCommand(
+          input,
+          services,
+          result.output,
+          {
+            selectedAgentId: null,
+            selectedSkillId: undefined
+          }
+        );
+      }
+
+      if (input.action.kind === "import-skill") {
+        const result = await services.runImport({
+          homeDir: input.homeDir,
+          skillmuxHome: input.skillmuxHome,
+          ...input.action.input
+        });
+
+        return reloadAfterCommand(input, services, result.output);
+      }
+
+      const result = await services.runDoctor({
+        homeDir: input.homeDir,
+        skillmuxHome: input.skillmuxHome,
+        platform: input.platform
+      });
+
+      return {
+        model: input.model,
+        statusMessage: stripTrailingNewlines(result.output),
+        doctor: result
+      };
+    }
+
     if (input.action === "scan") {
       const result = await services.runScan({
         homeDir: input.homeDir,
@@ -234,9 +422,13 @@ export async function dispatchTuiAction(
 
     return reloadAfterCommand(input, services, result.output);
   } catch (error) {
+    const label = isPendingCommand(input.action)
+      ? commandLabel(input.action.kind)
+      : actionLabel(input.action);
+
     return {
       model: input.model,
-      statusMessage: `${actionLabel(input.action)} failed: ${errorReason(error)}`
+      statusMessage: `${label} failed: ${errorReason(error)}`
     };
   }
 }

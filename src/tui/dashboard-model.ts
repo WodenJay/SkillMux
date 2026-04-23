@@ -1,4 +1,5 @@
 import type { Manifest, ManagedSkill, ScanIssue } from "../core/types";
+import type { AgentOverride } from "../config/load-user-config";
 import type { DiscoveredAgent } from "../discovery/discover-agents";
 import type {
   ScannedSkillEntry,
@@ -9,7 +10,17 @@ import { isPathInside } from "../fs/path-utils";
 export type TuiAgentRow = {
   id: string;
   name: string;
+  stableName?: string;
   path: string;
+  homeRelativeRootPath?: string;
+  skillsDirectoryPath?: string;
+  supportedPlatforms?: string[];
+  enabledByDefault?: boolean;
+  overrideStableName?: string;
+  overrideHomeRelativeRootPath?: string;
+  overrideSkillsDirectoryPath?: string;
+  overrideSupportedPlatforms?: string[];
+  overrideEnabledByDefault?: boolean;
   discovery: "builtin" | "custom";
   exists: boolean;
   supported: boolean;
@@ -89,6 +100,7 @@ export type BuildDashboardModelInput = {
   entries: ScannedSkillEntry[];
   issues: ScanIssue[];
   configuredAgentIds?: string[];
+  agentOverrides?: Record<string, AgentOverride>;
   selectedAgentId?: string;
   selectedSkillId?: string;
 };
@@ -313,11 +325,32 @@ function buildAgentRows(input: BuildDashboardModelInput): TuiAgentRow[] {
   return sortById(input.agents).map((agent) => {
     const counts = countsForRows(buildSkillRowsForAgent(input, agent.id));
     const userOverride = hasUserOverride(configuredAgentIds, agent.id);
+    const agentOverride = input.agentOverrides?.[agent.id];
 
     return {
       id: agent.id,
       name: agent.stableName,
+      stableName: agent.stableName,
       path: agent.absoluteSkillsDirectoryPath,
+      homeRelativeRootPath: agent.homeRelativeRootPath,
+      skillsDirectoryPath: agent.skillsDirectoryPath,
+      supportedPlatforms: [...agent.supportedPlatforms],
+      enabledByDefault: agent.enabledByDefault,
+      ...(agentOverride?.stableName === undefined
+        ? {}
+        : { overrideStableName: agentOverride.stableName }),
+      ...(agentOverride?.homeRelativeRootPath === undefined
+        ? {}
+        : { overrideHomeRelativeRootPath: agentOverride.homeRelativeRootPath }),
+      ...(agentOverride?.skillsDirectoryPath === undefined
+        ? {}
+        : { overrideSkillsDirectoryPath: agentOverride.skillsDirectoryPath }),
+      ...(agentOverride?.supportedPlatforms === undefined
+        ? {}
+        : { overrideSupportedPlatforms: [...agentOverride.supportedPlatforms] }),
+      ...(agentOverride?.enabledByDefault === undefined
+        ? {}
+        : { overrideEnabledByDefault: agentOverride.enabledByDefault }),
       discovery: agent.discovery,
       exists: agent.exists,
       supported: agent.supportedOnPlatform,

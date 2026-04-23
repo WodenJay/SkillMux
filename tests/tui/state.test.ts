@@ -9,6 +9,7 @@ import type {
   TuiUnmanagedSkillRow
 } from "../../src/tui/dashboard-model";
 import {
+  consumePendingCommandIntent,
   consumeAgentSelectionIntent,
   createInitialTuiState,
   getAvailableActions,
@@ -22,7 +23,12 @@ function agent(id: string, name = id): TuiAgentRow {
   return {
     id,
     name,
+    stableName: name,
     path: join("C:", "Users", "me", `.${id}`, "skills"),
+    homeRelativeRootPath: `.${id}`,
+    skillsDirectoryPath: "skills",
+    supportedPlatforms: ["win32", "linux", "darwin"],
+    enabledByDefault: true,
     discovery: "builtin",
     exists: true,
     supported: true,
@@ -461,7 +467,12 @@ describe("TUI state reducer", () => {
             ...agent("codex"),
             hasUserOverride: true,
             canEditOverride: true,
-            canRemoveOverride: true
+            canRemoveOverride: true,
+            overrideStableName: "Codex Override",
+            overrideHomeRelativeRootPath: ".codex-custom",
+            overrideSkillsDirectoryPath: "custom-skills",
+            overrideSupportedPlatforms: ["linux"],
+            overrideEnabledByDefault: true
           }
         ],
         selectedAgentId: "codex",
@@ -476,25 +487,387 @@ describe("TUI state reducer", () => {
       })
     );
 
-    expect(updateTuiState(builtinState, { type: "open-add-agent" }).modal).toEqual({
+    expect(updateTuiState(builtinState, { type: "open-add-agent" }).modal).toMatchObject({
       kind: "add-agent"
     });
-    expect(updateTuiState(overrideState, { type: "open-edit-agent" }).modal).toEqual({
+    expect(updateTuiState(overrideState, { type: "open-edit-agent" }).modal).toMatchObject({
       kind: "edit-agent",
-      agentId: "codex"
+      agentId: "codex",
+      form: {
+        values: {
+          root: ".codex-custom",
+          skills: "custom-skills",
+          name: "Codex Override",
+          platforms: ["linux"],
+          enabledByDefault: true,
+          disabledByDefault: false
+        }
+      }
     });
     expect(updateTuiState(overrideState, { type: "open-remove-agent" }).modal).toEqual({
       kind: "confirm-remove-agent",
       agentId: "codex"
     });
-    expect(updateTuiState(overrideState, { type: "open-discard-dirty-form" }).modal).toEqual({
+    expect(updateTuiState(overrideState, { type: "open-discard-dirty-form" }).modal).toMatchObject({
       kind: "confirm-discard-dirty-form"
     });
-    expect(updateTuiState(builtinState, { type: "open-import" }).modal).toEqual({
+    expect(updateTuiState(builtinState, { type: "open-import" }).modal).toMatchObject({
       kind: "import"
     });
     expect(updateTuiState(builtinState, { type: "open-doctor" }).modal).toEqual({
-      kind: "doctor"
+      kind: "doctor",
+      status: "loading"
+    });
+  });
+
+  it("updates add, edit, and import form fields while tracking dirtiness", () => {
+    const addState = updateTuiState(createInitialTuiState(model()), {
+      type: "open-add-agent"
+    });
+    const editedAddState = updateTuiState(addState, {
+      type: "add-agent-form-field-changed",
+      field: "platforms",
+      value: ["win32", "linux"]
+    });
+    const importState = updateTuiState(createInitialTuiState(model()), {
+      type: "open-import"
+    });
+    const editedImportState = updateTuiState(importState, {
+      type: "import-form-field-changed",
+      field: "skillName",
+      value: "find-skills"
+    });
+    const editState = updateTuiState(
+      createInitialTuiState(
+        model({
+          agents: [
+            {
+              ...agent("codex"),
+              hasUserOverride: true,
+              canEditOverride: true,
+              canRemoveOverride: true,
+              overrideSupportedPlatforms: ["linux"]
+            }
+          ],
+          selectedAgentId: "codex",
+          selectedSkillId: null
+        })
+      ),
+      { type: "open-edit-agent" }
+    );
+    const editedEditState = updateTuiState(editState, {
+      type: "edit-agent-form-field-changed",
+      field: "platforms",
+      value: ["darwin"]
+    });
+
+    expect(editedAddState.modal).toMatchObject({
+      kind: "add-agent",
+      form: {
+        values: {
+          platforms: ["win32", "linux"]
+        },
+        dirty: true
+      }
+    });
+    expect(editedImportState.modal).toMatchObject({
+      kind: "import",
+      form: {
+        values: {
+          skillName: "find-skills"
+        },
+        dirty: true
+      }
+    });
+    expect(editedEditState.modal).toMatchObject({
+      kind: "edit-agent",
+      form: {
+        values: {
+          platforms: ["darwin"]
+        },
+        dirty: true
+      }
+    });
+  });
+
+  it("keeps form array baselines isolated from later platform-array mutation", () => {
+    const addState = updateTuiState(createInitialTuiState(model()), {
+      type: "open-add-agent"
+    });
+
+    if (addState.modal?.kind !== "add-agent") {
+      throw new Error("expected add-agent modal");
+    }
+
+    addState.modal.form.values.platforms.push("linux");
+
+    expect(addState.modal.form.values.platforms).toEqual(["linux"]);
+    expect(addState.modal.form.initialValues.platforms).toEqual([]);
+    expect(addState.modal.form.values.platforms).not.toBe(
+      addState.modal.form.initialValues.platforms
+    );
+  });
+
+  it("keeps edit form default flags mutually exclusive", () => {
+    const editState = updateTuiState(
+      createInitialTuiState(
+        model({
+          agents: [
+            {
+              ...agent("codex"),
+              hasUserOverride: true,
+              canEditOverride: true,
+              canRemoveOverride: true,
+              overrideEnabledByDefault: true
+            }
+          ],
+          selectedAgentId: "codex",
+          selectedSkillId: null
+        })
+      ),
+      { type: "open-edit-agent" }
+    );
+    const enabled = updateTuiState(editState, {
+      type: "edit-agent-form-field-changed",
+      field: "enabledByDefault",
+      value: true
+    });
+    const disabled = updateTuiState(enabled, {
+      type: "edit-agent-form-field-changed",
+      field: "disabledByDefault",
+      value: true
+    });
+
+    expect(enabled.modal).toMatchObject({
+      kind: "edit-agent",
+      form: {
+        values: {
+          enabledByDefault: true,
+          disabledByDefault: false
+        }
+      }
+    });
+    expect(disabled.modal).toMatchObject({
+      kind: "edit-agent",
+      form: {
+        values: {
+          enabledByDefault: false,
+          disabledByDefault: true
+        }
+      }
+    });
+  });
+
+  it("preserves unset enabled-by-default override state without emitting new flags", () => {
+    const editState = updateTuiState(
+      createInitialTuiState(
+        model({
+          agents: [
+            {
+              ...agent("codex"),
+              hasUserOverride: true,
+              canEditOverride: true,
+              canRemoveOverride: true,
+              enabledByDefault: true,
+              overrideEnabledByDefault: undefined
+            }
+          ],
+          selectedAgentId: "codex",
+          selectedSkillId: null
+        })
+      ),
+      { type: "open-edit-agent" }
+    );
+    const submitted = updateTuiState(editState, {
+      type: "submit-edit-agent-form"
+    });
+    const consumed = consumePendingCommandIntent(submitted);
+
+    expect(editState.modal).toMatchObject({
+      kind: "edit-agent",
+      form: {
+        values: {
+          enabledByDefault: false,
+          disabledByDefault: false,
+          preserveEnabledByDefault: true
+        }
+      }
+    });
+    expect(consumed.command).toEqual({
+      kind: "config-update-agent",
+      input: {
+        id: "codex"
+      }
+    });
+  });
+
+  it("stages config remove agent when confirming a remove-agent modal", () => {
+    const removeModalState = updateTuiState(
+      createInitialTuiState(
+        model({
+          agents: [
+            {
+              ...agent("codex"),
+              hasUserOverride: true,
+              canEditOverride: true,
+              canRemoveOverride: true
+            }
+          ],
+          selectedAgentId: "codex",
+          selectedSkillId: null
+        })
+      ),
+      { type: "open-remove-agent" }
+    );
+    const submitted = updateTuiState(removeModalState, {
+      type: "submit-remove-agent"
+    });
+    const consumed = consumePendingCommandIntent(submitted);
+
+    expect(consumed.command).toEqual({
+      kind: "config-remove-agent",
+      input: { id: "codex" }
+    });
+  });
+
+  it("tracks dirty add forms and asks for confirmation before discarding them", () => {
+    const addState = updateTuiState(createInitialTuiState(model()), {
+      type: "open-add-agent"
+    });
+    const dirtyAddState = updateTuiState(addState, {
+      type: "add-agent-form-field-changed",
+      field: "name",
+      value: "Claude Code"
+    });
+    const discardPrompt = updateTuiState(dirtyAddState, { type: "close" });
+
+    expect(dirtyAddState.modal).toMatchObject({
+      kind: "add-agent",
+      form: { dirty: true }
+    });
+    expect(discardPrompt.modal).toEqual({
+      kind: "confirm-discard-dirty-form",
+      modal: {
+        kind: "add-agent",
+        form: expect.any(Object)
+      }
+    });
+  });
+
+  it("stages validated submit intents as payload-bearing commands", () => {
+    const addState = updateTuiState(createInitialTuiState(model()), {
+      type: "open-add-agent"
+    });
+    const preparedAdd = updateTuiState(addState, {
+      type: "add-agent-form-field-changed",
+      field: "id",
+      value: "Claude Code"
+    });
+    const submittedAdd = updateTuiState(preparedAdd, {
+      type: "submit-add-agent-form"
+    });
+    const consumedAdd = consumePendingCommandIntent(submittedAdd);
+
+    expect(consumedAdd.command).toEqual({
+      kind: "config-add-agent",
+      input: {
+        id: "Claude Code",
+        root: "root",
+        skills: "skills"
+      }
+    });
+    expect(consumedAdd.state.pendingCommand).toBeNull();
+    expect(consumedAdd.state.modal).toMatchObject({
+      kind: "add-agent",
+      form: {
+        dirty: true,
+        error: null
+      }
+    });
+  });
+
+  it("keeps invalid submit attempts inside the modal with a short error", () => {
+    const importState = updateTuiState(createInitialTuiState(model()), {
+      type: "open-import"
+    });
+    const submittedImport = updateTuiState(importState, {
+      type: "submit-import-form"
+    });
+
+    expect(submittedImport.pendingCommand).toBeNull();
+    expect(submittedImport.modal).toMatchObject({
+      kind: "import",
+      form: {
+        error: "Skill name and source path are required"
+      }
+    });
+  });
+
+  it("keeps the doctor modal in loading, ready, and error states", () => {
+    const loading = updateTuiState(createInitialTuiState(model()), {
+      type: "open-doctor"
+    });
+    const ready = updateTuiState(loading, {
+      type: "doctor-result-loaded",
+      report: {
+        skillmuxHome: "C:/skillmux",
+        manifest: {
+          version: 1,
+          skillmuxHome: "C:/skillmux",
+          skills: {},
+          agents: {},
+          activations: [],
+          lastScan: {
+            at: null,
+            issues: []
+          }
+        },
+        config: {
+          version: 1,
+          agents: {}
+        },
+        agents: [],
+        entries: [],
+        issues: [],
+        output: "Doctor output\n"
+      }
+    });
+    const failed = updateTuiState(ready, {
+      type: "doctor-result-failed",
+      errorMessage: "Doctor failed"
+    });
+
+    expect(loading.modal).toEqual({ kind: "doctor", status: "loading" });
+    expect(ready.modal).toEqual({
+      kind: "doctor",
+      status: "ready",
+      report: {
+        skillmuxHome: "C:/skillmux",
+        manifest: {
+          version: 1,
+          skillmuxHome: "C:/skillmux",
+          skills: {},
+          agents: {},
+          activations: [],
+          lastScan: {
+            at: null,
+            issues: []
+          }
+        },
+        config: {
+          version: 1,
+          agents: {}
+        },
+        agents: [],
+        entries: [],
+        issues: [],
+        output: "Doctor output\n"
+      }
+    });
+    expect(failed.modal).toEqual({
+      kind: "doctor",
+      status: "error",
+      errorMessage: "Doctor failed"
     });
   });
 

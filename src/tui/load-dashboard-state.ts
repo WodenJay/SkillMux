@@ -54,6 +54,7 @@ export async function loadDashboardState(
     entries,
     issues,
     configuredAgentIds: Object.keys(userConfig.agents),
+    agentOverrides: userConfig.agents,
     selectedAgentId: options.selectedAgentId,
     selectedSkillId: options.selectedSkillId
   });

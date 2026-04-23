@@ -124,7 +124,15 @@ describe("buildDashboardModel", () => {
       issues,
       selectedAgentId: "codex",
       selectedSkillId: "tui-design",
-      configuredAgentIds: ["codex", "openclaw"]
+      configuredAgentIds: ["codex", "openclaw"],
+      agentOverrides: {
+        codex: {
+          enabledByDefault: false
+        },
+        openclaw: {
+          enabledByDefault: true
+        }
+      }
     });
 
     expect(model.selectedAgentId).toBe("codex");
@@ -162,7 +170,8 @@ describe("buildDashboardModel", () => {
       issueCount: 1,
       hasUserOverride: true,
       canEditOverride: true,
-      canRemoveOverride: true
+      canRemoveOverride: true,
+      overrideEnabledByDefault: false
     });
     expect(model.agents.find((agent) => agent.id === "claude")).toMatchObject({
       hasUserOverride: false,

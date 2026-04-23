@@ -29,7 +29,12 @@ function agent(overrides: Partial<TuiAgentRow> = {}): TuiAgentRow {
   return {
     id: "codex",
     name: "codex",
+    stableName: "OpenAI Codex",
     path: "C:\\Users\\me\\.codex\\skills",
+    homeRelativeRootPath: ".codex",
+    skillsDirectoryPath: "skills",
+    supportedPlatforms: ["win32", "linux", "darwin"],
+    enabledByDefault: true,
     discovery: "builtin",
     exists: true,
     supported: true,
