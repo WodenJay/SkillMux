@@ -563,6 +563,9 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("Display name");
     expect(frame).toContain("Platforms");
     expect(frame).toContain("Disabled by default");
+    expect(frame).toContain("Submit");
+    expect(frame).toContain("[Up/Down] move");
+    expect(frame).not.toContain("Tab");
   });
 
   it("renders the edit-agent form labels and mutually visible boolean state", () => {
@@ -592,6 +595,9 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("Platforms");
     expect(frame).toContain("Enabled by default");
     expect(frame).toContain("Disabled by default");
+    expect(frame).toContain("Submit");
+    expect(frame).toContain("[Up/Down] move");
+    expect(frame).not.toContain("Tab");
   });
 
   it("renders the import form labels", () => {
@@ -606,6 +612,9 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("Import skill");
     expect(frame).toContain("Source path");
     expect(frame).toContain("Skill name");
+    expect(frame).toContain("Submit");
+    expect(frame).toContain("[Up/Down] move");
+    expect(frame).not.toContain("Tab");
   });
 
   it("renders remove-agent confirmation text with the selected agent name", () => {
@@ -704,6 +713,7 @@ describe("TUI dashboard components", () => {
     expect(empty).toContain("No doctor issues found.");
     expect(issues).toContain("broken-link");
     expect(issues).toContain("Broken link");
+    expect(issues).toContain("C:/Users/me/.codex/skills/broken");
     expect(error).toContain("Doctor failed");
   });
 

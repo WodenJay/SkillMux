@@ -74,6 +74,7 @@ export function FormDialog({
   height = 14
 }: FormDialogProps) {
   const activeField = fieldIndex;
+  const submitFieldIndex = modal.kind === "import" ? 2 : 6;
 
   if (modal.kind === "import") {
     return (
@@ -89,7 +90,8 @@ export function FormDialog({
           modal.form.values.skillName,
           activeField === 1
         )}
-        <Text dimColor>[Tab] next   [Shift+Tab] previous   [Enter] submit   [Esc] cancel</Text>
+        <Text inverse={activeField === submitFieldIndex}>Submit</Text>
+        <Text dimColor>[Up/Down] move   [Enter] submit selected row   [Esc] cancel</Text>
       </Box>
     );
   }
@@ -150,10 +152,11 @@ export function FormDialog({
             modal.form.values.disabledByDefault,
             activeField === booleanFieldIndex + 1
           )}
+      <Text inverse={activeField === submitFieldIndex}>Submit</Text>
       {modal.kind === "edit-agent" ? (
         <Text dimColor>Leaving both defaults unchecked preserves the current setting.</Text>
       ) : null}
-      <Text dimColor>[Tab] next   [Shift+Tab] previous   [Enter] submit   [Esc] cancel</Text>
+      <Text dimColor>[Up/Down] move   [Enter] submit selected row   [Esc] cancel</Text>
     </Box>
   );
 }

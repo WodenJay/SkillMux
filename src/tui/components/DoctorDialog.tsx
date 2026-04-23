@@ -14,6 +14,10 @@ function issueLabel(issue: DoctorIssue): string {
   return `${issue.severity} ${issue.code}`;
 }
 
+function issuePath(issue: DoctorIssue): string | null {
+  return issue.path ?? null;
+}
+
 function visibleIssueCount(height: number): number {
   return Math.max(height - 5, 1);
 }
@@ -57,7 +61,10 @@ export function DoctorDialog({
           {visibleIssues.map((issue) => (
             <Text key={`${issue.code}:${issue.path ?? issue.message}`}>
               <Text color={issue.severity === "error" ? "red" : "yellow"}>! </Text>
-              <Text>{issueLabel(issue)} - {issue.message}</Text>
+              <Text>
+                {issueLabel(issue)} - {issue.message}
+                {issuePath(issue) === null ? "" : ` - ${issuePath(issue)}`}
+              </Text>
             </Text>
           ))}
           {issues.length > visibleIssues.length ? (

@@ -66,6 +66,10 @@ const editAgentFieldOrder = [
 const importFieldOrder = ["sourcePath", "skillName"] as const;
 const platformOptions = ["win32", "linux", "darwin"] as const;
 
+function formFieldCount(modal: { kind: "add-agent" | "edit-agent" | "import" }): number {
+  return modal.kind === "import" ? importFieldOrder.length : addAgentFieldOrder.length;
+}
+
 function clampIndex(index: number, count: number): number {
   if (count <= 0) {
     return 0;
@@ -764,15 +768,19 @@ export function App({
             : state.modal.kind === "edit-agent"
               ? editAgentFieldOrder
               : importFieldOrder;
+        const submitFieldIndex = fieldOrder.length;
         const currentFieldIndex = clampIndex(
           modalInteraction.fieldIndex,
-          fieldOrder.length
+          fieldOrder.length + 1
         );
         const currentField = fieldOrder[currentFieldIndex];
         const moveField = (direction: 1 | -1) => {
           setModalInteraction((current) => ({
             ...current,
-            fieldIndex: clampIndex(current.fieldIndex + direction, fieldOrder.length),
+            fieldIndex: clampIndex(
+              current.fieldIndex + direction,
+              fieldOrder.length + 1
+            ),
             platformIndex: 0
           }));
         };
@@ -818,7 +826,7 @@ export function App({
           return;
         }
 
-        if (key.return) {
+        if (key.return && currentFieldIndex === submitFieldIndex) {
           if (state.modal.kind === "add-agent") {
             setState(updateTuiState(state, { type: "submit-add-agent-form" }));
           } else if (state.modal.kind === "edit-agent") {
@@ -830,13 +838,17 @@ export function App({
           return;
         }
 
-        if (key.tab || key.downArrow) {
+        if (key.downArrow) {
           moveField(1);
           return;
         }
 
-        if ((key.shift && key.tab) || key.upArrow) {
+        if (key.upArrow) {
           moveField(-1);
+          return;
+        }
+
+        if (currentField === undefined) {
           return;
         }
 
