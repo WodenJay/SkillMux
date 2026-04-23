@@ -707,3 +707,11 @@ Use a fresh worker per task. After each accepted task:
 3. Review code quality for that task.
 4. Update this plan and the four tracking docs.
 5. Commit the accepted slice before moving to the next task.
+
+## Accepted Progress
+
+- Task 1 accepted in root at commit `8350bb0` (`feat: add tui parity workflow scaffolding`).
+- Task 1 root verification passed with:
+  - `npm test -- --run tests/tui/dashboard-model.test.ts tests/tui/state.test.ts`
+  - `npm run typecheck`
+  - `git diff --check`

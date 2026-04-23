@@ -548,3 +548,9 @@ Task 10 passed fresh in the root repo with:
 - Next PTY audit/polish focus:
   - continue from the accepted Round 7 state
   - rank and fix the next highest-priority interaction/state-feedback issue batch beyond the repaired empty-result search submit trap before another `/compact`
+- TUI CLI parity execution is now underway in root:
+  - execution mode selected: subagent-driven development
+  - accepted root Task 1 commit: `8350bb0` (`feat: add tui parity workflow scaffolding`)
+  - Task 1 added dashboard override metadata, parity workflow-shell reducer events, and default-list visibility for config-only agent overrides
+  - Task 1 verification passed in root with `npm test -- --run tests/tui/dashboard-model.test.ts tests/tui/state.test.ts`, `npm run typecheck`, and `git diff --check`
+  - next implementation step: Task 2 form payloads and command dispatcher support

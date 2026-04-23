@@ -347,4 +347,10 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Sync `AGENTS.md`, `PROJECT_STATUS.md`, `NEXT_ACTIONS.md`, and `DECISIONS.md` for the new parity slice
 - [x] Ask for user review of `docs/superpowers/specs/2026-04-23-skillmux-tui-cli-parity-design.md`
 - [x] After written-spec approval, invoke `$writing-plans` and draft the TUI CLI parity implementation plan
-- [ ] Choose the execution mode for `docs/superpowers/plans/2026-04-23-skillmux-tui-cli-parity-implementation-plan.md`
+- [x] Choose the execution mode for `docs/superpowers/plans/2026-04-23-skillmux-tui-cli-parity-implementation-plan.md`
+- [x] Create isolated worktree `.worktrees/tui-cli-parity-task1` for TUI CLI parity Task 1 and verify the targeted baseline
+- [x] Implement TUI CLI parity Task 1: dashboard override metadata and reducer scaffolding
+- [x] Run TUI CLI parity Task 1 through spec review, spec-fix loop, code-quality review, quality-fix loop, and re-review
+- [x] Sync TUI CLI parity Task 1 accepted code back to the root repo
+- [x] Complete fresh root verification for TUI CLI parity Task 1
+- [ ] After `/compact`, start TUI CLI parity Task 2: form payloads and command dispatcher support

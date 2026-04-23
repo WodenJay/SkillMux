@@ -518,3 +518,5 @@ Record key product and implementation decisions so later sessions do not lose th
 
 - Dashboard agent rows should carry user-override metadata so the reducer can gate edit/remove availability without guessing from labels.
 - The parity reducer should expose add/edit/remove/import/doctor shells even before field editing and submit payload behavior lands.
+- The Task 1 reducer should gate edit/remove off `canEditOverride` and `canRemoveOverride`, not only off `hasUserOverride`, so later tasks can widen capability distinctions without another reducer contract change.
+- Config-only agent overrides should remain visible in the default Agents list even when the local agent directory does not yet exist; otherwise add/edit/remove workflows become search-dependent immediately after writing config.
