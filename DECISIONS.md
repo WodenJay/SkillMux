@@ -440,6 +440,33 @@ Record key product and implementation decisions so later sessions do not lose th
 
 ## 2026-04-23
 
+### TUI CLI parity
+
+- The next TUI product slice is feature parity with the current local-management CLI surface, not another narrow polish-only change.
+- This slice should bring these CLI-backed capabilities into the TUI:
+  - `config add-agent`
+  - `config update-agent`
+  - `config remove-agent`
+  - `import`
+  - `doctor`
+- The TUI entry model for these capabilities is direct keyboard shortcuts plus modal overlays; it should not introduce a command palette in this slice.
+- The accepted shortcut contract for this slice is:
+  - `n` add agent
+  - `e` edit selected agent
+  - `X` remove selected agent
+  - `i` import skill
+  - `d` doctor
+- New data-entry flows use single-page modal forms instead of a wizard so the full CLI parameter surface remains visible and editable in one place.
+- The parity target is full current CLI field coverage for add/update/import, not a reduced TUI-only subset.
+- `doctor` belongs in the TUI, but as a structured read-only diagnostic view built from `runDoctor()` results rather than raw pasted CLI table text.
+- The TUI must reuse the accepted command helpers as the source of truth for normalization, validation, and writes:
+  - `runConfigAddAgent`
+  - `runConfigUpdateAgent`
+  - `runConfigRemoveAgent`
+  - `runImport`
+  - `runDoctor`
+- The TUI remains the orchestration layer for modal state, busy/reload flow, and user-facing errors; it should not reimplement CLI business rules.
+
 ### TUI bulk adopt for current agent
 
 - The later one-key unmanaged-skill adoption request is now narrowed to the current selected agent only; there is no cross-agent bulk adopt mode in this slice.

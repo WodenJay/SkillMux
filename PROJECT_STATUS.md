@@ -1,12 +1,29 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: Post-bulk-adopt npm release for `skillmux@0.1.3` is complete
+Phase: TUI CLI parity design is approved in conversation and pending written-spec review
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
 
 ## Current TUI Design Status
+
+- A new TUI parity slice is now approved in conversation: the TUI should cover the current local-management CLI surface instead of forcing users back to the shell for agent configuration, import, and doctor workflows.
+- The written design spec for that slice is `docs/superpowers/specs/2026-04-23-skillmux-tui-cli-parity-design.md`.
+- Accepted scope:
+  - `config add-agent`
+  - `config update-agent`
+  - `config remove-agent`
+  - `import`
+  - `doctor`
+- Accepted interaction model:
+  - direct keyboard shortcuts, not a command palette
+  - single-page modal forms, not a wizard
+  - `n` add agent, `e` edit agent, `X` remove agent, `i` import, `d` doctor
+  - full CLI field coverage for add/update/import
+  - fullscreen modal workflows inside the existing alternate-screen TUI
+- Accepted architecture boundary: the TUI should reuse `runConfigAddAgent`, `runConfigUpdateAgent`, `runConfigRemoveAgent`, `runImport`, and `runDoctor` instead of inventing parallel lifecycle/config logic.
+- Status: design review is complete; next step is written-spec review and then an implementation plan.
 
 - A new TUI usability/lifecycle slice is now approved in conversation: one-key adoption of all unmanaged skills for the current selected agent.
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-design.md`.

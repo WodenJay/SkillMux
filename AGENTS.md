@@ -195,6 +195,20 @@
   - `npm run typecheck`
   - `git diff --check`
 - The current-agent `Shift+A` bulk-adopt slice is now complete in root.
+- The next TUI product slice is full parity with the current local-management CLI surface for setup/configuration workflows that are still missing from the dashboard.
+- The written design spec for that slice is `docs/superpowers/specs/2026-04-23-skillmux-tui-cli-parity-design.md`.
+- Accepted scope for that slice:
+  - `config add-agent`
+  - `config update-agent`
+  - `config remove-agent`
+  - `import`
+  - `doctor`
+- Accepted interaction model for that slice:
+  - direct keyboard shortcuts instead of a command palette
+  - single-page modal forms instead of a wizard
+  - `n` add agent, `e` edit selected agent, `X` remove selected agent, `i` import skill, `d` doctor
+  - full current CLI field coverage for add/update/import rather than a reduced TUI-only subset
+- Accepted architecture boundary for that slice: the TUI should reuse `runConfigAddAgent`, `runConfigUpdateAgent`, `runConfigRemoveAgent`, `runImport`, and `runDoctor` as the source of truth instead of reimplementing their validation or write semantics.
 - A post-bulk-adopt npm release attempt has started for `skillmux@0.1.3`.
 - Local release-prep verification for `0.1.3` passed in root with:
   - `npm run build`

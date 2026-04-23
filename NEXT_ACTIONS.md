@@ -328,3 +328,16 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Restore npm publish auth/permission for the `skillmux` package in this shell
 - [x] Publish `skillmux@0.1.3` to npm
 - [x] Verify npm registry latest version returns `0.1.3`
+
+## TUI CLI Parity Design
+
+- [x] Identify the missing TUI-vs-CLI management gaps that still force users back to the shell
+- [x] Confirm the parity slice should cover the main current local-management CLI surface, not just add-agent
+- [x] Confirm the TUI should use direct keyboard shortcuts rather than a command palette for the new workflows
+- [x] Confirm the new workflows should use single-page modal forms rather than a wizard
+- [x] Confirm doctor belongs in the TUI as a read-only diagnostic view
+- [x] Present and approve the TUI CLI parity design sections
+- [x] Write the TUI CLI parity design spec under `docs/superpowers/specs/`
+- [x] Sync `AGENTS.md`, `PROJECT_STATUS.md`, `NEXT_ACTIONS.md`, and `DECISIONS.md` for the new parity slice
+- [ ] Ask for user review of `docs/superpowers/specs/2026-04-23-skillmux-tui-cli-parity-design.md`
+- [ ] After written-spec approval, invoke `$writing-plans` and draft the TUI CLI parity implementation plan
