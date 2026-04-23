@@ -218,7 +218,7 @@ git commit -m "feat: add tui parity workflow scaffolding"
 - Modify: `tests/tui/state.test.ts`
 - Modify: `tests/tui/actions.test.ts`
 
-- [ ] **Step 1: Write the failing reducer and action tests**
+- [x] **Step 1: Write the failing reducer and action tests**
 
 Extend `tests/tui/state.test.ts` with cases for:
 
@@ -259,7 +259,7 @@ expect(result.doctorReport?.issues).toEqual([
 ]);
 ```
 
-- [ ] **Step 2: Run the targeted tests to verify the red state**
+- [x] **Step 2: Run the targeted tests to verify the red state**
 
 Run:
 
@@ -269,7 +269,7 @@ npm test -- --run tests/tui/state.test.ts tests/tui/actions.test.ts
 
 Expected: FAIL because there is no form-state helper, no payload-bearing submit intent, and no dispatcher support for the parity commands.
 
-- [ ] **Step 3: Add focused form-state helpers**
+- [x] **Step 3: Add focused form-state helpers**
 
 Create `src/tui/forms.ts` with small, explicit helpers for:
 
@@ -293,7 +293,7 @@ export function buildEditAgentForm(agent: TuiAgentRow): EditAgentFormState;
 export function validateAddAgentForm(form: AddAgentFormState): string | null;
 ```
 
-- [ ] **Step 4: Upgrade reducer submit intents from bare actions to payload-bearing commands**
+- [x] **Step 4: Upgrade reducer submit intents from bare actions to payload-bearing commands**
 
 Update `src/tui/state.ts` so form submit no longer relies on `pendingAction: TuiAction | null`.
 
@@ -316,7 +316,7 @@ Reducer rules:
 - `Esc` on a dirty form opens discard confirmation instead of dropping the modal immediately
 - doctor modal can enter `loading`, `ready`, and `error` states
 
-- [ ] **Step 5: Extend the dispatcher for parity commands**
+- [x] **Step 5: Extend the dispatcher for parity commands**
 
 Update `src/tui/actions.ts` so it adds service methods for:
 
@@ -341,7 +341,7 @@ The write-path contract should remain thin:
 - remove-agent should reload with `selectedAgentId` cleared so the loader can choose a neighboring visible agent
 - import should reload the current dashboard model and keep status text user-facing
 
-- [ ] **Step 6: Run targeted verification**
+- [x] **Step 6: Run targeted verification**
 
 Run:
 
@@ -359,7 +359,7 @@ npm run typecheck
 
 Expected: PASS.
 
-- [ ] **Step 7: Commit Task 2**
+- [x] **Step 7: Commit Task 2**
 
 ```powershell
 git add src/tui/forms.ts src/tui/state.ts src/tui/actions.ts tests/tui/state.test.ts tests/tui/actions.test.ts
@@ -713,5 +713,10 @@ Use a fresh worker per task. After each accepted task:
 - Task 1 accepted in root at commit `8350bb0` (`feat: add tui parity workflow scaffolding`).
 - Task 1 root verification passed with:
   - `npm test -- --run tests/tui/dashboard-model.test.ts tests/tui/state.test.ts`
+  - `npm run typecheck`
+  - `git diff --check`
+- Task 2 accepted in root at commit `9f36282` (`feat: add tui parity command payloads`).
+- Task 2 root verification passed with:
+  - `npm test -- --run tests/tui/dashboard-model.test.ts tests/tui/state.test.ts tests/tui/actions.test.ts`
   - `npm run typecheck`
   - `git diff --check`

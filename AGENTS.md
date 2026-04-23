@@ -225,7 +225,15 @@
 - Task 1 dashboard-model note: agent rows now carry required `hasUserOverride`, `canEditOverride`, and `canRemoveOverride` booleans, and `loadDashboardState()` passes configured agent ids into the dashboard model build so editability is data-driven rather than inferred from labels.
 - Task 1 reducer note: parity workflow shells now exist for add-agent, edit-agent, remove-agent, import, doctor, and discard-dirty-form, with modal-open state blocking background dashboard input.
 - Task 1 visibility note: config-only agent overrides remain visible in the default Agents list even when the local agent root does not yet exist, so later add/edit/remove flows do not depend on search to rediscover them.
-- The next step for this slice is Task 2: form payloads and command dispatcher support.
+- TUI CLI parity Task 2 is now accepted in root at commit `9f36282` (`feat: add tui parity command payloads`).
+- Task 2 verification in root passed with:
+  - `npm test -- --run tests/tui/dashboard-model.test.ts tests/tui/state.test.ts tests/tui/actions.test.ts`
+  - `npm run typecheck`
+  - `git diff --check`
+- Task 2 form-state note: `src/tui/forms.ts` now owns deterministic add/edit/import form builders, validation, normalization, and array-safe baseline cloning for `platforms[]`.
+- Task 2 reducer note: parity workflows now stage payload-bearing `pendingCommand` intents for add/edit/remove/import/doctor, include doctor loading/ready/error states, and open dirty-form discard confirmation before dropping local edits.
+- Task 2 patch-semantics note: edit-agent now seeds from raw override payload fields instead of merged discovered-agent values, so unchanged edits do not bake inherited defaults into `config.json`; `preserveEnabledByDefault` keeps the CLI unset state distinct from explicit true/false.
+- The next step for this slice is Task 3: modal UI, keyboard wiring, and doctor presentation.
 - A post-bulk-adopt npm release attempt has started for `skillmux@0.1.3`.
 - Local release-prep verification for `0.1.3` passed in root with:
   - `npm run build`

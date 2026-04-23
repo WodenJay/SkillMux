@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI CLI parity design is approved in conversation and pending written-spec review
+Phase: TUI CLI parity execution is underway in root
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -553,4 +553,7 @@ Task 10 passed fresh in the root repo with:
   - accepted root Task 1 commit: `8350bb0` (`feat: add tui parity workflow scaffolding`)
   - Task 1 added dashboard override metadata, parity workflow-shell reducer events, and default-list visibility for config-only agent overrides
   - Task 1 verification passed in root with `npm test -- --run tests/tui/dashboard-model.test.ts tests/tui/state.test.ts`, `npm run typecheck`, and `git diff --check`
-  - next implementation step: Task 2 form payloads and command dispatcher support
+  - accepted root Task 2 commit: `9f36282` (`feat: add tui parity command payloads`)
+  - Task 2 added payload-bearing parity commands, deterministic add/edit/import form helpers, doctor loading/ready/error state, remove-agent submit staging, raw override seeding for edit-agent patch semantics, and array-safe form baselines
+  - Task 2 verification passed in root with `npm test -- --run tests/tui/dashboard-model.test.ts tests/tui/state.test.ts tests/tui/actions.test.ts`, `npm run typecheck`, and `git diff --check`
+  - next implementation step: Task 3 modal UI, keyboard wiring, and doctor presentation

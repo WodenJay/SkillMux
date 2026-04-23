@@ -353,4 +353,10 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Run TUI CLI parity Task 1 through spec review, spec-fix loop, code-quality review, quality-fix loop, and re-review
 - [x] Sync TUI CLI parity Task 1 accepted code back to the root repo
 - [x] Complete fresh root verification for TUI CLI parity Task 1
-- [ ] After `/compact`, start TUI CLI parity Task 2: form payloads and command dispatcher support
+- [x] After `/compact`, start TUI CLI parity Task 2: form payloads and command dispatcher support
+- [x] Create isolated worktree `.worktrees/tui-cli-parity-task2` for TUI CLI parity Task 2 and gather reducer/dispatcher context
+- [x] Implement TUI CLI parity Task 2: form payloads and command dispatcher support
+- [x] Run TUI CLI parity Task 2 through spec review, spec-fix loops, code-quality review, quality-fix loops, and re-review
+- [x] Sync TUI CLI parity Task 2 accepted code back to the root repo
+- [x] Complete fresh root verification for TUI CLI parity Task 2
+- [ ] After `/compact`, start TUI CLI parity Task 3: modal UI, keyboard wiring, and doctor presentation

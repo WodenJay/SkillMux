@@ -520,3 +520,11 @@ Record key product and implementation decisions so later sessions do not lose th
 - The parity reducer should expose add/edit/remove/import/doctor shells even before field editing and submit payload behavior lands.
 - The Task 1 reducer should gate edit/remove off `canEditOverride` and `canRemoveOverride`, not only off `hasUserOverride`, so later tasks can widen capability distinctions without another reducer contract change.
 - Config-only agent overrides should remain visible in the default Agents list even when the local agent directory does not yet exist; otherwise add/edit/remove workflows become search-dependent immediately after writing config.
+
+### 2026-04-23 TUI CLI parity Task 2
+
+- Task 2 upgrades parity workflow execution from bare `pendingAction` toggles to payload-bearing `pendingCommand` state so add/edit/remove/import/doctor can reuse the accepted CLI helpers without UI-layer argument reconstruction.
+- The add/edit/import form helpers live in `src/tui/forms.ts` as deterministic serializable state builders and normalizers; filesystem access and command execution stay out of that layer.
+- Edit-agent seeding must preserve CLI patch semantics. The reducer therefore seeds from raw user-override fields, not merged effective discovered-agent values, so unchanged edits do not bake inherited defaults into `config.json`.
+- `enabledByDefault` in edit-agent form state must preserve the CLI “unset” case separately from explicit true/false. The accepted contract uses `preserveEnabledByDefault` so the reducer can show an editable state without collapsing inheritance into a write.
+- Array-backed form fields such as `platforms[]` must clone baseline values instead of sharing references between `values` and `initialValues`, otherwise dirty-form discard detection can be invalidated by in-place mutation in later UI work.
