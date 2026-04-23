@@ -43,6 +43,7 @@ export type TuiExplorer = {
   closeOverlay(): Promise<void>;
   toggle(): Promise<void>;
   adopt(): Promise<void>;
+  bulkAdopt(): Promise<void>;
   remove(): Promise<void>;
   scan(): Promise<void>;
   confirm(): Promise<void>;
@@ -144,6 +145,9 @@ export async function startExplorer(
     },
     adopt() {
       return session.press("a");
+    },
+    bulkAdopt() {
+      return session.press("A");
     },
     remove() {
       return session.press("r");

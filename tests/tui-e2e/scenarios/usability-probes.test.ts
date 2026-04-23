@@ -7,6 +7,28 @@ const cursorHide = "\u001B[?25l";
 const cursorShow = "\u001B[?25h";
 const enabledMarker = "\u25CF using-superpowers";
 
+async function waitForDashboardRestored(
+  explorer: Awaited<ReturnType<typeof startExplorer>>,
+  timeoutMs = 10000
+): Promise<void> {
+  const deadline = Date.now() + timeoutMs;
+
+  while (Date.now() < deadline) {
+    const snapshot = explorer.snapshot();
+    if (
+      snapshot.includes("Skills for codex") &&
+      snapshot.includes("Store:") &&
+      !snapshot.includes("Terminal too small")
+    ) {
+      return;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+
+  throw new Error("Timed out waiting for dashboard to fully restore");
+}
+
 afterEach(async () => {
   while (cleanups.length > 0) {
     await cleanups.pop()?.();
@@ -87,7 +109,9 @@ describe("tui explorer usability probes", () => {
     );
 
     await explorer.resize(80, 24);
-    await explorer.waitForText("Skills for codex");
+    await waitForDashboardRestored(explorer);
+    expect(explorer.snapshot()).toContain("Skills for codex");
+    expect(explorer.snapshot()).toContain("Store:");
     expect(explorer.snapshot()).not.toContain("Terminal too small");
 
     await explorer.forceQuit();
