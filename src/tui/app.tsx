@@ -498,6 +498,15 @@ export function App({
 
       if (
         input.toLocaleLowerCase() === "y" &&
+        state.modal.kind === "confirm-adopt-all"
+      ) {
+        const closedState = updateTuiState(state, { type: "close" });
+        runAction("adopt-all", closedState.model, closedState);
+        return;
+      }
+
+      if (
+        input.toLocaleLowerCase() === "y" &&
         state.modal.kind === "confirm-remove"
       ) {
         const closedState = updateTuiState(state, { type: "close" });
@@ -572,6 +581,11 @@ export function App({
 
     if (input === " ") {
       setState(updateTuiState(state, { type: "request-toggle" }));
+      return;
+    }
+
+    if (input === "A" || (key.shift && input === "a")) {
+      setState(updateTuiState(state, { type: "request-adopt-all" }));
       return;
     }
 

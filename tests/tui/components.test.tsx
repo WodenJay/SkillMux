@@ -255,6 +255,38 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("○ disabled");
   });
 
+  it("shows the bulk adopt shortcut only when adopt all is available", () => {
+    const enabledFrame = renderToString(
+      <Footer
+        actions={{
+          toggle: true,
+          adopt: true,
+          adoptAll: true,
+          remove: true,
+          scan: true,
+          help: true
+        }}
+        search={null}
+      />
+    );
+    const disabledFrame = renderToString(
+      <Footer
+        actions={{
+          toggle: true,
+          adopt: true,
+          adoptAll: false,
+          remove: true,
+          scan: true,
+          help: true
+        }}
+        search={null}
+      />
+    );
+
+    expect(enabledFrame).toContain("[Shift+A]adopt all");
+    expect(disabledFrame).not.toContain("[Shift+A]adopt all");
+  });
+
   it("explains filesystem-writing behavior and left-right navigation in the help overlay", () => {
     const { lastFrame } = render(<HelpOverlay />);
 
@@ -271,6 +303,15 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain(
       "Toggle, adopt, remove, and scan can update SkillMux state and agent links."
     );
+  });
+
+  it("explains Shift+A as current-agent bulk adopt in the help overlay", () => {
+    const { lastFrame } = render(<HelpOverlay />);
+
+    const frame = lastFrame();
+
+    expect(frame).toContain("Shift+A");
+    expect(frame).toContain("current-agent bulk adopt");
   });
 
   it("reserves the same height for confirm dialogs that the dialog renders itself", () => {
@@ -297,6 +338,49 @@ describe("TUI dashboard components", () => {
     );
 
     expect(bodyRow?.props.height).toBe(16);
+  });
+
+  it("reserves the same height for bulk adopt dialogs that the dialog renders itself", () => {
+    const withModal = updateTuiState(
+      state({ agents: [agent({ unmanagedCount: 2 })] }),
+      { type: "request-adopt-all" }
+    );
+    const dashboard = Dashboard({
+      state: withModal,
+      width: 80,
+      height: 24
+    });
+    const bodyRow = React.Children.toArray(dashboard.props.children).find(
+      (
+        child
+      ): child is React.ReactElement<{
+        flexDirection?: string;
+        height?: number;
+      }> =>
+        React.isValidElement<{
+          flexDirection?: string;
+          height?: number;
+        }>(child) && child.props.flexDirection === "row"
+    );
+
+    expect(bodyRow?.props.height).toBe(16);
+  });
+
+  it("renders bulk adopt confirmation text through the dashboard overlay", () => {
+    const withModal = updateTuiState(
+      state({ agents: [agent({ unmanagedCount: 2 })] }),
+      { type: "request-adopt-all" }
+    );
+    const frame = renderToString(
+      <Dashboard state={withModal} width={80} height={24} />,
+      { columns: 80 }
+    );
+
+    expect(frame).toContain("Adopt all unmanaged skills for codex?");
+    expect(frame).toContain(
+      "2 unmanaged skills will be moved under SkillMux management."
+    );
+    expect(frame).not.toContain("[Shift+A]adopt all");
   });
 
   it("lets every pane grow beyond the old fixed widths on a wide terminal", () => {
@@ -386,6 +470,26 @@ describe("TUI dashboard components", () => {
     const frame = lastFrame();
 
     expect(frame).toContain("Remove terminal-ui from SkillMux?");
+    expect(frame).toContain("[y] confirm   [Esc] cancel");
+  });
+
+  it("renders explicit bulk adopt confirmation copy", () => {
+    const { lastFrame } = render(
+      <ConfirmDialog
+        modal={{
+          kind: "confirm-adopt-all",
+          agentId: "codex",
+          unmanagedCount: 2
+        }}
+      />
+    );
+
+    const frame = lastFrame();
+
+    expect(frame).toContain("Adopt all unmanaged skills for codex?");
+    expect(frame).toContain(
+      "2 unmanaged skills will be moved under SkillMux management."
+    );
     expect(frame).toContain("[y] confirm   [Esc] cancel");
   });
 
@@ -748,6 +852,72 @@ describe("App", () => {
 
     expect(lastFrame()).toContain("Action failed: copy failed");
     expect(lastFrame()).toContain("Skills for codex");
+  });
+
+  it("opens bulk adopt confirmation from the reducer event", () => {
+    const next = updateTuiState(
+      state({
+        selectedAgentId: "codex",
+        agents: [agent({ unmanagedCount: 2 })]
+      }),
+      { type: "request-adopt-all" }
+    );
+
+    expect(next.modal).toEqual({
+      kind: "confirm-adopt-all",
+      agentId: "codex",
+      unmanagedCount: 2
+    });
+  });
+
+  it("dispatches adopt-all exactly once when confirming bulk adopt", async () => {
+    const pendingAdoptAll = deferred<{
+      model: DashboardModel;
+      statusMessage: string;
+    }>();
+    const loadDashboardState = vi.fn().mockResolvedValue(
+      model({
+        selectedAgentId: "codex",
+        agents: [agent({ unmanagedCount: 2 })],
+        selectedSkillId: "unmanaged:find-skills"
+      })
+    );
+    const dispatchTuiAction = vi.fn().mockReturnValue(pendingAdoptAll.promise);
+    const { lastFrame, stdin } = render(
+      <App
+        services={{ loadDashboardState, dispatchTuiAction }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("A");
+    await settle();
+    expect(lastFrame()).toContain("Adopt all unmanaged skills for codex?");
+    expect(dispatchTuiAction).not.toHaveBeenCalled();
+
+    stdin.write("y");
+    stdin.write("y");
+    await settle();
+
+    expect(dispatchTuiAction).toHaveBeenCalledTimes(1);
+    expect(dispatchTuiAction).toHaveBeenCalledWith(
+      expect.objectContaining({ action: "adopt-all" })
+    );
+    expect(lastFrame()).toContain("working...");
+
+    pendingAdoptAll.resolve({
+      model: model({
+        selectedAgentId: "codex",
+        agents: [agent({ unmanagedCount: 0 })],
+        selectedSkillId: "unmanaged:find-skills"
+      }),
+      statusMessage: "Adopted all unmanaged skills for codex"
+    });
+    await settle();
+
+    expect(lastFrame()).toContain("Adopted all unmanaged skills for codex");
   });
 
   it("does not let stale earlier agent reload results overwrite the later selection", async () => {

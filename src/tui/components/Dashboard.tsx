@@ -93,6 +93,7 @@ export function Dashboard({
     state.modal?.kind === "help"
       ? 8
       : state.modal?.kind === "confirm-adopt" ||
+          state.modal?.kind === "confirm-adopt-all" ||
           state.modal?.kind === "confirm-remove"
         ? confirmDialogHeight
         : 0;
@@ -137,6 +138,7 @@ export function Dashboard({
       </Box>
       {state.modal?.kind === "help" ? <HelpOverlay /> : null}
       {state.modal?.kind === "confirm-adopt" ||
+      state.modal?.kind === "confirm-adopt-all" ||
       state.modal?.kind === "confirm-remove" ? (
         <ConfirmDialog modal={state.modal} />
       ) : null}

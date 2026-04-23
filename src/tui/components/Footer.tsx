@@ -15,6 +15,7 @@ export function Footer({ actions, search }: FooterProps) {
     "[Left/Right]focus",
     actions.toggle ? "[Space]toggle" : null,
     actions.adopt ? "[a]adopt" : null,
+    actions.adoptAll ? "[Shift+A]adopt all" : null,
     actions.remove ? "[r]remove" : null,
     actions.scan ? "[s]scan" : null,
     actions.help ? "[?]help" : null,

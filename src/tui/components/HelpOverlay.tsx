@@ -10,7 +10,7 @@ export function HelpOverlay() {
       </Text>
       <Text>
         <Text bold>Actions</Text>
-        <Text>: Space toggles, a adopts, r removes, s scans.</Text>
+        <Text>: Space toggles, a adopts, Shift+A current-agent bulk adopt, r removes, s scans.</Text>
       </Text>
       <Text>
         <Text bold>Search</Text>
