@@ -159,3 +159,10 @@
 - The alternate-screen/fullscreen slice is now complete in root.
 - The next follow-up slice is the later usability/lifecycle request for one-key adoption of all unmanaged skills.
 - The remaining Round 8 root residue in `src/tui/state.ts` and `tests/tui/state.test.ts` was later reviewed and discarded because it had no substantive code delta against `HEAD`; it was mixed line-ending noise, not a pending fix.
+- The next TUI usability/lifecycle slice is now narrowed and approved in conversation:
+  - scope: current selected agent only, not all agents
+  - shortcut: `Shift+A`
+  - lowercase `a` remains single-row adopt for the selected unmanaged skill
+  - implementation should reuse existing `runAdopt({ agent })` semantics instead of adding a new CLI command
+- The written design spec for that slice is `docs/superpowers/specs/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-design.md`.
+- Do not start implementation for the bulk-adopt slice until the user has reviewed and approved the written spec and the implementation plan has been written.

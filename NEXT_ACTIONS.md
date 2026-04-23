@@ -301,5 +301,10 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Update alternate-screen/fullscreen tracking docs and plan checkboxes after Task 3 acceptance
 - [x] Run the alternate-screen/fullscreen Task 4 full verification gate in the root repo
 - [x] Commit the alternate-screen/fullscreen Task 4 tracking state in the root repo
-- [ ] Add a later usability/lifecycle slice for one-key adoption of all unmanaged skills
+- [x] Add a later usability/lifecycle slice for one-key adoption of all unmanaged skills
+- [x] Clarify the scope of the one-key adopt slice: current selected agent only
+- [x] Confirm the shortcut contract: `Shift+A` bulk-adopts current-agent unmanaged skills, lowercase `a` still adopts the selected row
+- [x] Write the bulk-adopt TUI design spec under `docs/superpowers/specs/`
+- [ ] Ask for user review of `docs/superpowers/specs/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-design.md`
+- [ ] After written-spec approval, invoke `$writing-plans` and draft the bulk-adopt implementation plan
 - [x] Resume or discard the paused PTY audit/polish Round 8 search-cancel debugging explicitly before touching those WIP files again

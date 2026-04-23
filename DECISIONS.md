@@ -437,3 +437,14 @@ Record key product and implementation decisions so later sessions do not lose th
 - Task 4 root acceptance for this slice requires a fresh full-repository gate from `main`: `npm run build`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`.
 - After that gate passed, the alternate-screen/fullscreen slice was considered complete in root. The next product slice is the later one-key unmanaged-skill adoption request, still separate from the paused Round 8 search-cancel WIP.
 - A later review of the remaining root Round 8 residue in `src/tui/state.ts` and `tests/tui/state.test.ts` found no logic delta against `HEAD`; the files only differed by mixed line endings, so that residue was discarded instead of resumed or committed.
+
+## 2026-04-23
+
+### TUI bulk adopt for current agent
+
+- The later one-key unmanaged-skill adoption request is now narrowed to the current selected agent only; there is no cross-agent bulk adopt mode in this slice.
+- The accepted shortcut is `Shift+A`, not lowercase `a`, so the existing single-row adopt contract remains intact.
+- Lowercase `a` continues to mean "adopt the selected unmanaged row"; uppercase `A` means "adopt all unmanaged skills for the current selected agent".
+- The TUI should not invent a new filesystem or lifecycle implementation for this feature. Bulk adopt reuses the existing CLI helper contract by calling `runAdopt({ agent })` with no `skill`.
+- The bulk action is dashboard-level, not row-level. The Skills list should not gain a synthetic "adopt all" item.
+- The bulk action may be triggered from either Agents focus or Skills focus, as long as the selected agent currently has unmanaged skills.

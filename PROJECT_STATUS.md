@@ -8,6 +8,12 @@ Active development worktree: `(none)`
 
 ## Current TUI Design Status
 
+- A new TUI usability/lifecycle slice is now approved in conversation: one-key adoption of all unmanaged skills for the current selected agent.
+- The written design spec for that slice is `docs/superpowers/specs/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-design.md`.
+- Accepted shortcut change: the bulk action uses `Shift+A`, while lowercase `a` remains the single-row adopt action.
+- Scope boundary: this slice is agent-scoped only and reuses the existing `runAdopt({ agent })` command semantics instead of adding a new CLI command.
+- Status: design approved in conversation, pending written-spec review and implementation planning.
+
 - A new TUI runtime/layout design slice is now approved in conversation: make `skillmux tui` enter the alternate screen by default, occupy the full terminal viewport responsively, and restore the previous shell screen on exit.
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`.
 - The written implementation plan for that slice is `docs/superpowers/plans/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-implementation-plan.md`.
