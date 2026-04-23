@@ -165,4 +165,5 @@
   - lowercase `a` remains single-row adopt for the selected unmanaged skill
   - implementation should reuse existing `runAdopt({ agent })` semantics instead of adding a new CLI command
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-design.md`.
-- Do not start implementation for the bulk-adopt slice until the user has reviewed and approved the written spec and the implementation plan has been written.
+- The written implementation plan for that slice is `docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md`.
+- Spec approval is complete. The next step is to choose execution mode for the implementation plan, then execute task by task with the required TUI skills and root-tracking updates.

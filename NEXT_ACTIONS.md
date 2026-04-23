@@ -305,6 +305,7 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Clarify the scope of the one-key adopt slice: current selected agent only
 - [x] Confirm the shortcut contract: `Shift+A` bulk-adopts current-agent unmanaged skills, lowercase `a` still adopts the selected row
 - [x] Write the bulk-adopt TUI design spec under `docs/superpowers/specs/`
-- [ ] Ask for user review of `docs/superpowers/specs/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-design.md`
-- [ ] After written-spec approval, invoke `$writing-plans` and draft the bulk-adopt implementation plan
+- [x] Ask for user review of `docs/superpowers/specs/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-design.md`
+- [x] After written-spec approval, invoke `$writing-plans` and draft the bulk-adopt implementation plan
+- [ ] Choose the execution mode for `docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md`
 - [x] Resume or discard the paused PTY audit/polish Round 8 search-cancel debugging explicitly before touching those WIP files again

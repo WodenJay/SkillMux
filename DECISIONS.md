@@ -448,3 +448,5 @@ Record key product and implementation decisions so later sessions do not lose th
 - The TUI should not invent a new filesystem or lifecycle implementation for this feature. Bulk adopt reuses the existing CLI helper contract by calling `runAdopt({ agent })` with no `skill`.
 - The bulk action is dashboard-level, not row-level. The Skills list should not gain a synthetic "adopt all" item.
 - The bulk action may be triggered from either Agents focus or Skills focus, as long as the selected agent currently has unmanaged skills.
+- The written implementation plan for this slice is `docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md`.
+- The implementation plan keeps the slice narrow: reducer/dispatcher contract first, then app/footer/help/confirm integration, then one focused PTY flow, then final root verification and tracking sync.
