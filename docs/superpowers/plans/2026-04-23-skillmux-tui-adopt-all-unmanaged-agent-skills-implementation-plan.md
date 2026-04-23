@@ -359,7 +359,7 @@ git commit -m "test: cover tui bulk adopt flow"
 - Modify: `DECISIONS.md`
 - Modify: `docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md`
 
-- [ ] **Step 1: Update tracking docs as each task lands**
+- [x] **Step 1: Update tracking docs as each task lands**
 
 Record:
 
@@ -368,11 +368,11 @@ Record:
 - the root commits for each accepted implementation task
 - the focused verification status
 
-- [ ] **Step 2: Mark completed checkboxes in this plan**
+- [x] **Step 2: Mark completed checkboxes in this plan**
 
 As each task is accepted, update only the completed boxes from `[ ]` to `[x]`.
 
-- [ ] **Step 3: Run the full verification gate from root**
+- [x] **Step 3: Run the full verification gate from root**
 
 Run:
 
@@ -414,7 +414,7 @@ git diff --check
 
 Expected: no whitespace or merge-marker errors.
 
-- [ ] **Step 4: Commit the accepted tracking state**
+- [x] **Step 4: Commit the accepted tracking state**
 
 ```powershell
 git add AGENTS.md PROJECT_STATUS.md NEXT_ACTIONS.md DECISIONS.md docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md

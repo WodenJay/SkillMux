@@ -188,4 +188,10 @@
   - `npm run typecheck`
 - Task 3 PTY note: the explorer now exposes `bulkAdopt()` as a thin `A` key helper, and the new PTY scenario proves current-agent bulk adopt for two unmanaged skills on `codex`.
 - Task 3 stability note: the accepted PTY slice also tightens the existing resize restore probe so it waits for the fullscreen dashboard to be fully restored, not just for stale header text to reappear under suite load.
-- Stop here for `/compact`. The next step after compaction is Task 4: final tracking sync plus the full root verification gate for this bulk-adopt slice.
+- Bulk-adopt Task 4 final verification gate passed in root with:
+  - `npm run build`
+  - `npm run test:tui-e2e`
+  - `npm test`
+  - `npm run typecheck`
+  - `git diff --check`
+- The current-agent `Shift+A` bulk-adopt slice is now complete in root.

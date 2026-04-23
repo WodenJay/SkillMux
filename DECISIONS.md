@@ -469,3 +469,6 @@ Record key product and implementation decisions so later sessions do not lose th
   - the PTY scenario must assert the visible bulk-adopt confirm dialog before sending `y`
   - completion must be tied to the final agent-side managed links, not merely to managed-store file creation
   - the existing resize-restore PTY probe now waits for the fullscreen dashboard to fully return before asserting the resize prompt is gone
+- Task 4 locks in the acceptance gate for this slice:
+  - the root acceptance gate is `npm run build`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
+  - passing that gate closes the current-agent `Shift+A` bulk-adopt slice in root without any further command-surface changes

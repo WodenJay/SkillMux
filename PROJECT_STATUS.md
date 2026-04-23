@@ -13,7 +13,7 @@ Active development worktree: `(none)`
 - The written implementation plan for that slice is `docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md`.
 - Accepted shortcut change: the bulk action uses `Shift+A`, while lowercase `a` remains the single-row adopt action.
 - Scope boundary: this slice is agent-scoped only and reuses the existing `runAdopt({ agent })` command semantics instead of adding a new CLI command.
-- Status: execution is underway in subagent-driven mode; Tasks 1-3 are accepted in root and only Task 4 remains.
+- Status: execution is complete in root; Tasks 1-4 are accepted and the bulk-adopt slice is closed.
 - Bulk-adopt Task 1 accepted root commit:
   - `6c6811b` `feat: add tui bulk adopt action contract`
 - Task 1 verification in root passed with:
@@ -42,6 +42,13 @@ Active development worktree: `(none)`
   - `tests/tui-e2e/explorer.ts` now exposes `bulkAdopt()` as a thin uppercase-`A` helper for the real PTY harness.
   - `tests/tui-e2e/scenarios/bulk-adopt-flow.test.ts` proves the visible confirm dialog plus the final managed-store and agent-link side effects for two unmanaged skills on `codex`.
   - the accepted PTY stabilization also tightens the existing resize-restore usability probe so it waits for the fullscreen dashboard to be fully restored before asserting the resize prompt is gone.
+- Bulk-adopt Task 4 final verification gate passed in root with:
+  - `npm run build`
+  - `npm run test:tui-e2e`
+  - `npm test`
+  - `npm run typecheck`
+  - `git diff --check`
+- The current-agent `Shift+A` bulk-adopt slice is now complete in root.
 
 - A new TUI runtime/layout design slice is now approved in conversation: make `skillmux tui` enter the alternate screen by default, occupy the full terminal viewport responsively, and restore the previous shell screen on exit.
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`.

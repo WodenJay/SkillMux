@@ -321,5 +321,5 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Run bulk-adopt Task 3 through spec review, code-quality review, one PTY timing-fix loop, and re-review
 - [x] Sync bulk-adopt Task 3 accepted code back to the root repo
 - [x] Complete fresh root verification for bulk-adopt Task 3
-- [ ] After `/compact`, run bulk-adopt Task 4: final tracking sync and full root verification gate
+- [x] After `/compact`, run bulk-adopt Task 4: final tracking sync and full root verification gate
 - [x] Resume or discard the paused PTY audit/polish Round 8 search-cancel debugging explicitly before touching those WIP files again
