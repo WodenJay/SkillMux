@@ -199,7 +199,8 @@ export function Dashboard({
       {state.modal?.kind === "help" ? <HelpOverlay /> : null}
       {state.modal?.kind === "confirm-adopt" ||
       state.modal?.kind === "confirm-adopt-all" ||
-      state.modal?.kind === "confirm-remove" ? (
+      state.modal?.kind === "confirm-remove" ||
+      state.modal?.kind === "confirm-discard-dirty-form" ? (
         <ConfirmDialog modal={state.modal} />
       ) : null}
       {state.modal === null ? (

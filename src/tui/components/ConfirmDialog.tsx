@@ -8,6 +8,7 @@ export type ConfirmDialogProps = {
     | { kind: "confirm-adopt-all" }
     | { kind: "confirm-remove" }
     | { kind: "confirm-remove-agent" }
+    | { kind: "confirm-discard-dirty-form" }
   >;
 };
 
@@ -26,6 +27,10 @@ function confirmationText(modal: ConfirmDialogProps["modal"]): string {
     return `Remove agent override for ${modal.agentId}?`;
   }
 
+  if (modal.kind === "confirm-discard-dirty-form") {
+    return "Discard unsaved changes?";
+  }
+
   return `Remove ${modal.skillId} from SkillMux?`;
 }
 
@@ -33,6 +38,10 @@ function confirmationDetails(modal: ConfirmDialogProps["modal"]): string | null 
   if (modal.kind !== "confirm-adopt-all") {
     if (modal.kind === "confirm-remove-agent") {
       return "This will remove the selected agent override from SkillMux.";
+    }
+
+    if (modal.kind === "confirm-discard-dirty-form") {
+      return "This will close the form and discard the current changes.";
     }
 
     return null;

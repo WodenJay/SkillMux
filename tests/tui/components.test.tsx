@@ -633,6 +633,22 @@ describe("TUI dashboard components", () => {
     expect(frame).not.toContain("Tab");
   });
 
+  it("renders import form errors visibly", () => {
+    const { lastFrame } = render(
+      <FormDialog
+        modal={{
+          kind: "import",
+          form: {
+            ...createImportSkillForm(),
+            error: "Skill name and source path are required"
+          }
+        }}
+      />
+    );
+
+    expect(lastFrame()).toContain("Skill name and source path are required");
+  });
+
   it("renders remove-agent confirmation text with the selected agent name", () => {
     const { lastFrame } = render(
       <ConfirmDialog
@@ -644,6 +660,25 @@ describe("TUI dashboard components", () => {
 
     expect(frame).toContain("Remove agent override for codex?");
     expect(frame).toContain("This will remove the selected agent override from SkillMux.");
+    expect(frame).toContain("[y] confirm   [Esc] cancel");
+  });
+
+  it("renders the discard-dirty-form confirmation prompt through the dashboard", () => {
+    const withModal = updateTuiState(
+      updateTuiState(
+        createInitialTuiState(model()),
+        { type: "open-add-agent" }
+      ),
+      { type: "add-agent-form-field-changed", field: "name", value: "Draft" }
+    );
+    const discarded = updateTuiState(withModal, { type: "close" });
+    const frame = renderToString(
+      <Dashboard state={discarded} width={80} height={24} />,
+      { columns: 80 }
+    );
+
+    expect(frame).toContain("Discard unsaved changes?");
+    expect(frame).toContain("This will close the form and discard the current changes.");
     expect(frame).toContain("[y] confirm   [Esc] cancel");
   });
 

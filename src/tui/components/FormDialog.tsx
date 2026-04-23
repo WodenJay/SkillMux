@@ -80,6 +80,7 @@ export function FormDialog({
     return (
       <Box flexDirection="column" width={width} height={height}>
         <Text bold>Import skill</Text>
+        {modal.form.error === null ? null : <Text color="red">{modal.form.error}</Text>}
         {renderTextField(
           "Source path",
           modal.form.values.sourcePath,
