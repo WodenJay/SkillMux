@@ -181,4 +181,11 @@
   - `git diff --check`
 - Task 2 interaction note: `Shift+A` now opens a visible bulk-adopt confirmation dialog, and `y` dispatches `adopt-all` exactly once through the existing duplicate-confirm guard.
 - Task 2 UI note: footer/help copy now teaches `Shift+A`, and the bulk-adopt confirm dialog explains that the current agent's unmanaged skills will move under SkillMux management.
-- The next step for this slice is Task 3: prove the real PTY bulk-adopt flow.
+- Bulk-adopt Task 3 is now accepted in root at commit `0f9d883` (`test: cover tui bulk adopt flow`).
+- Task 3 verification in root passed with:
+  - `npm test -- --run tests/tui-e2e/scenarios/bulk-adopt-flow.test.ts`
+  - `npm run test:tui-e2e`
+  - `npm run typecheck`
+- Task 3 PTY note: the explorer now exposes `bulkAdopt()` as a thin `A` key helper, and the new PTY scenario proves current-agent bulk adopt for two unmanaged skills on `codex`.
+- Task 3 stability note: the accepted PTY slice also tightens the existing resize restore probe so it waits for the fullscreen dashboard to be fully restored, not just for stale header text to reappear under suite load.
+- Stop here for `/compact`. The next step after compaction is Task 4: final tracking sync plus the full root verification gate for this bulk-adopt slice.

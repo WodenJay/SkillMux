@@ -268,7 +268,7 @@ git commit -m "feat: add tui shift-a bulk adopt flow"
 - Modify: `tests/tui-e2e/explorer.ts`
 - Create: `tests/tui-e2e/scenarios/bulk-adopt-flow.test.ts`
 
-- [ ] **Step 1: Write the failing PTY scenario**
+- [x] **Step 1: Write the failing PTY scenario**
 
 Create `tests/tui-e2e/scenarios/bulk-adopt-flow.test.ts` with one real scenario:
 
@@ -289,7 +289,7 @@ await expect(explorer.fs.isSymlink(explorer.paths.agentSkill("codex", "find-skil
 await expect(explorer.fs.isSymlink(explorer.paths.agentSkill("codex", "terminal-ui"))).resolves.toBe(true);
 ```
 
-- [ ] **Step 2: Extend the explorer API for the new shortcut**
+- [x] **Step 2: Extend the explorer API for the new shortcut**
 
 Update `tests/tui-e2e/explorer.ts` to add:
 
@@ -305,7 +305,7 @@ bulkAdopt() {
 }
 ```
 
-- [ ] **Step 3: Run the targeted PTY scenario to verify the red state**
+- [x] **Step 3: Run the targeted PTY scenario to verify the red state**
 
 Run:
 
@@ -315,7 +315,7 @@ npm test -- --run tests/tui-e2e/scenarios/bulk-adopt-flow.test.ts
 
 Expected: FAIL until the real TUI input and confirm flow support `Shift+A` end to end.
 
-- [ ] **Step 4: Fix any PTY-only gaps exposed by the scenario**
+- [x] **Step 4: Fix any PTY-only gaps exposed by the scenario**
 
 Keep changes narrow. Likely causes are:
 
@@ -325,7 +325,7 @@ Keep changes narrow. Likely causes are:
 
 Do not widen this into unrelated TUI polish.
 
-- [ ] **Step 5: Run targeted verification**
+- [x] **Step 5: Run targeted verification**
 
 Run:
 
@@ -343,7 +343,7 @@ npm run test:tui-e2e
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit Task 3**
+- [x] **Step 6: Commit Task 3**
 
 ```powershell
 git add tests/tui-e2e/explorer.ts tests/tui-e2e/scenarios/bulk-adopt-flow.test.ts

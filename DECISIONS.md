@@ -463,3 +463,9 @@ Record key product and implementation decisions so later sessions do not lose th
   - lowercase `a` still targets only the selected unmanaged row
   - the footer and help overlay both document bulk adopt as a current-agent action
   - the dashboard must render `confirm-adopt-all` through the same overlay path and height budgeting as the existing confirm dialogs
+- Accepted Task 3 root commit: `0f9d883` (`test: cover tui bulk adopt flow`).
+- Task 3 locks in the PTY regression contract:
+  - the explorer API gets a dedicated `bulkAdopt()` helper that presses uppercase `A`
+  - the PTY scenario must assert the visible bulk-adopt confirm dialog before sending `y`
+  - completion must be tied to the final agent-side managed links, not merely to managed-store file creation
+  - the existing resize-restore PTY probe now waits for the fullscreen dashboard to fully return before asserting the resize prompt is gone
