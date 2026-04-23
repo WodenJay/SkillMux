@@ -10,6 +10,11 @@ export type TuiFocus = "agents" | "skills" | "detail";
 export type TuiModal =
   | { kind: "help" }
   | { kind: "confirm-adopt"; skillId: string; agentId: string }
+  | {
+      kind: "confirm-adopt-all";
+      agentId: string;
+      unmanagedCount: number;
+    }
   | { kind: "confirm-remove"; skillId: string };
 
 export type TuiSearch = {
@@ -50,6 +55,7 @@ export type TuiStateEvent =
   | { type: "close" }
   | { type: "open-help" }
   | { type: "request-adopt" }
+  | { type: "request-adopt-all" }
   | { type: "request-remove" }
   | { type: "request-toggle" }
   | { type: "request-scan" }
@@ -60,6 +66,7 @@ export type TuiStateEvent =
 export type TuiAvailableActions = {
   toggle: boolean;
   adopt: boolean;
+  adoptAll: boolean;
   remove: boolean;
   scan: boolean;
   help: boolean;
@@ -203,6 +210,16 @@ function selectedAgentSkill(
   return skills.find((row) => row.agentId === agentId) ?? null;
 }
 
+function selectedAgentRow(state: TuiState): TuiAgentRow | null {
+  if (state.model.selectedAgentId === null) {
+    return null;
+  }
+
+  return (
+    state.model.agents.find((row) => row.id === state.model.selectedAgentId) ?? null
+  );
+}
+
 function moveFocus(focus: TuiFocus, direction: 1 | -1): TuiFocus {
   const currentIndex = focusOrder.indexOf(focus);
   const nextIndex =
@@ -286,6 +303,7 @@ function isModalBackgroundEvent(event: TuiStateEvent): boolean {
     event.type === "search-query-changed" ||
     event.type === "open-help" ||
     event.type === "request-adopt" ||
+    event.type === "request-adopt-all" ||
     event.type === "request-remove" ||
     event.type === "request-toggle" ||
     event.type === "request-scan" ||
@@ -332,6 +350,7 @@ export function getSelectedSkill(state: TuiState): TuiSkillRow | null {
 
 export function getAvailableActions(state: TuiState): TuiAvailableActions {
   const selectedSkill = getSelectedSkill(state);
+  const selectedAgent = selectedAgentRow(state);
   const canAcceptActions = state.modal === null && !state.busy;
   const hasFocusedSkill = canAcceptActions && state.focus === "skills";
 
@@ -340,6 +359,7 @@ export function getAvailableActions(state: TuiState): TuiAvailableActions {
       hasFocusedSkill &&
       (selectedSkill?.kind === "enabled" || selectedSkill?.kind === "disabled"),
     adopt: hasFocusedSkill && selectedSkill?.kind === "unmanaged",
+    adoptAll: canAcceptActions && (selectedAgent?.unmanagedCount ?? 0) > 0,
     remove: hasFocusedSkill && selectedSkill?.kind === "disabled",
     scan: canAcceptActions,
     help: canAcceptActions
@@ -603,6 +623,33 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
         kind: "confirm-adopt",
         skillId: selectedSkill.skillName,
         agentId: selectedSkill.agentId
+      }
+    };
+  }
+
+  if (event.type === "request-adopt-all") {
+    const selectedAgent = selectedAgentRow(state);
+
+    if (selectedAgent === null) {
+      return {
+        ...readyState,
+        statusMessage: "Select an agent first"
+      };
+    }
+
+    if (selectedAgent.unmanagedCount <= 0) {
+      return {
+        ...readyState,
+        statusMessage: "No unmanaged skills to adopt for this agent"
+      };
+    }
+
+    return {
+      ...readyState,
+      modal: {
+        kind: "confirm-adopt-all",
+        agentId: selectedAgent.id,
+        unmanagedCount: selectedAgent.unmanagedCount
       }
     };
   }

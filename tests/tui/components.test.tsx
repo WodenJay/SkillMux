@@ -238,6 +238,7 @@ describe("TUI dashboard components", () => {
         actions={{
           toggle: true,
           adopt: true,
+          adoptAll: false,
           remove: true,
           scan: true,
           help: true

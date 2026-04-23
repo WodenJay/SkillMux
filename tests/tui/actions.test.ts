@@ -223,6 +223,55 @@ describe("dispatchTuiAction", () => {
     });
   });
 
+  it("adopts all unmanaged skills for the selected agent without a skill id", async () => {
+    const model = createModel({
+      agents: [
+        {
+          id: "codex",
+          name: "codex",
+          path: join("C:", "Users", "me", ".codex", "skills"),
+          discovery: "builtin",
+          exists: true,
+          supported: true,
+          enabledCount: 0,
+          disabledCount: 0,
+          unmanagedCount: 2,
+          issueCount: 0
+        }
+      ],
+      selectedAgentId: "codex",
+      selectedSkillId: null
+    });
+    const reloadedModel = createModel({ selectedAgentId: "codex" });
+    const services = createServices({
+      runAdopt: vi.fn().mockResolvedValue({ output: "Adopted all\n" }),
+      reload: vi.fn().mockResolvedValue(reloadedModel)
+    });
+
+    const result = await dispatchTuiAction({
+      action: "adopt-all" as never,
+      model,
+      services
+    });
+
+    expect(services.runAdopt).toHaveBeenCalledWith({
+      homeDir: undefined,
+      skillmuxHome: undefined,
+      agent: "codex"
+    });
+    expect(services.reload).toHaveBeenCalledWith({
+      homeDir: undefined,
+      skillmuxHome: undefined,
+      platform: undefined,
+      selectedAgentId: "codex",
+      selectedSkillId: undefined
+    });
+    expect(result).toEqual({
+      model: reloadedModel,
+      statusMessage: "Adopted all"
+    });
+  });
+
   it("refuses to adopt non-adoptable rows", async () => {
     const model = createModelWithSelectedSkill(issueRow());
     const services = createServices();
@@ -310,6 +359,24 @@ describe("dispatchTuiAction", () => {
     expect(result.statusMessage).toBe("Adopt failed: Cannot adopt");
     expect(result.statusMessage).not.toContain("internal.ts");
     expect(services.reload).not.toHaveBeenCalled();
+  });
+
+  it("refuses bulk adopt when there is no selected agent", async () => {
+    const model = createModel({
+      selectedAgentId: null,
+      selectedSkillId: null
+    });
+    const services = createServices();
+
+    const result = await dispatchTuiAction({
+      action: "adopt-all" as never,
+      model,
+      services
+    });
+
+    expect(services.runAdopt).not.toHaveBeenCalled();
+    expect(result.model).toBe(model);
+    expect(result.statusMessage).toBe("Select an agent first");
   });
 
   it("scans and reloads dashboard state", async () => {

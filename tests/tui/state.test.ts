@@ -375,6 +375,51 @@ describe("TUI state reducer", () => {
     ).toMatchObject({ toggle: false, remove: false, adopt: false });
   });
 
+  it("exposes adopt-all for the selected agent when it has unmanaged skills", () => {
+    const state = createInitialTuiState(
+      model({
+        agents: [
+          agent("codex"),
+          {
+            ...agent("claude"),
+            unmanagedCount: 2
+          }
+        ],
+        selectedAgentId: "claude",
+        selectedSkillId: null
+      })
+    );
+
+    expect(getAvailableActions(state)).toMatchObject({ adoptAll: true });
+  });
+
+  it("hides adopt-all when no selected agent exists or it has no unmanaged skills", () => {
+    const noSelectedAgent = createInitialTuiState(
+      model({
+        selectedAgentId: null,
+        selectedSkillId: null
+      })
+    );
+    const noUnmanaged = createInitialTuiState(
+      model({
+        agents: [
+          agent("codex"),
+          {
+            ...agent("claude"),
+            unmanagedCount: 0
+          }
+        ],
+        selectedAgentId: "claude",
+        selectedSkillId: null
+      })
+    );
+
+    expect(getAvailableActions(noSelectedAgent)).toMatchObject({
+      adoptAll: false
+    });
+    expect(getAvailableActions(noUnmanaged)).toMatchObject({ adoptAll: false });
+  });
+
   it("records an agent selection intent when navigation selects another agent", () => {
     const state = createInitialTuiState(
       model({
@@ -434,6 +479,65 @@ describe("TUI state reducer", () => {
     expect(updateTuiState(disabled, { type: "request-adopt" }).modal).toBeNull();
   });
 
+  it("opens bulk adopt confirmation for the selected agent even when focus is agents", () => {
+    const withUnmanagedAgent = createInitialTuiState(
+      model({
+        agents: [
+          {
+            ...agent("codex"),
+            unmanagedCount: 2
+          },
+          {
+            ...agent("claude"),
+            unmanagedCount: 0
+          }
+        ],
+        selectedAgentId: "codex",
+        selectedSkillId: null
+      })
+    );
+
+    expect(
+      updateTuiState(withUnmanagedAgent, { type: "request-adopt-all" }).modal
+    ).toEqual({
+      kind: "confirm-adopt-all",
+      agentId: "codex",
+      unmanagedCount: 2
+    });
+  });
+
+  it("keeps request-adopt unchanged for a focused unmanaged row", () => {
+    const unmanaged = updateTuiState(
+      createInitialTuiState(model({ selectedSkillId: "unmanaged:find-skills" })),
+      { type: "focus-next" }
+    );
+
+    expect(updateTuiState(unmanaged, { type: "request-adopt" }).modal).toEqual({
+      kind: "confirm-adopt",
+      skillId: "find-skills",
+      agentId: "codex"
+    });
+  });
+
+  it("refuses bulk adopt when the current agent has no unmanaged skills", () => {
+    const noUnmanaged = createInitialTuiState(
+      model({
+        agents: [
+          agent("codex"),
+          {
+            ...agent("claude"),
+            unmanagedCount: 0
+          }
+        ],
+        selectedAgentId: "claude",
+        selectedSkillId: null
+      })
+    );
+
+    expect(updateTuiState(noUnmanaged, { type: "request-adopt-all" }).statusMessage)
+      .toBe("No unmanaged skills to adopt for this agent");
+  });
+
   it("traps dashboard events while a modal is open but allows close and status updates", () => {
     const withModal = updateTuiState(createInitialTuiState(model()), {
       type: "open-help"
@@ -477,6 +581,7 @@ describe("TUI state reducer", () => {
     expect(getAvailableActions(withModal)).toEqual({
       toggle: false,
       adopt: false,
+      adoptAll: false,
       remove: false,
       scan: false,
       help: false
@@ -484,6 +589,7 @@ describe("TUI state reducer", () => {
     expect(getAvailableActions(busy)).toEqual({
       toggle: false,
       adopt: false,
+      adoptAll: false,
       remove: false,
       scan: false,
       help: false

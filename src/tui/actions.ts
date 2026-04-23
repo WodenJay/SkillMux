@@ -9,7 +9,7 @@ import {
   type LoadDashboardStateOptions
 } from "./load-dashboard-state";
 
-export type TuiAction = "toggle" | "adopt" | "remove" | "scan";
+export type TuiAction = "toggle" | "adopt" | "adopt-all" | "remove" | "scan";
 
 type CommandOutput = {
   output: string;
@@ -32,7 +32,7 @@ export type TuiActionServices = {
     homeDir?: string;
     skillmuxHome?: string;
     agent: string;
-    skill: string;
+    skill?: string;
   }) => Promise<CommandOutput>;
   runRemove: (options: {
     homeDir?: string;
@@ -123,6 +123,19 @@ function resolveSelectedSkill(model: DashboardModel): TuiSkillRow | null {
   return model.skills.find((row) => row.id === model.selectedSkillId) ?? null;
 }
 
+function resolveSelectedAgent(model: DashboardModel): {
+  id: string;
+  unmanagedCount: number;
+} | null {
+  if (model.selectedAgentId === null) {
+    return null;
+  }
+
+  return (
+    model.agents.find((row) => row.id === model.selectedAgentId) ?? null
+  );
+}
+
 export async function dispatchTuiAction(
   input: DispatchTuiActionInput
 ): Promise<DispatchTuiActionResult> {
@@ -134,6 +147,26 @@ export async function dispatchTuiAction(
         homeDir: input.homeDir,
         skillmuxHome: input.skillmuxHome,
         platform: input.platform
+      });
+
+      return reloadAfterCommand(input, services, result.output);
+    }
+
+    if (input.action === "adopt-all") {
+      const selectedAgent = resolveSelectedAgent(input.model);
+
+      if (selectedAgent === null) {
+        return refusal(input.model, "Select an agent first");
+      }
+
+      if (selectedAgent.unmanagedCount <= 0) {
+        return refusal(input.model, "No unmanaged skills to adopt for this agent");
+      }
+
+      const result = await services.runAdopt({
+        homeDir: input.homeDir,
+        skillmuxHome: input.skillmuxHome,
+        agent: selectedAgent.id
       });
 
       return reloadAfterCommand(input, services, result.output);
