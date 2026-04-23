@@ -568,6 +568,22 @@ describe("TUI dashboard components", () => {
     expect(frame).not.toContain("Tab");
   });
 
+  it("renders add-agent form errors visibly", () => {
+    const { lastFrame } = render(
+      <FormDialog
+        modal={{
+          kind: "add-agent",
+          form: {
+            ...createConfigAddAgentForm(),
+            error: "Agent id and root are required"
+          }
+        }}
+      />
+    );
+
+    expect(lastFrame()).toContain("Agent id and root are required");
+  });
+
   it("renders the edit-agent form labels and mutually visible boolean state", () => {
     const { lastFrame } = render(
       <FormDialog
@@ -717,6 +733,61 @@ describe("TUI dashboard components", () => {
     expect(error).toContain("Doctor failed");
   });
 
+  it("clamps doctor scrolling to the available issue range", () => {
+    const frame = renderToString(
+      <DoctorDialog
+        modal={{
+          kind: "doctor",
+          status: "ready",
+          report: {
+            skillmuxHome: "C:/skillmux",
+            manifest: {
+              version: 1,
+              skillmuxHome: "C:/skillmux",
+              skills: {},
+              agents: {},
+              activations: [],
+              lastScan: { at: null, issues: [] }
+            },
+            config: {
+              version: 1,
+              agents: {}
+            },
+            agents: [],
+            entries: [],
+            issues: [
+              {
+                code: "one",
+                severity: "warning",
+                path: "C:/one",
+                message: "First"
+              },
+              {
+                code: "two",
+                severity: "warning",
+                path: "C:/two",
+                message: "Second"
+              },
+              {
+                code: "three",
+                severity: "error",
+                path: "C:/three",
+                message: "Third"
+              }
+            ],
+            output: "Doctor issues\n"
+          }
+        }}
+        scrollOffset={99}
+        height={6}
+      />
+    );
+
+    expect(frame).toContain("Showing 3-3 of 3");
+    expect(frame).toContain("three");
+    expect(frame).not.toContain("Showing 100");
+  });
+
   it("does not show normal footer shortcuts while a modal is active", () => {
     const withModal = updateTuiState(
       state({ selectedSkillId: "terminal-ui" }),
@@ -819,6 +890,63 @@ describe("TUI dashboard components", () => {
     await settle();
     expect(doctorApp.lastFrame()).toContain("Loading doctor diagnostics...");
     doctorApp.unmount();
+  });
+
+  it("allows spaces in add, edit, and import modal text fields", async () => {
+    const loadDashboardState = vi.fn().mockResolvedValue(
+      model({
+        agents: [
+          {
+            ...agent(),
+            hasUserOverride: true,
+            canEditOverride: true,
+            canRemoveOverride: true
+          }
+        ],
+        selectedAgentId: "codex",
+        selectedSkillId: "terminal-ui"
+      })
+    );
+    const { stdin: addStdin, lastFrame: addLastFrame, unmount: unmountAdd } = render(
+      <App services={{ loadDashboardState }} terminalWidth={80} terminalHeight={24} />
+    );
+    await settle();
+    addStdin.write("n");
+    await settle();
+    addStdin.write("\u001B[B");
+    await settle();
+    addStdin.write("\u001B[B");
+    await settle();
+    addStdin.write("\u001B[B");
+    await settle();
+    addStdin.write("Open AI");
+    await settle();
+    expect(addLastFrame()).toContain("Open AI");
+    unmountAdd();
+
+    const { stdin: editStdin, lastFrame: editLastFrame, unmount: unmountEdit } = render(
+      <App services={{ loadDashboardState }} terminalWidth={80} terminalHeight={24} />
+    );
+    await settle();
+    editStdin.write("e");
+    await settle();
+    editStdin.write("\u001B[B");
+    await settle();
+    editStdin.write(" .codex custom root");
+    await settle();
+    expect(editLastFrame()).toContain("custom root");
+    unmountEdit();
+
+    const { stdin: importStdin, lastFrame: importLastFrame, unmount: unmountImport } = render(
+      <App services={{ loadDashboardState }} terminalWidth={80} terminalHeight={24} />
+    );
+    await settle();
+    importStdin.write("i");
+    await settle();
+    importStdin.write("C:\\Users\\me\\skill mux");
+    await settle();
+    expect(importLastFrame()).toContain("skill mux");
+    unmountImport();
   });
 
   it("switches the doctor dialog from loading to ready content after the async result returns", async () => {

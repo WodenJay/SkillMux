@@ -913,7 +913,7 @@ export function App({
           }
         }
 
-        if (isTextInput(input) && input !== " ") {
+        if (isTextInput(input)) {
           if (state.modal.kind === "add-agent") {
             if (currentField === "id") {
               updateAddAgent("id", nextText(state.modal.form.values.id, input));

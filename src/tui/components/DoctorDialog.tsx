@@ -50,7 +50,9 @@ export function DoctorDialog({
 
   const issues = modal.report.issues;
   const maxIssues = visibleIssueCount(height);
-  const visibleIssues = issues.slice(scrollOffset, scrollOffset + maxIssues);
+  const maxOffset = Math.max(issues.length - maxIssues, 0);
+  const clampedOffset = Math.min(Math.max(scrollOffset, 0), maxOffset);
+  const visibleIssues = issues.slice(clampedOffset, clampedOffset + maxIssues);
 
   return (
     <Box flexDirection="column" width={width} height={height}>
@@ -68,7 +70,9 @@ export function DoctorDialog({
             </Text>
           ))}
           {issues.length > visibleIssues.length ? (
-            <Text dimColor>Showing {scrollOffset + 1}-{scrollOffset + visibleIssues.length} of {issues.length}</Text>
+            <Text dimColor>
+              Showing {clampedOffset + 1}-{clampedOffset + visibleIssues.length} of {issues.length}
+            </Text>
           ) : null}
         </>
       )}

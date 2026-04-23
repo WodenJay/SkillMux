@@ -135,6 +135,7 @@ export function FormDialog({
   return (
     <Box flexDirection="column" width={width} height={height}>
       <Text bold>{title}</Text>
+      {modal.form.error === null ? null : <Text color="red">{modal.form.error}</Text>}
       {fields}
       <Text bold inverse={activeField === platformFieldIndex}>
         Platforms
