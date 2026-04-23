@@ -173,4 +173,12 @@
   - `npm run typecheck`
 - Task 1 contract note: `state.ts` now exposes `request-adopt-all`, `confirm-adopt-all`, and a required `adoptAll` footer/action flag for the selected agent.
 - Task 1 dispatcher note: `actions.ts` now supports `adopt-all` by reusing `runAdopt({ agent })` with no `skill`, while refusing missing-agent and zero-unmanaged cases with short user-facing status text.
-- The next step for this slice is Task 2: wire `Shift+A` into `app.tsx`, footer/help copy, and the confirm dialog.
+- Bulk-adopt Task 2 is now accepted in root at commit `099c221` (`feat: add tui shift-a bulk adopt flow`).
+- Task 2 verification in root passed with:
+  - `npm test -- --run tests/tui/components.test.tsx`
+  - `npm run build`
+  - `npm run typecheck`
+  - `git diff --check`
+- Task 2 interaction note: `Shift+A` now opens a visible bulk-adopt confirmation dialog, and `y` dispatches `adopt-all` exactly once through the existing duplicate-confirm guard.
+- Task 2 UI note: footer/help copy now teaches `Shift+A`, and the bulk-adopt confirm dialog explains that the current agent's unmanaged skills will move under SkillMux management.
+- The next step for this slice is Task 3: prove the real PTY bulk-adopt flow.

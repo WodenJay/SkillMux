@@ -186,7 +186,7 @@ git commit -m "feat: add tui bulk adopt action contract"
 - Modify: `src/tui/components/ConfirmDialog.tsx`
 - Modify: `tests/tui/components.test.tsx`
 
-- [ ] **Step 1: Write the failing component and app tests**
+- [x] **Step 1: Write the failing component and app tests**
 
 Extend `tests/tui/components.test.tsx` with cases for:
 
@@ -204,7 +204,7 @@ Extend `tests/tui/components.test.tsx` with cases for:
 - `App` sends the new reducer event when uppercase `A` is pressed
 - once the confirm dialog is open, pressing `y` dispatches `action: "adopt-all"` exactly once
 
-- [ ] **Step 2: Run the targeted component test to verify the red state**
+- [x] **Step 2: Run the targeted component test to verify the red state**
 
 Run:
 
@@ -214,7 +214,7 @@ npm test -- --run tests/tui/components.test.tsx
 
 Expected: FAIL because the footer/help/confirm components and `App` keyboard wiring do not yet know about `Shift+A`.
 
-- [ ] **Step 3: Implement the user-facing bulk-adopt UI**
+- [x] **Step 3: Implement the user-facing bulk-adopt UI**
 
 Update the components so the user contract is explicit:
 
@@ -237,7 +237,7 @@ Adopt all unmanaged skills for codex?
   - on `y`, dispatch `runAction("adopt-all", ...)` for the bulk modal
   - preserve the existing duplicate-confirmation guard and lowercase `a` flow
 
-- [ ] **Step 4: Run targeted verification**
+- [x] **Step 4: Run targeted verification**
 
 Run:
 
@@ -255,7 +255,7 @@ npm run build
 
 Expected: PASS.
 
-- [ ] **Step 5: Commit Task 2**
+- [x] **Step 5: Commit Task 2**
 
 ```powershell
 git add src/tui/app.tsx src/tui/components/Footer.tsx src/tui/components/HelpOverlay.tsx src/tui/components/ConfirmDialog.tsx tests/tui/components.test.tsx

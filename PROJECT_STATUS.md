@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI bulk-adopt slice in progress; Task 1 accepted in root
+Phase: TUI bulk-adopt slice in progress; Tasks 1-2 accepted in root
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -13,7 +13,7 @@ Active development worktree: `(none)`
 - The written implementation plan for that slice is `docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md`.
 - Accepted shortcut change: the bulk action uses `Shift+A`, while lowercase `a` remains the single-row adopt action.
 - Scope boundary: this slice is agent-scoped only and reuses the existing `runAdopt({ agent })` command semantics instead of adding a new CLI command.
-- Status: execution is underway in subagent-driven mode; Task 1 is accepted in root and Task 2 is next.
+- Status: execution is underway in subagent-driven mode; Tasks 1-2 are accepted in root and Task 3 is next.
 - Bulk-adopt Task 1 accepted root commit:
   - `6c6811b` `feat: add tui bulk adopt action contract`
 - Task 1 verification in root passed with:
@@ -22,6 +22,16 @@ Active development worktree: `(none)`
 - Task 1 contract notes:
   - `state.ts` now exposes `request-adopt-all`, `confirm-adopt-all`, and a required `adoptAll` action-availability flag for the selected agent.
   - `actions.ts` now supports `adopt-all` by reusing `runAdopt({ agent })` without a `skill`, while returning short refusals for missing-agent and zero-unmanaged cases.
+- Bulk-adopt Task 2 accepted root commit:
+  - `099c221` `feat: add tui shift-a bulk adopt flow`
+- Task 2 verification in root passed with:
+  - `npm test -- --run tests/tui/components.test.tsx`
+  - `npm run build`
+  - `npm run typecheck`
+  - `git diff --check`
+- Task 2 UI notes:
+  - `Shift+A` now opens a visible bulk-adopt confirmation dialog for the selected agent and keeps lowercase `a` on the existing single-row adopt flow.
+  - footer/help copy now documents the bulk-adopt shortcut, and the dashboard overlay renders the explicit current-agent bulk-adopt confirmation text before `y` can dispatch `adopt-all`.
 
 - A new TUI runtime/layout design slice is now approved in conversation: make `skillmux tui` enter the alternate screen by default, occupy the full terminal viewport responsively, and restore the previous shell screen on exit.
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`.

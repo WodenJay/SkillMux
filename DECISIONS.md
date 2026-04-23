@@ -457,3 +457,9 @@ Record key product and implementation decisions so later sessions do not lose th
   - `request-adopt-all` opens `confirm-adopt-all` for the selected agent even when focus is on Agents
   - `adopt-all` reuses `runAdopt({ agent })` with no `skill`
   - missing-agent and zero-unmanaged states stay on short user-facing refusals instead of throwing
+- Accepted Task 2 root commit: `099c221` (`feat: add tui shift-a bulk adopt flow`).
+- Task 2 locks in the interaction contract:
+  - `Shift+A` opens the current-agent bulk-adopt confirmation flow in `App`
+  - lowercase `a` still targets only the selected unmanaged row
+  - the footer and help overlay both document bulk adopt as a current-agent action
+  - the dashboard must render `confirm-adopt-all` through the same overlay path and height budgeting as the existing confirm dialogs

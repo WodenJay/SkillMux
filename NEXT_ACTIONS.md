@@ -313,5 +313,9 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Run bulk-adopt Task 1 through spec review, one spec-fix loop, and code-quality review
 - [x] Sync bulk-adopt Task 1 accepted code back to the root repo
 - [x] Complete fresh root verification for bulk-adopt Task 1
-- [ ] Start bulk-adopt Task 2: wire `Shift+A` into App, footer/help copy, and the confirm dialog
+- [x] Start bulk-adopt Task 2: wire `Shift+A` into App, footer/help copy, and the confirm dialog
+- [x] Run bulk-adopt Task 2 through spec review, code-quality review, one fix loop, and re-review
+- [x] Sync bulk-adopt Task 2 accepted code back to the root repo
+- [x] Complete fresh root verification for bulk-adopt Task 2
+- [ ] Start bulk-adopt Task 3: add the focused PTY bulk-adopt scenario and explorer shortcut
 - [x] Resume or discard the paused PTY audit/polish Round 8 search-cancel debugging explicitly before touching those WIP files again
