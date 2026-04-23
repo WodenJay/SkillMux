@@ -323,3 +323,8 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Complete fresh root verification for bulk-adopt Task 3
 - [x] After `/compact`, run bulk-adopt Task 4: final tracking sync and full root verification gate
 - [x] Resume or discard the paused PTY audit/polish Round 8 search-cancel debugging explicitly before touching those WIP files again
+- [x] Bump the package version for the post-bulk-adopt release to `skillmux@0.1.3`
+- [x] Run the post-bulk-adopt release verification gate: `npm run build`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, `git diff --check`, `npm pack --dry-run`
+- [x] Restore npm publish auth/permission for the `skillmux` package in this shell
+- [x] Publish `skillmux@0.1.3` to npm
+- [x] Verify npm registry latest version returns `0.1.3`

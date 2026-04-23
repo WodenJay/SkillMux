@@ -195,3 +195,18 @@
   - `npm run typecheck`
   - `git diff --check`
 - The current-agent `Shift+A` bulk-adopt slice is now complete in root.
+- A post-bulk-adopt npm release attempt has started for `skillmux@0.1.3`.
+- Local release-prep verification for `0.1.3` passed in root with:
+  - `npm run build`
+  - `npm run test:tui-e2e`
+  - `npm test`
+  - `npm run typecheck`
+  - `git diff --check`
+  - `npm pack --dry-run`
+- `npm view skillmux version` returned `0.1.2` before publish, so `0.1.3` is the next available patch version.
+- The release was published as `skillmux@0.1.3`.
+- Publish verification for `0.1.3`:
+  - token-authenticated `npm whoami` returned `wodenjay`
+  - `npm publish --access public` returned `+ skillmux@0.1.3`
+  - a fresh follow-up `npm view skillmux version` returned `0.1.3`
+- The temporary npm userconfig used for publish was deleted immediately after publish/verification.

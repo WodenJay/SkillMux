@@ -472,3 +472,9 @@ Record key product and implementation decisions so later sessions do not lose th
 - Task 4 locks in the acceptance gate for this slice:
   - the root acceptance gate is `npm run build`, `npm run test:tui-e2e`, `npm test`, `npm run typecheck`, and `git diff --check`
   - passing that gate closes the current-agent `Shift+A` bulk-adopt slice in root without any further command-surface changes
+
+### 2026-04-23
+
+- The next npm release after the completed bulk-adopt slice should be `skillmux@0.1.3`; registry check before publish returned `0.1.2`.
+- Release publication must not be claimed from local verification alone. A successful `npm publish` plus a fresh registry check are both required.
+- For manual publish in this environment, use a temporary npm `userconfig` with the token, publish with `--access public`, then delete the temp auth file immediately after verification.

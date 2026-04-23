@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI bulk-adopt slice in progress; Tasks 1-3 accepted in root
+Phase: Post-bulk-adopt npm release for `skillmux@0.1.3` is complete
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -49,6 +49,24 @@ Active development worktree: `(none)`
   - `npm run typecheck`
   - `git diff --check`
 - The current-agent `Shift+A` bulk-adopt slice is now complete in root.
+
+## Current Release Status
+
+- Local package version is now `0.1.3`.
+- Pre-publish verification passed in root with:
+  - `npm run build`
+  - `npm run test:tui-e2e`
+  - `npm test`
+  - `npm run typecheck`
+  - `git diff --check`
+  - `npm pack --dry-run`
+- `npm pack --dry-run` produced `skillmux-0.1.3.tgz`.
+- Registry check before publish returned `0.1.2` from `npm view skillmux version`.
+- `npm publish --access public` completed for `skillmux@0.1.3`.
+- Token-authenticated publish verification showed:
+  - `npm whoami` returned `wodenjay`
+  - a fresh follow-up `npm view skillmux version` returned `0.1.3`
+- The temporary npm userconfig used for publish was deleted after verification.
 
 - A new TUI runtime/layout design slice is now approved in conversation: make `skillmux tui` enter the alternate screen by default, occupy the full terminal viewport responsively, and restore the previous shell screen on exit.
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`.
