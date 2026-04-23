@@ -513,3 +513,8 @@ Record key product and implementation decisions so later sessions do not lose th
 - The next npm release after the completed bulk-adopt slice should be `skillmux@0.1.3`; registry check before publish returned `0.1.2`.
 - Release publication must not be claimed from local verification alone. A successful `npm publish` plus a fresh registry check are both required.
 - For manual publish in this environment, use a temporary npm `userconfig` with the token, publish with `--access public`, then delete the temp auth file immediately after verification.
+
+### 2026-04-23 TUI CLI parity Task 1
+
+- Dashboard agent rows should carry user-override metadata so the reducer can gate edit/remove availability without guessing from labels.
+- The parity reducer should expose add/edit/remove/import/doctor shells even before field editing and submit payload behavior lands.

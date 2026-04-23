@@ -13,6 +13,9 @@ export type TuiAgentRow = {
   discovery: "builtin" | "custom";
   exists: boolean;
   supported: boolean;
+  hasUserOverride: boolean;
+  canEditOverride: boolean;
+  canRemoveOverride: boolean;
   activationCount?: number;
   enabledCount: number;
   disabledCount: number;
@@ -85,6 +88,7 @@ export type BuildDashboardModelInput = {
   agents: DiscoveredAgent[];
   entries: ScannedSkillEntry[];
   issues: ScanIssue[];
+  configuredAgentIds?: string[];
   selectedAgentId?: string;
   selectedSkillId?: string;
 };
@@ -296,9 +300,19 @@ function countActivationsForAgent(
     .length;
 }
 
+function hasUserOverride(
+  configuredAgentIds: Set<string>,
+  agentId: string
+): boolean {
+  return configuredAgentIds.has(agentId);
+}
+
 function buildAgentRows(input: BuildDashboardModelInput): TuiAgentRow[] {
+  const configuredAgentIds = new Set(input.configuredAgentIds ?? []);
+
   return sortById(input.agents).map((agent) => {
     const counts = countsForRows(buildSkillRowsForAgent(input, agent.id));
+    const userOverride = hasUserOverride(configuredAgentIds, agent.id);
 
     return {
       id: agent.id,
@@ -307,6 +321,9 @@ function buildAgentRows(input: BuildDashboardModelInput): TuiAgentRow[] {
       discovery: agent.discovery,
       exists: agent.exists,
       supported: agent.supportedOnPlatform,
+      hasUserOverride: userOverride,
+      canEditOverride: userOverride,
+      canRemoveOverride: userOverride,
       activationCount: countActivationsForAgent(input.manifest, agent.id),
       ...counts
     };

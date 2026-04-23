@@ -26,6 +26,17 @@ Active development worktree: `(none)`
 - Accepted architecture boundary: the TUI should reuse `runConfigAddAgent`, `runConfigUpdateAgent`, `runConfigRemoveAgent`, `runImport`, and `runDoctor` instead of inventing parallel lifecycle/config logic.
 - Status: written spec and implementation plan are both complete; next step is execution mode selection.
 
+## 2026-04-23 TUI CLI Parity Task 1
+
+- Worktree task status: complete in `.worktrees/tui-cli-parity-task1`
+- Accepted Task 1 changes:
+  - dashboard rows now expose user-override metadata for selected agents
+  - the reducer now exposes add/edit/remove/import/doctor availability shells
+  - built-in agents without overrides remain non-editable and non-removable
+- Worktree verification passed with:
+  - `npm test -- --run tests/tui/dashboard-model.test.ts tests/tui/state.test.ts`
+  - `npm run typecheck`
+
 - A new TUI usability/lifecycle slice is now approved in conversation: one-key adoption of all unmanaged skills for the current selected agent.
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-design.md`.
 - The written implementation plan for that slice is `docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md`.

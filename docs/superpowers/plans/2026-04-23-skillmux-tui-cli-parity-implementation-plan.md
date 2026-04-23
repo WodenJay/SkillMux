@@ -67,7 +67,7 @@
 - Modify: `tests/tui/dashboard-model.test.ts`
 - Modify: `tests/tui/state.test.ts`
 
-- [ ] **Step 1: Write the failing dashboard-model tests**
+- [x] **Step 1: Write the failing dashboard-model tests**
 
 Extend `tests/tui/dashboard-model.test.ts` with focused cases for:
 
@@ -88,7 +88,7 @@ expect(model.agents.find((row) => row.id === "codex")).toEqual(
 );
 ```
 
-- [ ] **Step 2: Write the failing reducer tests**
+- [x] **Step 2: Write the failing reducer tests**
 
 Extend `tests/tui/state.test.ts` with focused cases for:
 
@@ -127,7 +127,7 @@ expect(updateTuiState(withBuiltinOnlyAgent, { type: "open-edit-agent" }).statusM
 );
 ```
 
-- [ ] **Step 3: Run the targeted tests to verify the red state**
+- [x] **Step 3: Run the targeted tests to verify the red state**
 
 Run:
 
@@ -137,7 +137,7 @@ npm test -- --run tests/tui/dashboard-model.test.ts tests/tui/state.test.ts
 
 Expected: FAIL because the dashboard model and reducer do not yet expose override metadata, modal variants, or the new action-availability flags.
 
-- [ ] **Step 4: Extend the dashboard model with agent override metadata**
+- [x] **Step 4: Extend the dashboard model with agent override metadata**
 
 Update `src/tui/dashboard-model.ts` and `src/tui/load-dashboard-state.ts` so the dashboard model receives enough config context to distinguish:
 
@@ -155,7 +155,7 @@ canRemoveOverride: boolean;
 
 `loadDashboardState()` should load user config once and pass the configured agent ids into `buildDashboardModel()` instead of forcing the reducer to infer editability from list text.
 
-- [ ] **Step 5: Extend reducer state for parity workflow entrypoints**
+- [x] **Step 5: Extend reducer state for parity workflow entrypoints**
 
 Update `src/tui/state.ts` so it adds:
 
@@ -184,7 +184,7 @@ Reducer rules:
 - background dashboard input remains blocked while a modal is open
 - this task only opens workflow shells; it does not yet implement field editing or submit payloads
 
-- [ ] **Step 6: Run targeted verification**
+- [x] **Step 6: Run targeted verification**
 
 Run:
 
@@ -202,7 +202,7 @@ npm run typecheck
 
 Expected: PASS.
 
-- [ ] **Step 7: Commit Task 1**
+- [x] **Step 7: Commit Task 1**
 
 ```powershell
 git add src/tui/dashboard-model.ts src/tui/load-dashboard-state.ts src/tui/state.ts tests/tui/dashboard-model.test.ts tests/tui/state.test.ts

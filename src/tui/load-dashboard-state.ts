@@ -1,5 +1,6 @@
 import { homedir } from "node:os";
 import { resolveSkillmuxHome } from "../config/resolve-skillmux-home";
+import { loadUserConfig } from "../config/load-user-config";
 import {
   collectDoctorIssues,
   dedupeAndSortIssues
@@ -29,6 +30,7 @@ export async function loadDashboardState(
   const homeDir = options.homeDir ?? homedir();
   const resolvedSkillmuxHome = resolveSkillmuxHome(homeDir).skillmuxHome;
   const skillmuxHome = options.skillmuxHome ?? resolvedSkillmuxHome;
+  const userConfig = await loadUserConfig(skillmuxHome);
   const { manifest } = await readManifestSnapshot(skillmuxHome);
   const agents = await discoverAgents({
     homeDir,
@@ -51,6 +53,7 @@ export async function loadDashboardState(
     agents,
     entries,
     issues,
+    configuredAgentIds: Object.keys(userConfig.agents),
     selectedAgentId: options.selectedAgentId,
     selectedSkillId: options.selectedSkillId
   });

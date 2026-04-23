@@ -26,6 +26,9 @@ function agent(id: string, name = id): TuiAgentRow {
     discovery: "builtin",
     exists: true,
     supported: true,
+    hasUserOverride: false,
+    canEditOverride: false,
+    canRemoveOverride: false,
     enabledCount: 0,
     disabledCount: 0,
     unmanagedCount: 0,
@@ -343,6 +346,175 @@ describe("TUI state reducer", () => {
     });
   });
 
+  it("keeps config-only agent overrides visible in the default agent list", () => {
+    const initial = createInitialTuiState(
+      model({
+        agents: [
+          {
+            ...agent("codex"),
+            exists: false,
+            hasUserOverride: true,
+            canEditOverride: true,
+            canRemoveOverride: true
+          },
+          agent("claude")
+        ],
+        selectedAgentId: "claude",
+        selectedSkillId: null
+      })
+    );
+
+    expect(getVisibleAgents(initial).map((row) => row.id)).toEqual([
+      "codex",
+      "claude"
+    ]);
+  });
+
+  it("exposes the parity workflow actions for the selected agent", () => {
+    const overrideAgent = createInitialTuiState(
+      model({
+        agents: [
+          {
+            ...agent("codex"),
+            hasUserOverride: true,
+            canEditOverride: true,
+            canRemoveOverride: true
+          },
+          {
+            ...agent("gemini"),
+            exists: false,
+            hasUserOverride: true,
+            canEditOverride: false,
+            canRemoveOverride: false
+          },
+          agent("claude")
+        ],
+        selectedAgentId: "codex",
+        selectedSkillId: null
+      })
+    );
+    const blockedOverride = createInitialTuiState(
+      model({
+        agents: [
+          {
+            ...agent("codex"),
+            hasUserOverride: true,
+            canEditOverride: false,
+            canRemoveOverride: false
+          }
+        ],
+        selectedAgentId: "codex",
+        selectedSkillId: null
+      })
+    );
+    const builtinOnly = createInitialTuiState(
+      model({
+        agents: [agent("codex"), agent("claude")],
+        selectedAgentId: "codex",
+        selectedSkillId: null
+      })
+    );
+
+    expect(getAvailableActions(overrideAgent)).toEqual(
+      expect.objectContaining({
+        addAgent: true,
+        editAgent: true,
+        removeAgent: true,
+        importSkill: true,
+        doctor: true
+      })
+    );
+    expect(getAvailableActions(blockedOverride)).toEqual(
+      expect.objectContaining({
+        addAgent: true,
+        editAgent: false,
+        removeAgent: false,
+        importSkill: true,
+        doctor: true
+      })
+    );
+    expect(
+      updateTuiState(
+        blockedOverride,
+        { type: "open-edit-agent" }
+      ).statusMessage
+    ).toBe("Select an agent override first");
+    expect(
+      updateTuiState(blockedOverride, { type: "open-remove-agent" }).statusMessage
+    ).toBe("Select an agent override first");
+    expect(getAvailableActions(builtinOnly)).toEqual(
+      expect.objectContaining({
+        addAgent: true,
+        editAgent: false,
+        removeAgent: false,
+        importSkill: true,
+        doctor: true
+      })
+    );
+  });
+
+  it("opens parity workflow modals from dedicated reducer events", () => {
+    const overrideState = createInitialTuiState(
+      model({
+        agents: [
+          {
+            ...agent("codex"),
+            hasUserOverride: true,
+            canEditOverride: true,
+            canRemoveOverride: true
+          }
+        ],
+        selectedAgentId: "codex",
+        selectedSkillId: null
+      })
+    );
+    const builtinState = createInitialTuiState(
+      model({
+        agents: [agent("codex")],
+        selectedAgentId: "codex",
+        selectedSkillId: null
+      })
+    );
+
+    expect(updateTuiState(builtinState, { type: "open-add-agent" }).modal).toEqual({
+      kind: "add-agent"
+    });
+    expect(updateTuiState(overrideState, { type: "open-edit-agent" }).modal).toEqual({
+      kind: "edit-agent",
+      agentId: "codex"
+    });
+    expect(updateTuiState(overrideState, { type: "open-remove-agent" }).modal).toEqual({
+      kind: "confirm-remove-agent",
+      agentId: "codex"
+    });
+    expect(updateTuiState(overrideState, { type: "open-discard-dirty-form" }).modal).toEqual({
+      kind: "confirm-discard-dirty-form"
+    });
+    expect(updateTuiState(builtinState, { type: "open-import" }).modal).toEqual({
+      kind: "import"
+    });
+    expect(updateTuiState(builtinState, { type: "open-doctor" }).modal).toEqual({
+      kind: "doctor"
+    });
+  });
+
+  it("refuses edit and remove requests for agents without user overrides", () => {
+    const builtinState = createInitialTuiState(
+      model({
+        agents: [agent("codex")],
+        selectedAgentId: "codex",
+        selectedSkillId: null
+      })
+    );
+
+    expect(updateTuiState(builtinState, { type: "open-edit-agent" }).statusMessage).toBe(
+      "Select an agent override first"
+    );
+    expect(updateTuiState(builtinState, { type: "open-remove-agent" }).statusMessage).toBe(
+      "Select an agent override first"
+    );
+  });
+
   it("derives footer action availability from selected row state", () => {
     const baseState = updateTuiState(createInitialTuiState(model()), {
       type: "focus-next"
@@ -579,6 +751,11 @@ describe("TUI state reducer", () => {
       help: true
     });
     expect(getAvailableActions(withModal)).toEqual({
+      addAgent: false,
+      editAgent: false,
+      removeAgent: false,
+      importSkill: false,
+      doctor: false,
       toggle: false,
       adopt: false,
       adoptAll: false,
@@ -587,6 +764,11 @@ describe("TUI state reducer", () => {
       help: false
     });
     expect(getAvailableActions(busy)).toEqual({
+      addAgent: false,
+      editAgent: false,
+      removeAgent: false,
+      importSkill: false,
+      doctor: false,
       toggle: false,
       adopt: false,
       adoptAll: false,

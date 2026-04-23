@@ -15,7 +15,13 @@ export type TuiModal =
       agentId: string;
       unmanagedCount: number;
     }
-  | { kind: "confirm-remove"; skillId: string };
+  | { kind: "confirm-remove"; skillId: string }
+  | { kind: "add-agent" }
+  | { kind: "edit-agent"; agentId: string }
+  | { kind: "confirm-remove-agent"; agentId: string }
+  | { kind: "import" }
+  | { kind: "doctor" }
+  | { kind: "confirm-discard-dirty-form" };
 
 export type TuiSearch = {
   panel: "agents" | "skills";
@@ -54,6 +60,12 @@ export type TuiStateEvent =
   | { type: "submit-search" }
   | { type: "close" }
   | { type: "open-help" }
+  | { type: "open-add-agent" }
+  | { type: "open-edit-agent" }
+  | { type: "open-remove-agent" }
+  | { type: "open-import" }
+  | { type: "open-doctor" }
+  | { type: "open-discard-dirty-form" }
   | { type: "request-adopt" }
   | { type: "request-adopt-all" }
   | { type: "request-remove" }
@@ -64,6 +76,11 @@ export type TuiStateEvent =
   | { type: "clear-pending-action" };
 
 export type TuiAvailableActions = {
+  addAgent?: boolean;
+  editAgent?: boolean;
+  removeAgent?: boolean;
+  importSkill?: boolean;
+  doctor?: boolean;
   toggle: boolean;
   adopt: boolean;
   adoptAll: boolean;
@@ -104,6 +121,7 @@ function isRelevantAgentRow(
 ): boolean {
   return (
     row.id === selectedAgentId ||
+    row.hasUserOverride === true ||
     row.exists ||
     (row.activationCount ?? 0) > 0 ||
     row.enabledCount > 0 ||
@@ -302,6 +320,12 @@ function isModalBackgroundEvent(event: TuiStateEvent): boolean {
     event.type === "open-search" ||
     event.type === "search-query-changed" ||
     event.type === "open-help" ||
+    event.type === "open-add-agent" ||
+    event.type === "open-edit-agent" ||
+    event.type === "open-remove-agent" ||
+    event.type === "open-import" ||
+    event.type === "open-doctor" ||
+    event.type === "open-discard-dirty-form" ||
     event.type === "request-adopt" ||
     event.type === "request-adopt-all" ||
     event.type === "request-remove" ||
@@ -353,8 +377,15 @@ export function getAvailableActions(state: TuiState): TuiAvailableActions {
   const selectedAgent = selectedAgentRow(state);
   const canAcceptActions = state.modal === null && !state.busy;
   const hasFocusedSkill = canAcceptActions && state.focus === "skills";
+  const canEditSelectedAgent = selectedAgent?.canEditOverride === true;
+  const canRemoveSelectedAgent = selectedAgent?.canRemoveOverride === true;
 
   return {
+    addAgent: canAcceptActions,
+    editAgent: canAcceptActions && canEditSelectedAgent,
+    removeAgent: canAcceptActions && canRemoveSelectedAgent,
+    importSkill: canAcceptActions,
+    doctor: canAcceptActions,
     toggle:
       hasFocusedSkill &&
       (selectedSkill?.kind === "enabled" || selectedSkill?.kind === "disabled"),
@@ -462,7 +493,13 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
       event.type === "request-adopt" ||
       event.type === "request-remove" ||
       event.type === "request-scan" ||
-      event.type === "open-help"
+      event.type === "open-help" ||
+      event.type === "open-add-agent" ||
+      event.type === "open-edit-agent" ||
+      event.type === "open-remove-agent" ||
+      event.type === "open-import" ||
+      event.type === "open-doctor" ||
+      event.type === "open-discard-dirty-form"
     ) {
       return {
         ...state,
@@ -600,6 +637,66 @@ export function updateTuiState(state: TuiState, event: TuiStateEvent): TuiState 
     return {
       ...readyState,
       modal: { kind: "help" }
+    };
+  }
+
+  if (event.type === "open-add-agent") {
+    return {
+      ...readyState,
+      modal: { kind: "add-agent" }
+    };
+  }
+
+  if (event.type === "open-edit-agent") {
+    const selectedAgent = selectedAgentRow(state);
+
+    if (selectedAgent?.canEditOverride !== true) {
+      return {
+        ...readyState,
+        statusMessage: "Select an agent override first"
+      };
+    }
+
+    return {
+      ...readyState,
+      modal: { kind: "edit-agent", agentId: selectedAgent.id }
+    };
+  }
+
+  if (event.type === "open-remove-agent") {
+    const selectedAgent = selectedAgentRow(state);
+
+    if (selectedAgent?.canRemoveOverride !== true) {
+      return {
+        ...readyState,
+        statusMessage: "Select an agent override first"
+      };
+    }
+
+    return {
+      ...readyState,
+      modal: { kind: "confirm-remove-agent", agentId: selectedAgent.id }
+    };
+  }
+
+  if (event.type === "open-import") {
+    return {
+      ...readyState,
+      modal: { kind: "import" }
+    };
+  }
+
+  if (event.type === "open-doctor") {
+    return {
+      ...readyState,
+      modal: { kind: "doctor" }
+    };
+  }
+
+  if (event.type === "open-discard-dirty-form") {
+    return {
+      ...readyState,
+      modal: { kind: "confirm-discard-dirty-form" }
     };
   }
 

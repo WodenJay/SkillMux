@@ -79,7 +79,13 @@ function createAgent(
 describe("buildDashboardModel", () => {
   it("builds enabled, disabled, unmanaged, and issue rows with stable markers", () => {
     const root = join("C:", "tmp", "skillmux-dashboard");
-    const agents = [createAgent(root, "codex"), createAgent(root, "claude")];
+    const agents = [
+      createAgent(root, "codex"),
+      createAgent(root, "claude"),
+      createAgent(root, "openclaw", {
+        discovery: "custom"
+      })
+    ];
     const entries: ScannedSkillEntry[] = [
       {
         agentId: "codex",
@@ -117,7 +123,8 @@ describe("buildDashboardModel", () => {
       entries,
       issues,
       selectedAgentId: "codex",
-      selectedSkillId: "tui-design"
+      selectedSkillId: "tui-design",
+      configuredAgentIds: ["codex", "openclaw"]
     });
 
     expect(model.selectedAgentId).toBe("codex");
@@ -152,7 +159,21 @@ describe("buildDashboardModel", () => {
       enabledCount: 1,
       disabledCount: 1,
       unmanagedCount: 1,
-      issueCount: 1
+      issueCount: 1,
+      hasUserOverride: true,
+      canEditOverride: true,
+      canRemoveOverride: true
+    });
+    expect(model.agents.find((agent) => agent.id === "claude")).toMatchObject({
+      hasUserOverride: false,
+      canEditOverride: false,
+      canRemoveOverride: false
+    });
+    expect(model.agents.find((agent) => agent.id === "openclaw")).toMatchObject({
+      discovery: "custom",
+      hasUserOverride: true,
+      canEditOverride: true,
+      canRemoveOverride: true
     });
   });
 

@@ -329,6 +329,12 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Publish `skillmux@0.1.3` to npm
 - [x] Verify npm registry latest version returns `0.1.3`
 
+## TUI CLI Parity Task 1
+
+- [x] Complete the worktree parity Task 1 slice: dashboard override metadata and reducer scaffolding
+- [x] Verify the Task 1 targeted TUI tests
+- [x] Verify the Task 1 worktree `npm run typecheck`
+
 ## TUI CLI Parity Design
 
 - [x] Identify the missing TUI-vs-CLI management gaps that still force users back to the shell
