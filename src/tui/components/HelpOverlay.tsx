@@ -24,7 +24,7 @@ export function HelpOverlay() {
       </Text>
       <Text>
         <Text bold>Skill markers</Text>
-        <Text>: 鈼?enabled, 鈼?disabled, ? unmanaged, ! issue.</Text>
+        <Text>: ● enabled, ○ disabled, ? unmanaged, ! issue.</Text>
       </Text>
       <Text>
         <Text bold>Safety</Text>
