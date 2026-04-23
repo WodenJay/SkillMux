@@ -166,4 +166,11 @@
   - implementation should reuse existing `runAdopt({ agent })` semantics instead of adding a new CLI command
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-design.md`.
 - The written implementation plan for that slice is `docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md`.
-- Spec approval is complete. The next step is to choose execution mode for the implementation plan, then execute task by task with the required TUI skills and root-tracking updates.
+- Execution mode for that slice is now selected: subagent-driven development.
+- Bulk-adopt Task 1 is now accepted in root at commit `6c6811b` (`feat: add tui bulk adopt action contract`).
+- Task 1 verification in root passed with:
+  - `npm test -- --run tests/tui/state.test.ts tests/tui/actions.test.ts`
+  - `npm run typecheck`
+- Task 1 contract note: `state.ts` now exposes `request-adopt-all`, `confirm-adopt-all`, and a required `adoptAll` footer/action flag for the selected agent.
+- Task 1 dispatcher note: `actions.ts` now supports `adopt-all` by reusing `runAdopt({ agent })` with no `skill`, while refusing missing-agent and zero-unmanaged cases with short user-facing status text.
+- The next step for this slice is Task 2: wire `Shift+A` into `app.tsx`, footer/help copy, and the confirm dialog.

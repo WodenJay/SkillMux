@@ -307,5 +307,11 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Write the bulk-adopt TUI design spec under `docs/superpowers/specs/`
 - [x] Ask for user review of `docs/superpowers/specs/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-design.md`
 - [x] After written-spec approval, invoke `$writing-plans` and draft the bulk-adopt implementation plan
-- [ ] Choose the execution mode for `docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md`
+- [x] Choose the execution mode for `docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md`
+- [x] Create isolated worktree `.worktrees/tui-bulk-adopt-task1` for bulk-adopt Task 1 and verify the targeted baseline
+- [x] Implement bulk-adopt Task 1: reducer and dispatcher contract
+- [x] Run bulk-adopt Task 1 through spec review, one spec-fix loop, and code-quality review
+- [x] Sync bulk-adopt Task 1 accepted code back to the root repo
+- [x] Complete fresh root verification for bulk-adopt Task 1
+- [ ] Start bulk-adopt Task 2: wire `Shift+A` into App, footer/help copy, and the confirm dialog
 - [x] Resume or discard the paused PTY audit/polish Round 8 search-cancel debugging explicitly before touching those WIP files again

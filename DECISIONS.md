@@ -450,3 +450,10 @@ Record key product and implementation decisions so later sessions do not lose th
 - The bulk action may be triggered from either Agents focus or Skills focus, as long as the selected agent currently has unmanaged skills.
 - The written implementation plan for this slice is `docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md`.
 - The implementation plan keeps the slice narrow: reducer/dispatcher contract first, then app/footer/help/confirm integration, then one focused PTY flow, then final root verification and tracking sync.
+- Execution mode for this slice is subagent-driven development with one fresh worktree-backed implementer per task and review gates before root acceptance.
+- Accepted Task 1 root commit: `6c6811b` (`feat: add tui bulk adopt action contract`).
+- Task 1 locks in the reducer/dispatcher contract:
+  - `TuiAvailableActions.adoptAll` is a required boolean, not an optional field
+  - `request-adopt-all` opens `confirm-adopt-all` for the selected agent even when focus is on Agents
+  - `adopt-all` reuses `runAdopt({ agent })` with no `skill`
+  - missing-agent and zero-unmanaged states stay on short user-facing refusals instead of throwing

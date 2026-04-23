@@ -55,7 +55,7 @@
 - Modify: `tests/tui/state.test.ts`
 - Modify: `tests/tui/actions.test.ts`
 
-- [ ] **Step 1: Write the failing reducer tests**
+- [x] **Step 1: Write the failing reducer tests**
 
 Extend `tests/tui/state.test.ts` with focused cases for:
 
@@ -75,7 +75,7 @@ expect(updateTuiState(withUnmanagedAgent, { type: "request-adopt-all" }).modal).
 });
 ```
 
-- [ ] **Step 2: Write the failing dispatcher tests**
+- [x] **Step 2: Write the failing dispatcher tests**
 
 Extend `tests/tui/actions.test.ts` with focused cases for:
 
@@ -93,7 +93,7 @@ expect(services.runAdopt).toHaveBeenCalledWith({
 });
 ```
 
-- [ ] **Step 3: Run the targeted tests to verify the red state**
+- [x] **Step 3: Run the targeted tests to verify the red state**
 
 Run:
 
@@ -103,7 +103,7 @@ npm test -- --run tests/tui/state.test.ts tests/tui/actions.test.ts
 
 Expected: FAIL because `state.ts` and `actions.ts` do not yet define the bulk-adopt event, modal, availability flag, or dispatcher action.
 
-- [ ] **Step 4: Implement the reducer-side bulk-adopt contract**
+- [x] **Step 4: Implement the reducer-side bulk-adopt contract**
 
 Update `src/tui/state.ts` so it adds:
 
@@ -132,7 +132,7 @@ Reducer rules:
 - the status message on refusal should be concise and user-facing, for example `No unmanaged skills to adopt for this agent`
 - existing lowercase `request-adopt` row behavior must remain unchanged
 
-- [ ] **Step 5: Implement the dispatcher-side bulk-adopt contract**
+- [x] **Step 5: Implement the dispatcher-side bulk-adopt contract**
 
 Update `src/tui/actions.ts` so:
 
@@ -152,7 +152,7 @@ const result = await services.runAdopt({
 - missing selected-agent state returns a short refusal, not a thrown exception
 - reload behavior matches the existing `toggle` / `adopt` / `scan` contract
 
-- [ ] **Step 6: Run targeted verification**
+- [x] **Step 6: Run targeted verification**
 
 Run:
 
@@ -170,7 +170,7 @@ npm run typecheck
 
 Expected: PASS.
 
-- [ ] **Step 7: Commit Task 1**
+- [x] **Step 7: Commit Task 1**
 
 ```powershell
 git add src/tui/state.ts src/tui/actions.ts tests/tui/state.test.ts tests/tui/actions.test.ts

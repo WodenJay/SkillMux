@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI alternate-screen/fullscreen slice accepted in root; next usability slice pending
+Phase: TUI bulk-adopt slice in progress; Task 1 accepted in root
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -13,7 +13,15 @@ Active development worktree: `(none)`
 - The written implementation plan for that slice is `docs/superpowers/plans/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-implementation-plan.md`.
 - Accepted shortcut change: the bulk action uses `Shift+A`, while lowercase `a` remains the single-row adopt action.
 - Scope boundary: this slice is agent-scoped only and reuses the existing `runAdopt({ agent })` command semantics instead of adding a new CLI command.
-- Status: spec approved and implementation plan written; execution mode selection is next.
+- Status: execution is underway in subagent-driven mode; Task 1 is accepted in root and Task 2 is next.
+- Bulk-adopt Task 1 accepted root commit:
+  - `6c6811b` `feat: add tui bulk adopt action contract`
+- Task 1 verification in root passed with:
+  - `npm test -- --run tests/tui/state.test.ts tests/tui/actions.test.ts`
+  - `npm run typecheck`
+- Task 1 contract notes:
+  - `state.ts` now exposes `request-adopt-all`, `confirm-adopt-all`, and a required `adoptAll` action-availability flag for the selected agent.
+  - `actions.ts` now supports `adopt-all` by reusing `runAdopt({ agent })` without a `skill`, while returning short refusals for missing-agent and zero-unmanaged cases.
 
 - A new TUI runtime/layout design slice is now approved in conversation: make `skillmux tui` enter the alternate screen by default, occupy the full terminal viewport responsively, and restore the previous shell screen on exit.
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-22-skillmux-tui-alternate-screen-responsive-layout-design.md`.
