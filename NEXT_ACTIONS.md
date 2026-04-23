@@ -339,5 +339,6 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Present and approve the TUI CLI parity design sections
 - [x] Write the TUI CLI parity design spec under `docs/superpowers/specs/`
 - [x] Sync `AGENTS.md`, `PROJECT_STATUS.md`, `NEXT_ACTIONS.md`, and `DECISIONS.md` for the new parity slice
-- [ ] Ask for user review of `docs/superpowers/specs/2026-04-23-skillmux-tui-cli-parity-design.md`
-- [ ] After written-spec approval, invoke `$writing-plans` and draft the TUI CLI parity implementation plan
+- [x] Ask for user review of `docs/superpowers/specs/2026-04-23-skillmux-tui-cli-parity-design.md`
+- [x] After written-spec approval, invoke `$writing-plans` and draft the TUI CLI parity implementation plan
+- [ ] Choose the execution mode for `docs/superpowers/plans/2026-04-23-skillmux-tui-cli-parity-implementation-plan.md`

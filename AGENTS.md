@@ -209,6 +209,14 @@
   - `n` add agent, `e` edit selected agent, `X` remove selected agent, `i` import skill, `d` doctor
   - full current CLI field coverage for add/update/import rather than a reduced TUI-only subset
 - Accepted architecture boundary for that slice: the TUI should reuse `runConfigAddAgent`, `runConfigUpdateAgent`, `runConfigRemoveAgent`, `runImport`, and `runDoctor` as the source of truth instead of reimplementing their validation or write semantics.
+- The written implementation plan for that slice is `docs/superpowers/plans/2026-04-23-skillmux-tui-cli-parity-implementation-plan.md`.
+- Planned execution order for that slice:
+  - Task 1: dashboard metadata and reducer scaffolding
+  - Task 2: form payloads and command dispatcher support
+  - Task 3: modal UI, keyboard wiring, and doctor presentation
+  - Task 4: focused PTY agent-config/import/doctor scenarios
+  - Task 5: final tracking sync and full root verification gate
+- The next step for that slice is execution mode selection; recommended mode remains subagent-driven development.
 - A post-bulk-adopt npm release attempt has started for `skillmux@0.1.3`.
 - Local release-prep verification for `0.1.3` passed in root with:
   - `npm run build`

@@ -10,6 +10,7 @@ Active development worktree: `(none)`
 
 - A new TUI parity slice is now approved in conversation: the TUI should cover the current local-management CLI surface instead of forcing users back to the shell for agent configuration, import, and doctor workflows.
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-23-skillmux-tui-cli-parity-design.md`.
+- The written implementation plan for that slice is `docs/superpowers/plans/2026-04-23-skillmux-tui-cli-parity-implementation-plan.md`.
 - Accepted scope:
   - `config add-agent`
   - `config update-agent`
@@ -23,7 +24,7 @@ Active development worktree: `(none)`
   - full CLI field coverage for add/update/import
   - fullscreen modal workflows inside the existing alternate-screen TUI
 - Accepted architecture boundary: the TUI should reuse `runConfigAddAgent`, `runConfigUpdateAgent`, `runConfigRemoveAgent`, `runImport`, and `runDoctor` instead of inventing parallel lifecycle/config logic.
-- Status: design review is complete; next step is written-spec review and then an implementation plan.
+- Status: written spec and implementation plan are both complete; next step is execution mode selection.
 
 - A new TUI usability/lifecycle slice is now approved in conversation: one-key adoption of all unmanaged skills for the current selected agent.
 - The written design spec for that slice is `docs/superpowers/specs/2026-04-23-skillmux-tui-adopt-all-unmanaged-agent-skills-design.md`.

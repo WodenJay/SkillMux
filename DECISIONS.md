@@ -466,6 +466,14 @@ Record key product and implementation decisions so later sessions do not lose th
   - `runImport`
   - `runDoctor`
 - The TUI remains the orchestration layer for modal state, busy/reload flow, and user-facing errors; it should not reimplement CLI business rules.
+- The written implementation plan for this slice is `docs/superpowers/plans/2026-04-23-skillmux-tui-cli-parity-implementation-plan.md`.
+- The implementation order for this slice is:
+  1. dashboard metadata and reducer scaffolding
+  2. form payloads plus command dispatcher support
+  3. modal UI and app keyboard wiring
+  4. focused PTY parity scenarios
+  5. final tracking sync and full root verification
+- The next decision gate for this slice is execution mode selection, with subagent-driven execution remaining the recommended default.
 
 ### TUI bulk adopt for current agent
 
