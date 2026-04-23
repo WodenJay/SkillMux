@@ -4,7 +4,10 @@ import type { TuiModal } from "../state";
 export type ConfirmDialogProps = {
   modal: Extract<
     TuiModal,
-    { kind: "confirm-adopt" } | { kind: "confirm-adopt-all" } | { kind: "confirm-remove" }
+    | { kind: "confirm-adopt" }
+    | { kind: "confirm-adopt-all" }
+    | { kind: "confirm-remove" }
+    | { kind: "confirm-remove-agent" }
   >;
 };
 
@@ -19,11 +22,19 @@ function confirmationText(modal: ConfirmDialogProps["modal"]): string {
     return `Adopt all unmanaged skills for ${modal.agentId}?`;
   }
 
+  if (modal.kind === "confirm-remove-agent") {
+    return `Remove agent override for ${modal.agentId}?`;
+  }
+
   return `Remove ${modal.skillId} from SkillMux?`;
 }
 
 function confirmationDetails(modal: ConfirmDialogProps["modal"]): string | null {
   if (modal.kind !== "confirm-adopt-all") {
+    if (modal.kind === "confirm-remove-agent") {
+      return "This will remove the selected agent override from SkillMux.";
+    }
+
     return null;
   }
 
@@ -33,7 +44,14 @@ function confirmationDetails(modal: ConfirmDialogProps["modal"]): string | null 
 export function ConfirmDialog({ modal }: ConfirmDialogProps) {
   return (
     <Box flexDirection="column" height={confirmDialogHeight}>
-      <Text bold color={modal.kind === "confirm-remove" ? "yellow" : "cyan"}>
+      <Text
+        bold
+        color={
+          modal.kind === "confirm-remove" || modal.kind === "confirm-remove-agent"
+            ? "yellow"
+            : "cyan"
+        }
+      >
         Confirm
       </Text>
       <Text>{confirmationText(modal)}</Text>

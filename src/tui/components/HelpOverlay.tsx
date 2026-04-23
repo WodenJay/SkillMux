@@ -10,7 +10,9 @@ export function HelpOverlay() {
       </Text>
       <Text>
         <Text bold>Actions</Text>
-        <Text>: Space toggles, a adopts, Shift+A current-agent bulk adopt, r removes, s scans.</Text>
+        <Text>
+          : Space toggles, a adopts, Shift+A current-agent bulk adopt, r removes, s scans, n add agent, e edit selected override, X remove selected override, i import, d doctor.
+        </Text>
       </Text>
       <Text>
         <Text bold>Search</Text>
@@ -22,7 +24,7 @@ export function HelpOverlay() {
       </Text>
       <Text>
         <Text bold>Skill markers</Text>
-        <Text>: ● enabled, ○ disabled, ? unmanaged, ! issue.</Text>
+        <Text>: 鈼?enabled, 鈼?disabled, ? unmanaged, ! issue.</Text>
       </Text>
       <Text>
         <Text bold>Safety</Text>

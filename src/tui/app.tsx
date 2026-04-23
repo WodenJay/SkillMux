@@ -7,13 +7,14 @@ import {
   type DispatchTuiActionResult,
   type TuiAction
 } from "./actions";
-import { Dashboard } from "./components/Dashboard";
+import { Dashboard, type DashboardModalInteraction } from "./components/Dashboard";
 import type { DashboardModel } from "./dashboard-model";
 import {
   loadDashboardState,
   type LoadDashboardStateOptions
 } from "./load-dashboard-state";
 import {
+  consumePendingCommandIntent,
   consumeActionIntent,
   consumeAgentSelectionIntent,
   createInitialTuiState,
@@ -43,6 +44,49 @@ const defaultServices: AppServices = {
   loadDashboardState,
   dispatchTuiAction
 };
+
+const addAgentFieldOrder = [
+  "id",
+  "root",
+  "skills",
+  "name",
+  "platforms",
+  "disabledByDefault"
+] as const;
+
+const editAgentFieldOrder = [
+  "root",
+  "skills",
+  "name",
+  "platforms",
+  "enabledByDefault",
+  "disabledByDefault"
+] as const;
+
+const importFieldOrder = ["sourcePath", "skillName"] as const;
+const platformOptions = ["win32", "linux", "darwin"] as const;
+
+function clampIndex(index: number, count: number): number {
+  if (count <= 0) {
+    return 0;
+  }
+
+  return ((index % count) + count) % count;
+}
+
+function nextText(value: string, input: string): string {
+  return `${value}${input}`;
+}
+
+function trimLast(value: string): string {
+  return value.slice(0, Math.max(value.length - 1, 0));
+}
+
+function togglePlatform(values: string[], platform: string): string[] {
+  return values.includes(platform)
+    ? values.filter((entry) => entry !== platform)
+    : [...values, platform];
+}
 
 function errorReason(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
@@ -124,6 +168,7 @@ type AppViewportProps = {
   state: TuiState;
   terminalWidth?: number;
   terminalHeight?: number;
+  modalInteraction: DashboardModalInteraction;
 };
 
 type BridgedDashboardViewportProps = AppViewportProps & {
@@ -183,13 +228,15 @@ function useBridgedTerminalSize(path: string | null): { columns: number; rows: n
 function LiveDashboardViewport({
   state,
   terminalWidth,
-  terminalHeight
+  terminalHeight,
+  modalInteraction
 }: AppViewportProps) {
   return (
     <Dashboard
       state={state}
       width={terminalWidth ?? liveTerminalSize().columns}
       height={terminalHeight ?? liveTerminalSize().rows}
+      modalInteraction={modalInteraction}
     />
   );
 }
@@ -198,7 +245,8 @@ function BridgedDashboardViewport({
   state,
   terminalWidth,
   terminalHeight,
-  bridgePath
+  bridgePath,
+  modalInteraction
 }: BridgedDashboardViewportProps) {
   const bridgedTerminalSize = useBridgedTerminalSize(bridgePath ?? null);
   const fallbackSize = liveTerminalSize();
@@ -208,6 +256,7 @@ function BridgedDashboardViewport({
       state={state}
       width={terminalWidth ?? bridgedTerminalSize?.columns ?? fallbackSize.columns}
       height={terminalHeight ?? bridgedTerminalSize?.rows ?? fallbackSize.rows}
+      modalInteraction={modalInteraction}
     />
   );
 }
@@ -227,12 +276,18 @@ export function App({
   const latestRequest = useRef(0);
   const activeActionRequest = useRef<number | null>(null);
   const stableModel = useRef<DashboardModel | null>(null);
+  const [modalInteraction, setModalInteraction] = useState<DashboardModalInteraction>({
+    fieldIndex: 0,
+    platformIndex: 0,
+    doctorScrollOffset: 0
+  });
   const services = useMemo(
     () => ({ ...defaultServices, ...serviceOverrides }),
     [serviceOverrides]
   );
   const sizeBridgePath = process.env.SKILLMUX_TUI_PTY_SIZE_FILE?.trim() ?? null;
   const sizeBridgeEnabled = sizeBridgePath !== null && sizeBridgePath.length > 0;
+  const modalKind = state?.modal?.kind ?? null;
 
   const beginRequest = useCallback((): number => {
     requestSequence.current += 1;
@@ -279,6 +334,14 @@ export function App({
       cancelled = true;
     };
   }, [homeDir, platform, services, skillmuxHome]);
+
+  useEffect(() => {
+    setModalInteraction({
+      fieldIndex: 0,
+      platformIndex: 0,
+      doctorScrollOffset: 0
+    });
+  }, [modalKind]);
 
   const runAction = useCallback(
     (action: TuiAction, model: DashboardModel, baseState?: TuiState) => {
@@ -425,6 +488,140 @@ export function App({
     }
   }, [reloadAgent, state]);
 
+  useEffect(() => {
+    if (state?.pendingCommand === null || state?.pendingCommand === undefined) {
+      return;
+    }
+
+    const consumed = consumePendingCommandIntent(state);
+    setState(consumed.state);
+
+    if (consumed.command === null) {
+      return;
+    }
+
+    if (consumed.command.kind === "doctor") {
+      const requestId = beginRequest();
+
+      services
+        .dispatchTuiAction({
+          action: consumed.command,
+          model: consumed.state.model,
+          homeDir,
+          skillmuxHome,
+          platform
+        })
+        .then((result) => {
+          if (!isLatestRequest(requestId)) {
+            return;
+          }
+
+          const doctorReport = result.doctor;
+
+          if (doctorReport === undefined) {
+            throw new Error("Doctor report missing");
+          }
+
+          stableModel.current = result.model;
+          setState((current) =>
+            current === null
+              ? current
+              : updateTuiState(
+                  updateTuiState(current, {
+                    type: "doctor-result-loaded",
+                    report: doctorReport
+                  }),
+                  { type: "set-status", message: result.statusMessage }
+                )
+          );
+        })
+        .catch((error: unknown) => {
+          if (!isLatestRequest(requestId)) {
+            return;
+          }
+
+          setState((current) =>
+            current === null
+              ? current
+              : updateTuiState(
+                  updateTuiState(current, {
+                    type: "doctor-result-failed",
+                    errorMessage: `Doctor failed: ${errorReason(error)}`
+                  }),
+                  { type: "set-status", message: `Doctor failed: ${errorReason(error)}` }
+                )
+          );
+        });
+
+      return;
+    }
+
+    if (activeActionRequest.current !== null) {
+      return;
+    }
+
+    const requestId = beginRequest();
+    activeActionRequest.current = requestId;
+    const busyState: TuiState = {
+      ...consumed.state,
+      modal: null,
+      busy: true,
+      statusMessage: "working..."
+    };
+    setState(busyState);
+
+    services
+      .dispatchTuiAction({
+        action: consumed.command,
+        model: busyState.model,
+        homeDir,
+        skillmuxHome,
+        platform
+      })
+      .then((result) => {
+        if (!isLatestRequest(requestId)) {
+          return;
+        }
+
+        stableModel.current = result.model;
+        setState((current) =>
+          current === null
+            ? current
+            : replaceStateModel(current, result.model, result.statusMessage)
+        );
+      })
+      .catch((error: unknown) => {
+        if (!isLatestRequest(requestId)) {
+          return;
+        }
+
+        setState((current) =>
+          current === null
+            ? current
+            : updateTuiState(
+                updateTuiState(current, { type: "set-busy", busy: false }),
+                {
+                  type: "set-status",
+                  message: `Action failed: ${errorReason(error)}`
+                }
+              )
+        );
+      })
+      .finally(() => {
+        if (activeActionRequest.current === requestId) {
+          activeActionRequest.current = null;
+        }
+      });
+  }, [
+    beginRequest,
+    homeDir,
+    isLatestRequest,
+    platform,
+    services,
+    skillmuxHome,
+    state
+  ]);
+
   useInput((input, key) => {
     if (key.ctrl && input === "c") {
       exit();
@@ -440,7 +637,7 @@ export function App({
     }
 
     if (state.search !== null) {
-      if (key.escape) {
+      if (key.escape || input === "\u001B") {
         setState(updateTuiState(state, { type: "close" }));
         return;
       }
@@ -473,11 +670,6 @@ export function App({
     }
 
     if (state.modal !== null) {
-      if (key.escape) {
-        setState(updateTuiState(state, { type: "close" }));
-        return;
-      }
-
       if (input === "q") {
         exit();
         return;
@@ -487,30 +679,326 @@ export function App({
         return;
       }
 
-      if (
-        input.toLocaleLowerCase() === "y" &&
-        state.modal.kind === "confirm-adopt"
-      ) {
-        const closedState = updateTuiState(state, { type: "close" });
-        runAction("adopt", closedState.model, closedState);
+      if (state.modal.kind === "help") {
+        if (key.escape || input === "\u001B") {
+          setState(updateTuiState(state, { type: "close" }));
+        }
+
+        return;
+      }
+
+      if (state.modal.kind === "confirm-discard-dirty-form") {
+        if (input.toLocaleLowerCase() === "y") {
+          setState(updateTuiState(state, { type: "confirm-discard-dirty-form" }));
+          return;
+        }
+
+        if (key.escape || input === "\u001B" || input.toLocaleLowerCase() === "n") {
+          setState(updateTuiState(state, { type: "close" }));
+        }
+
         return;
       }
 
       if (
-        input.toLocaleLowerCase() === "y" &&
-        state.modal.kind === "confirm-adopt-all"
+        state.modal.kind === "confirm-adopt" ||
+        state.modal.kind === "confirm-adopt-all" ||
+        state.modal.kind === "confirm-remove" ||
+        state.modal.kind === "confirm-remove-agent"
       ) {
-        const closedState = updateTuiState(state, { type: "close" });
-        runAction("adopt-all", closedState.model, closedState);
+        if (input.toLocaleLowerCase() === "y") {
+          const closedState = updateTuiState(state, { type: "close" });
+
+          if (state.modal.kind === "confirm-adopt") {
+            runAction("adopt", closedState.model, closedState);
+          } else if (state.modal.kind === "confirm-adopt-all") {
+            runAction("adopt-all", closedState.model, closedState);
+          } else if (state.modal.kind === "confirm-remove") {
+            runAction("remove", closedState.model, closedState);
+          } else {
+            setState(updateTuiState(state, { type: "submit-remove-agent" }));
+          }
+          return;
+        }
+
+        if (key.escape || input === "\u001B" || input.toLocaleLowerCase() === "n") {
+          setState(updateTuiState(state, { type: "close" }));
+        }
+
+        return;
+      }
+
+      if (state.modal.kind === "doctor") {
+        if (key.escape || input === "\u001B") {
+          setState(updateTuiState(state, { type: "close" }));
+          return;
+        }
+
+        if (key.downArrow || key.rightArrow || input === "j") {
+          setModalInteraction((current) => ({
+            ...current,
+            doctorScrollOffset: current.doctorScrollOffset + 1
+          }));
+          return;
+        }
+
+        if (key.upArrow || key.leftArrow || input === "k") {
+          setModalInteraction((current) => ({
+            ...current,
+            doctorScrollOffset: Math.max(current.doctorScrollOffset - 1, 0)
+          }));
+          return;
+        }
+
         return;
       }
 
       if (
-        input.toLocaleLowerCase() === "y" &&
-        state.modal.kind === "confirm-remove"
+        state.modal.kind === "add-agent" ||
+        state.modal.kind === "edit-agent" ||
+        state.modal.kind === "import"
       ) {
-        const closedState = updateTuiState(state, { type: "close" });
-        runAction("remove", closedState.model, closedState);
+        const fieldOrder =
+          state.modal.kind === "add-agent"
+            ? addAgentFieldOrder
+            : state.modal.kind === "edit-agent"
+              ? editAgentFieldOrder
+              : importFieldOrder;
+        const currentFieldIndex = clampIndex(
+          modalInteraction.fieldIndex,
+          fieldOrder.length
+        );
+        const currentField = fieldOrder[currentFieldIndex];
+        const moveField = (direction: 1 | -1) => {
+          setModalInteraction((current) => ({
+            ...current,
+            fieldIndex: clampIndex(current.fieldIndex + direction, fieldOrder.length),
+            platformIndex: 0
+          }));
+        };
+        const updateAddAgent = (
+          field: (typeof addAgentFieldOrder)[number],
+          value: string | boolean | string[]
+        ) => {
+          setState(
+            updateTuiState(state, {
+              type: "add-agent-form-field-changed",
+              field,
+              value
+            })
+          );
+        };
+        const updateEditAgent = (
+          field: (typeof editAgentFieldOrder)[number],
+          value: string | boolean | string[]
+        ) => {
+          setState(
+            updateTuiState(state, {
+              type: "edit-agent-form-field-changed",
+              field,
+              value
+            })
+          );
+        };
+        const updateImport = (
+          field: (typeof importFieldOrder)[number],
+          value: string
+        ) => {
+          setState(
+            updateTuiState(state, {
+              type: "import-form-field-changed",
+              field,
+              value
+            })
+          );
+        };
+
+        if (key.escape || input === "\u001B") {
+          setState(updateTuiState(state, { type: "close" }));
+          return;
+        }
+
+        if (key.return) {
+          if (state.modal.kind === "add-agent") {
+            setState(updateTuiState(state, { type: "submit-add-agent-form" }));
+          } else if (state.modal.kind === "edit-agent") {
+            setState(updateTuiState(state, { type: "submit-edit-agent-form" }));
+          } else {
+            setState(updateTuiState(state, { type: "submit-import-form" }));
+          }
+
+          return;
+        }
+
+        if (key.tab || key.downArrow) {
+          moveField(1);
+          return;
+        }
+
+        if ((key.shift && key.tab) || key.upArrow) {
+          moveField(-1);
+          return;
+        }
+
+        if (currentField === "platforms") {
+          const platform = platformOptions[modalInteraction.platformIndex] ?? platformOptions[0];
+
+          if (key.leftArrow) {
+            setModalInteraction((current) => ({
+              ...current,
+              platformIndex: clampIndex(current.platformIndex - 1, platformOptions.length)
+            }));
+            return;
+          }
+
+          if (key.rightArrow) {
+            setModalInteraction((current) => ({
+              ...current,
+              platformIndex: clampIndex(current.platformIndex + 1, platformOptions.length)
+            }));
+            return;
+          }
+
+          if (input === " ") {
+            if (state.modal.kind === "add-agent") {
+              updateAddAgent(
+                "platforms",
+                togglePlatform(state.modal.form.values.platforms, platform)
+              );
+            } else if (state.modal.kind === "edit-agent") {
+              updateEditAgent(
+                "platforms",
+                togglePlatform(state.modal.form.values.platforms, platform)
+              );
+            }
+            return;
+          }
+        }
+
+        if (currentField === "disabledByDefault" && state.modal.kind === "add-agent") {
+          if (input === " ") {
+            updateAddAgent("disabledByDefault", !state.modal.form.values.disabledByDefault);
+            return;
+          }
+        }
+
+        if (state.modal.kind === "edit-agent") {
+          if (currentField === "enabledByDefault") {
+            if (input === " ") {
+              updateEditAgent("enabledByDefault", !state.modal.form.values.enabledByDefault);
+              return;
+            }
+          }
+
+          if (currentField === "disabledByDefault") {
+            if (input === " ") {
+              updateEditAgent(
+                "disabledByDefault",
+                !state.modal.form.values.disabledByDefault
+              );
+              return;
+            }
+          }
+        }
+
+        if (isTextInput(input) && input !== " ") {
+          if (state.modal.kind === "add-agent") {
+            if (currentField === "id") {
+              updateAddAgent("id", nextText(state.modal.form.values.id, input));
+              return;
+            }
+
+            if (currentField === "root") {
+              updateAddAgent("root", nextText(state.modal.form.values.root, input));
+              return;
+            }
+
+            if (currentField === "skills") {
+              updateAddAgent("skills", nextText(state.modal.form.values.skills, input));
+              return;
+            }
+
+            if (currentField === "name") {
+              updateAddAgent("name", nextText(state.modal.form.values.name, input));
+              return;
+            }
+          } else if (state.modal.kind === "edit-agent") {
+            if (currentField === "root") {
+              updateEditAgent("root", nextText(state.modal.form.values.root, input));
+              return;
+            }
+
+            if (currentField === "skills") {
+              updateEditAgent("skills", nextText(state.modal.form.values.skills, input));
+              return;
+            }
+
+            if (currentField === "name") {
+              updateEditAgent("name", nextText(state.modal.form.values.name, input));
+              return;
+            }
+          } else if (state.modal.kind === "import") {
+            if (currentField === "sourcePath") {
+              updateImport("sourcePath", nextText(state.modal.form.values.sourcePath, input));
+              return;
+            }
+
+            if (currentField === "skillName") {
+              updateImport("skillName", nextText(state.modal.form.values.skillName, input));
+              return;
+            }
+          }
+        }
+
+        if (key.backspace || key.delete) {
+          if (state.modal.kind === "add-agent") {
+            if (currentField === "id") {
+              updateAddAgent("id", trimLast(state.modal.form.values.id));
+              return;
+            }
+
+            if (currentField === "root") {
+              updateAddAgent("root", trimLast(state.modal.form.values.root));
+              return;
+            }
+
+            if (currentField === "skills") {
+              updateAddAgent("skills", trimLast(state.modal.form.values.skills));
+              return;
+            }
+
+            if (currentField === "name") {
+              updateAddAgent("name", trimLast(state.modal.form.values.name));
+              return;
+            }
+          } else if (state.modal.kind === "edit-agent") {
+            if (currentField === "root") {
+              updateEditAgent("root", trimLast(state.modal.form.values.root));
+              return;
+            }
+
+            if (currentField === "skills") {
+              updateEditAgent("skills", trimLast(state.modal.form.values.skills));
+              return;
+            }
+
+            if (currentField === "name") {
+              updateEditAgent("name", trimLast(state.modal.form.values.name));
+              return;
+            }
+          } else if (state.modal.kind === "import") {
+            if (currentField === "sourcePath") {
+              updateImport("sourcePath", trimLast(state.modal.form.values.sourcePath));
+              return;
+            }
+
+            if (currentField === "skillName") {
+              updateImport("skillName", trimLast(state.modal.form.values.skillName));
+              return;
+            }
+          }
+        }
+
         return;
       }
 
@@ -574,7 +1062,32 @@ export function App({
       return;
     }
 
-    if (key.escape) {
+    if (input === "n") {
+      setState(updateTuiState(state, { type: "open-add-agent" }));
+      return;
+    }
+
+    if (input === "e") {
+      setState(updateTuiState(state, { type: "open-edit-agent" }));
+      return;
+    }
+
+    if (input === "X" || (key.shift && input === "x")) {
+      setState(updateTuiState(state, { type: "open-remove-agent" }));
+      return;
+    }
+
+    if (input === "i") {
+      setState(updateTuiState(state, { type: "open-import" }));
+      return;
+    }
+
+    if (input === "d") {
+      setState(updateTuiState(state, { type: "open-doctor" }));
+      return;
+    }
+
+    if (key.escape || input === "\u001B") {
       setState(updateTuiState(state, { type: "close" }));
       return;
     }
@@ -618,12 +1131,14 @@ export function App({
       terminalWidth={terminalWidth}
       terminalHeight={terminalHeight}
       bridgePath={sizeBridgePath}
+      modalInteraction={modalInteraction}
     />
   ) : (
     <LiveDashboardViewport
       state={state}
       terminalWidth={terminalWidth}
       terminalHeight={terminalHeight}
+      modalInteraction={modalInteraction}
     />
   );
 }

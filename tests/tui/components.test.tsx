@@ -10,8 +10,15 @@ import { ConfirmDialog } from "../../src/tui/components/ConfirmDialog";
 import { DetailPane } from "../../src/tui/components/DetailPane";
 import { Footer } from "../../src/tui/components/Footer";
 import { HelpOverlay } from "../../src/tui/components/HelpOverlay";
+import { DoctorDialog } from "../../src/tui/components/DoctorDialog";
+import { FormDialog } from "../../src/tui/components/FormDialog";
 import { SkillList } from "../../src/tui/components/SkillList";
 import { StatusLine } from "../../src/tui/components/StatusLine";
+import {
+  createConfigAddAgentForm,
+  createConfigUpdateAgentFormFromSeed,
+  createImportSkillForm
+} from "../../src/tui/forms";
 import type {
   DashboardModel,
   TuiAgentRow,
@@ -295,6 +302,33 @@ describe("TUI dashboard components", () => {
     expect(disabledFrame).not.toContain("[Shift+A]adopt all");
   });
 
+  it("shows the parity workflow shortcuts when actions are available", () => {
+    const frame = renderToString(
+      <Footer
+        actions={{
+          addAgent: true,
+          editAgent: true,
+          removeAgent: true,
+          importSkill: true,
+          doctor: true,
+          toggle: false,
+          adopt: false,
+          adoptAll: false,
+          remove: false,
+          scan: false,
+          help: true
+        }}
+        search={null}
+      />
+    );
+
+    expect(frame).toContain("[n]add agent");
+    expect(frame).toContain("[e]edit agent");
+    expect(frame).toContain("[X]remove agent");
+    expect(frame).toContain("[i]import");
+    expect(frame).toContain("[d]doctor");
+  });
+
   it("explains filesystem-writing behavior and left-right navigation in the help overlay", () => {
     const { lastFrame } = render(<HelpOverlay />);
 
@@ -311,6 +345,18 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain(
       "Toggle, adopt, remove, and scan can update SkillMux state and agent links."
     );
+  });
+
+  it("teaches the parity workflow shortcuts in the help overlay", () => {
+    const { lastFrame } = render(<HelpOverlay />);
+
+    const frame = lastFrame();
+
+    expect(frame).toContain("n add agent");
+    expect(frame).toContain("e edit selected override");
+    expect(frame).toContain("X remove selected override");
+    expect(frame).toContain("i import");
+    expect(frame).toContain("d doctor");
   });
 
   it("explains Shift+A as current-agent bulk adopt in the help overlay", () => {
@@ -501,6 +547,166 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("[y] confirm   [Esc] cancel");
   });
 
+  it("renders the add-agent form labels", () => {
+    const { lastFrame } = render(
+      <FormDialog
+        modal={{ kind: "add-agent", form: createConfigAddAgentForm() }}
+      />
+    );
+
+    const frame = lastFrame();
+
+    expect(frame).toContain("Add agent");
+    expect(frame).toContain("Agent id");
+    expect(frame).toContain("Root path");
+    expect(frame).toContain("Skills path");
+    expect(frame).toContain("Display name");
+    expect(frame).toContain("Platforms");
+    expect(frame).toContain("Disabled by default");
+  });
+
+  it("renders the edit-agent form labels and mutually visible boolean state", () => {
+    const { lastFrame } = render(
+      <FormDialog
+        modal={{
+          kind: "edit-agent",
+          agentId: "codex",
+          form: createConfigUpdateAgentFormFromSeed({
+            id: "codex",
+            stableName: "OpenAI Codex",
+            homeRelativeRootPath: ".codex",
+            skillsDirectoryPath: "skills",
+            supportedPlatforms: ["win32"],
+            overrideEnabledByDefault: true
+          })
+        }}
+      />
+    );
+
+    const frame = lastFrame();
+
+    expect(frame).toContain("Edit agent codex");
+    expect(frame).toContain("Root path");
+    expect(frame).toContain("Skills path");
+    expect(frame).toContain("Display name");
+    expect(frame).toContain("Platforms");
+    expect(frame).toContain("Enabled by default");
+    expect(frame).toContain("Disabled by default");
+  });
+
+  it("renders the import form labels", () => {
+    const { lastFrame } = render(
+      <FormDialog
+        modal={{ kind: "import", form: createImportSkillForm() }}
+      />
+    );
+
+    const frame = lastFrame();
+
+    expect(frame).toContain("Import skill");
+    expect(frame).toContain("Source path");
+    expect(frame).toContain("Skill name");
+  });
+
+  it("renders remove-agent confirmation text with the selected agent name", () => {
+    const { lastFrame } = render(
+      <ConfirmDialog
+        modal={{ kind: "confirm-remove-agent", agentId: "codex" }}
+      />
+    );
+
+    const frame = lastFrame();
+
+    expect(frame).toContain("Remove agent override for codex?");
+    expect(frame).toContain("This will remove the selected agent override from SkillMux.");
+    expect(frame).toContain("[y] confirm   [Esc] cancel");
+  });
+
+  it("renders doctor loading, empty, issue-list, and error states", () => {
+    const loading = renderToString(
+      <DoctorDialog
+        modal={{ kind: "doctor", status: "loading" }}
+      />
+    );
+    const empty = renderToString(
+      <DoctorDialog
+        modal={{
+          kind: "doctor",
+          status: "ready",
+          report: {
+            skillmuxHome: "C:/skillmux",
+            manifest: {
+              version: 1,
+              skillmuxHome: "C:/skillmux",
+              skills: {},
+              agents: {},
+              activations: [],
+              lastScan: { at: null, issues: [] }
+            },
+            config: {
+              version: 1,
+              agents: {}
+            },
+            agents: [],
+            entries: [],
+            issues: [],
+            output: "Doctor ok\n"
+          }
+        }}
+      />
+    );
+    const issues = renderToString(
+      <DoctorDialog
+        modal={{
+          kind: "doctor",
+          status: "ready",
+          report: {
+            skillmuxHome: "C:/skillmux",
+            manifest: {
+              version: 1,
+              skillmuxHome: "C:/skillmux",
+              skills: {},
+              agents: {},
+              activations: [],
+              lastScan: { at: null, issues: [] }
+            },
+            config: {
+              version: 1,
+              agents: {}
+            },
+            agents: [],
+            entries: [],
+            issues: [
+              {
+                code: "broken-link",
+                severity: "error",
+                path: "C:/Users/me/.codex/skills/broken",
+                message: "Broken link"
+              }
+            ],
+            output: "Doctor issues\n"
+          }
+        }}
+      />
+    );
+    const error = renderToString(
+      <DoctorDialog
+        modal={{
+          kind: "doctor",
+          status: "error",
+          errorMessage: "Doctor failed"
+        }}
+      />
+    );
+
+    expect(loading).toContain("Doctor");
+    expect(loading).toContain("Loading doctor diagnostics...");
+    expect(empty).toContain("No doctor issues found.");
+    expect(issues).toContain("broken-link");
+    expect(issues).toContain("Broken link");
+    expect(error).toContain("Doctor failed");
+  });
+
   it("does not show normal footer shortcuts while a modal is active", () => {
     const withModal = updateTuiState(
       state({ selectedSkillId: "terminal-ui" }),
@@ -515,6 +721,163 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("[y] confirm   [Esc] cancel");
     expect(frame).not.toContain("[Tab]focus");
     expect(frame).not.toContain("[Space]toggle");
+  });
+
+  it("routes add, edit, remove, import, and doctor shortcuts into modal workflows", async () => {
+    const loadDashboardState = vi.fn().mockResolvedValue(
+      model({
+        agents: [
+          {
+            ...agent(),
+            hasUserOverride: true,
+            canEditOverride: true,
+            canRemoveOverride: true
+          }
+        ],
+        selectedAgentId: "codex",
+        selectedSkillId: "terminal-ui"
+      })
+    );
+    const addApp = render(
+      <App services={{ loadDashboardState }} terminalWidth={80} terminalHeight={24} />
+    );
+    await settle();
+    addApp.stdin.write("n");
+    await settle();
+    expect(addApp.lastFrame()).toContain("Add agent");
+    expect(addApp.lastFrame()).toContain("Agent id");
+    addApp.unmount();
+
+    const editApp = render(
+      <App services={{ loadDashboardState }} terminalWidth={80} terminalHeight={24} />
+    );
+    await settle();
+    editApp.stdin.write("e");
+    await settle();
+    expect(editApp.lastFrame()).toContain("Edit agent codex");
+    editApp.unmount();
+
+    const removeApp = render(
+      <App services={{ loadDashboardState }} terminalWidth={80} terminalHeight={24} />
+    );
+    await settle();
+    removeApp.stdin.write("X");
+    await settle();
+    expect(removeApp.lastFrame()).toContain("Remove agent override for codex?");
+    removeApp.unmount();
+
+    const importApp = render(
+      <App services={{ loadDashboardState }} terminalWidth={80} terminalHeight={24} />
+    );
+    await settle();
+    importApp.stdin.write("i");
+    await settle();
+    expect(importApp.lastFrame()).toContain("Import skill");
+    importApp.unmount();
+
+    const doctorPending = deferred<{
+      model: DashboardModel;
+      statusMessage: string;
+      doctor: {
+        skillmuxHome: string;
+        manifest: {
+          version: number;
+          skillmuxHome: string;
+          skills: Record<string, never>;
+          agents: Record<string, never>;
+          activations: never[];
+          lastScan: { at: null; issues: never[] };
+        };
+        config: { version: number; agents: Record<string, never> };
+        agents: never[];
+        entries: never[];
+        issues: never[];
+        output: string;
+      };
+    }>();
+    const dispatchTuiAction = vi.fn().mockReturnValue(doctorPending.promise);
+    const doctorApp = render(
+      <App
+        services={{ loadDashboardState, dispatchTuiAction }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    doctorApp.stdin.write("d");
+    await settle();
+    expect(doctorApp.lastFrame()).toContain("Loading doctor diagnostics...");
+    doctorApp.unmount();
+  });
+
+  it("switches the doctor dialog from loading to ready content after the async result returns", async () => {
+    const loadDashboardState = vi.fn().mockResolvedValue(model());
+    const doctorResult = deferred<{
+      model: DashboardModel;
+      statusMessage: string;
+      doctor?: {
+        skillmuxHome: string;
+        manifest: {
+          version: number;
+          skillmuxHome: string;
+          skills: Record<string, never>;
+          agents: Record<string, never>;
+          activations: never[];
+          lastScan: { at: null; issues: never[] };
+        };
+        config: { version: number; agents: Record<string, never> };
+        agents: never[];
+        entries: never[];
+        issues: Array<{
+          code: string;
+          severity: "error";
+          path: string | null;
+          message: string;
+        }>;
+        output: string;
+      };
+    }>();
+    const dispatchTuiAction = vi.fn().mockReturnValue(doctorResult.promise);
+    const { lastFrame, stdin } = render(
+      <App
+        services={{ loadDashboardState, dispatchTuiAction }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("d");
+    await settle();
+
+    expect(lastFrame()).toContain("Loading doctor diagnostics...");
+
+    doctorResult.resolve({
+      model: model(),
+      statusMessage: "Doctor ok",
+      doctor: {
+        skillmuxHome: "C:/skillmux",
+        manifest: {
+          version: 1,
+          skillmuxHome: "C:/skillmux",
+          skills: {},
+          agents: {},
+          activations: [],
+          lastScan: { at: null, issues: [] }
+        },
+        config: { version: 1, agents: {} },
+        agents: [],
+        entries: [],
+        issues: [],
+        output: "Doctor ok\n"
+      }
+    });
+    await settle();
+    await settle();
+
+    expect(lastFrame()).toContain("Doctor ok");
+    expect(lastFrame()).toContain("No doctor issues found.");
   });
 
   it("uses explicit busy status text before falling back to scanning text", () => {

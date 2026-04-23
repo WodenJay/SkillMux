@@ -12,6 +12,11 @@ export type FooterProps = {
 
 export function Footer({ actions, search }: FooterProps) {
   const shortcuts = [
+    actions.addAgent ? "[n]add agent" : null,
+    actions.editAgent ? "[e]edit agent" : null,
+    actions.removeAgent ? "[X]remove agent" : null,
+    actions.importSkill ? "[i]import" : null,
+    actions.doctor ? "[d]doctor" : null,
     "[Left/Right]focus",
     actions.toggle ? "[Space]toggle" : null,
     actions.adopt ? "[a]adopt" : null,

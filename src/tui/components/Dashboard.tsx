@@ -8,16 +8,25 @@ import {
 } from "../state";
 import { AgentList } from "./AgentList";
 import { ConfirmDialog, confirmDialogHeight } from "./ConfirmDialog";
+import { DoctorDialog } from "./DoctorDialog";
 import { DetailPane } from "./DetailPane";
 import { Footer } from "./Footer";
 import { HelpOverlay } from "./HelpOverlay";
+import { FormDialog } from "./FormDialog";
 import { SkillList } from "./SkillList";
 import { StatusLine } from "./StatusLine";
+
+export type DashboardModalInteraction = {
+  fieldIndex: number;
+  platformIndex: number;
+  doctorScrollOffset: number;
+};
 
 export type DashboardProps = {
   state: TuiState;
   width: number;
   height: number;
+  modalInteraction?: DashboardModalInteraction;
 };
 
 const minimumWidth = 80;
@@ -28,6 +37,8 @@ const detailRatio = 0.44;
 const agentMinimumWidth = 20;
 const skillMinimumWidth = 24;
 const detailMinimumWidth = 28;
+const largeModalWidth = 72;
+const largeModalHeight = 14;
 
 function paneWidths(width: number): {
   agentWidth: number;
@@ -56,8 +67,14 @@ function paneWidths(width: number): {
 export function Dashboard({
   state,
   width,
-  height
+  height,
+  modalInteraction
 }: DashboardProps) {
+  const interaction = modalInteraction ?? {
+    fieldIndex: 0,
+    platformIndex: 0,
+    doctorScrollOffset: 0
+  };
   if (width < minimumWidth || height < minimumHeight) {
     return (
       <Box
@@ -89,16 +106,28 @@ export function Dashboard({
       : state.model.agents.find((agent) => agent.id === loadingAgentName) ?? null;
   const actions = getAvailableActions(state);
   const footerHeight = 3;
+  const largeModal =
+    state.modal?.kind === "add-agent" ||
+    state.modal?.kind === "edit-agent" ||
+    state.modal?.kind === "import" ||
+    state.modal?.kind === "doctor" ||
+    state.modal?.kind === "confirm-remove-agent";
   const overlayHeight =
-    state.modal?.kind === "help"
+    largeModal
+      ? 0
+      : state.modal?.kind === "help"
       ? 8
       : state.modal?.kind === "confirm-adopt" ||
           state.modal?.kind === "confirm-adopt-all" ||
           state.modal?.kind === "confirm-remove"
         ? confirmDialogHeight
-        : 0;
-  const bodyHeight = Math.max(height - 1 - footerHeight - overlayHeight, 0);
+      : 0;
+  const footerSpace =
+    state.modal === null ? footerHeight : largeModal ? 0 : footerHeight;
+  const bodyHeight = Math.max(height - 1 - footerSpace - overlayHeight, 0);
   const { agentWidth, skillWidth, detailWidth } = paneWidths(width);
+  const modalWidth = Math.min(width - 4, largeModalWidth);
+  const modalHeight = Math.min(bodyHeight, largeModalHeight);
 
   return (
     <Box flexDirection="column" width={width} height={height}>
@@ -108,34 +137,65 @@ export function Dashboard({
         lastScanAt={state.model.lastScanAt}
         issueCount={state.model.issueCount}
       />
-      <Box flexDirection="row" width={width} height={bodyHeight}>
-        <AgentList
-          agents={visibleAgents}
-          selectedAgentId={state.model.selectedAgentId}
-          focused={state.focus === "agents"}
-          searchQuery={state.search?.panel === "agents" ? state.search.query : undefined}
-          width={agentWidth}
+      {largeModal ? (
+        <Box
+          flexDirection="column"
+          width={width}
           height={bodyHeight}
-        />
-        <SkillList
-          agentId={state.model.selectedAgentId}
-          skills={visibleSkills}
-          selectedSkillId={state.model.selectedSkillId}
-          focused={state.focus === "skills"}
-          searchQuery={state.search?.panel === "skills" ? state.search.query : undefined}
-          loadingAgentName={loadingAgent?.name ?? null}
-          width={skillWidth}
-          height={bodyHeight}
-        />
-        <DetailPane
-          selectedAgent={selectedAgent}
-          selectedSkill={selectedSkill}
-          focused={state.focus === "detail"}
-          loadingAgentName={loadingAgent?.name ?? null}
-          width={detailWidth}
-          height={bodyHeight}
-        />
-      </Box>
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Box width={modalWidth} height={modalHeight}>
+            {state.modal?.kind === "add-agent" || state.modal?.kind === "edit-agent" || state.modal?.kind === "import" ? (
+              <FormDialog
+                modal={state.modal}
+                fieldIndex={interaction.fieldIndex}
+                platformIndex={interaction.platformIndex}
+                width={modalWidth}
+                height={modalHeight}
+              />
+            ) : state.modal?.kind === "doctor" ? (
+              <DoctorDialog
+                modal={state.modal}
+                scrollOffset={interaction.doctorScrollOffset}
+                width={modalWidth}
+                height={modalHeight}
+              />
+            ) : state.modal?.kind === "confirm-remove-agent" ? (
+              <ConfirmDialog modal={state.modal} />
+            ) : null}
+          </Box>
+        </Box>
+      ) : (
+        <Box flexDirection="row" width={width} height={bodyHeight}>
+          <AgentList
+            agents={visibleAgents}
+            selectedAgentId={state.model.selectedAgentId}
+            focused={state.focus === "agents"}
+            searchQuery={state.search?.panel === "agents" ? state.search.query : undefined}
+            width={agentWidth}
+            height={bodyHeight}
+          />
+          <SkillList
+            agentId={state.model.selectedAgentId}
+            skills={visibleSkills}
+            selectedSkillId={state.model.selectedSkillId}
+            focused={state.focus === "skills"}
+            searchQuery={state.search?.panel === "skills" ? state.search.query : undefined}
+            loadingAgentName={loadingAgent?.name ?? null}
+            width={skillWidth}
+            height={bodyHeight}
+          />
+          <DetailPane
+            selectedAgent={selectedAgent}
+            selectedSkill={selectedSkill}
+            focused={state.focus === "detail"}
+            loadingAgentName={loadingAgent?.name ?? null}
+            width={detailWidth}
+            height={bodyHeight}
+          />
+        </Box>
+      )}
       {state.modal?.kind === "help" ? <HelpOverlay /> : null}
       {state.modal?.kind === "confirm-adopt" ||
       state.modal?.kind === "confirm-adopt-all" ||
@@ -144,7 +204,7 @@ export function Dashboard({
       ) : null}
       {state.modal === null ? (
         <Footer actions={actions} search={state.search} />
-      ) : (
+      ) : largeModal ? null : (
         <Box height={3} />
       )}
     </Box>
