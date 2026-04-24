@@ -426,6 +426,40 @@ describe("dispatchTuiAction", () => {
     expect(services.reload).not.toHaveBeenCalled();
   });
 
+  it("returns a resolved failure result for config add agent when the command rejects", async () => {
+    const model = createModel({
+      selectedAgentId: "codex",
+      selectedSkillId: "terminal-ui"
+    });
+    const services = createServices({
+      runConfigAddAgent: vi
+        .fn()
+        .mockRejectedValue(new Error("copy failed"))
+    });
+    const command: TuiPendingCommand = {
+      kind: "config-add-agent",
+      input: {
+        id: "Claude Code",
+        root: "agents",
+        skills: "skills",
+        name: "Claude Code",
+        platforms: ["win32"]
+      } satisfies RunConfigAddAgentOptions
+    };
+
+    const result = await dispatchTuiAction({
+      ...createPendingCommand(command, model),
+      services
+    });
+
+    expect(result).toMatchObject({
+      model,
+      statusMessage: "Config add agent failed: copy failed",
+      commandSucceeded: false
+    });
+    expect(services.reload).not.toHaveBeenCalled();
+  });
+
   it("refuses bulk adopt when there is no selected agent", async () => {
     const model = createModel({
       selectedAgentId: null,

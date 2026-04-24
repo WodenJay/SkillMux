@@ -115,6 +115,7 @@ export type DispatchTuiActionResult = {
   model: DashboardModel;
   statusMessage: string;
   doctor?: RunDoctorResult;
+  commandSucceeded?: boolean;
 };
 
 const defaultServices: TuiActionServices = {
@@ -428,7 +429,8 @@ export async function dispatchTuiAction(
 
     return {
       model: input.model,
-      statusMessage: `${label} failed: ${errorReason(error)}`
+      statusMessage: `${label} failed: ${errorReason(error)}`,
+      commandSucceeded: false
     };
   }
 }

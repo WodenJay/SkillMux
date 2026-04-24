@@ -4,6 +4,7 @@ import { render } from "ink-testing-library";
 import { describe, expect, it } from "vitest";
 import { vi } from "vitest";
 import { App } from "../../src/tui/app";
+import { dispatchTuiAction as realDispatchTuiAction } from "../../src/tui/actions";
 import { AgentList } from "../../src/tui/components/AgentList";
 import { Dashboard } from "../../src/tui/components/Dashboard";
 import { ConfirmDialog } from "../../src/tui/components/ConfirmDialog";
@@ -682,13 +683,19 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("[y] confirm   [Esc] cancel");
   });
 
-  it("keeps the import modal open and shows an inline error when command dispatch fails", async () => {
+  it("keeps the import modal open when the real dispatcher reports a resolved failure", async () => {
     const loadDashboardState = vi.fn().mockResolvedValue(model());
-    const pendingImport = deferred<{
-      model: DashboardModel;
-      statusMessage: string;
-    }>();
-    const dispatchTuiAction = vi.fn().mockReturnValue(pendingImport.promise);
+    const runImport = vi.fn().mockRejectedValue(new Error("copy failed"));
+    const dispatchTuiAction = vi.fn(
+      (input: Parameters<typeof realDispatchTuiAction>[0]) =>
+        realDispatchTuiAction({
+          ...input,
+          services: {
+            runImport,
+            reload: vi.fn()
+          }
+        })
+    );
     const { lastFrame, stdin } = render(
       <App
         services={{ loadDashboardState, dispatchTuiAction }}
@@ -712,13 +719,12 @@ describe("TUI dashboard components", () => {
     await settle();
 
     expect(dispatchTuiAction).toHaveBeenCalledTimes(1);
-    expect(lastFrame()).toContain("working...");
+    expect(runImport).toHaveBeenCalledTimes(1);
 
-    pendingImport.reject(new Error("copy failed"));
     await settle();
     await settle();
 
-    expect(lastFrame()).toContain("Action failed: copy failed");
+    expect(lastFrame()).toContain("Import skill failed: copy failed");
     expect(lastFrame()).toContain("Import skill");
     expect(lastFrame()).toContain("C:\\Users\\me\\skill mux");
     expect(lastFrame()).toContain("find skills");

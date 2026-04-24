@@ -622,6 +622,44 @@ export function App({
           return;
         }
 
+        if (result.commandSucceeded === false) {
+          const failureMessage = result.statusMessage;
+
+          if (consumed.command?.kind === "doctor") {
+            setState({
+              ...consumed.state,
+              busy: false,
+              statusMessage: failureMessage,
+              modal: {
+                kind: "doctor",
+                status: "error",
+                errorMessage: failureMessage
+              }
+            });
+            return;
+          }
+
+          if (
+            consumed.state.modal !== null &&
+            "form" in consumed.state.modal
+          ) {
+            setState({
+              ...consumed.state,
+              busy: false,
+              statusMessage: failureMessage,
+              modal: restoreFailedFormModal(consumed.state.modal, failureMessage)
+            });
+            return;
+          }
+
+          setState({
+            ...consumed.state,
+            busy: false,
+            statusMessage: failureMessage
+          });
+          return;
+        }
+
         stableModel.current = result.model;
         setState((current) =>
           current === null
