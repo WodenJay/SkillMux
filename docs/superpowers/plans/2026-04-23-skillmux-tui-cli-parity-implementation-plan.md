@@ -377,7 +377,7 @@ git commit -m "feat: add tui parity command payloads"
 - Create: `src/tui/components/DoctorDialog.tsx`
 - Modify: `tests/tui/components.test.tsx`
 
-- [ ] **Step 1: Write the failing component and app tests**
+- [x] **Step 1: Write the failing component and app tests**
 
 Extend `tests/tui/components.test.tsx` with focused cases for:
 
@@ -413,7 +413,7 @@ expect(frame).toContain("Source path");
 expect(frame).toContain("Skill name");
 ```
 
-- [ ] **Step 2: Run the targeted component test to verify the red state**
+- [x] **Step 2: Run the targeted component test to verify the red state**
 
 Run:
 
@@ -423,7 +423,7 @@ npm test -- --run tests/tui/components.test.tsx
 
 Expected: FAIL because the app, overlay routing, and modal components do not yet support the parity workflows.
 
-- [ ] **Step 3: Implement dedicated form and doctor dialogs**
+- [x] **Step 3: Implement dedicated form and doctor dialogs**
 
 Create `src/tui/components/FormDialog.tsx` for add/edit/import workflows and `src/tui/components/DoctorDialog.tsx` for doctor results.
 
@@ -435,7 +435,7 @@ UI contract:
 - doctor dialog supports vertical scrolling and empty-state messaging
 - no new focus path is added to the base dashboard while a modal is open
 
-- [ ] **Step 4: Wire app keyboard handling and modal submit flow**
+- [x] **Step 4: Wire app keyboard handling and modal submit flow**
 
 Update `src/tui/app.tsx`, `Dashboard.tsx`, `Footer.tsx`, and `HelpOverlay.tsx` so:
 
@@ -452,7 +452,7 @@ Update `src/tui/app.tsx`, `Dashboard.tsx`, `Footer.tsx`, and `HelpOverlay.tsx` s
 - doctor stays open and swaps from loading to ready/error content after the async result returns
 - footer/help remain concise and only expose currently meaningful shortcuts
 
-- [ ] **Step 5: Run targeted verification**
+- [x] **Step 5: Run targeted verification**
 
 Run:
 
@@ -478,7 +478,7 @@ npm run typecheck
 
 Expected: PASS.
 
-- [ ] **Step 6: Commit Task 3**
+- [x] **Step 6: Commit Task 3**
 
 ```powershell
 git add src/tui/app.tsx src/tui/components/Dashboard.tsx src/tui/components/Footer.tsx src/tui/components/HelpOverlay.tsx src/tui/components/FormDialog.tsx src/tui/components/DoctorDialog.tsx tests/tui/components.test.tsx
@@ -718,5 +718,11 @@ Use a fresh worker per task. After each accepted task:
 - Task 2 accepted in root at commit `9f36282` (`feat: add tui parity command payloads`).
 - Task 2 root verification passed with:
   - `npm test -- --run tests/tui/dashboard-model.test.ts tests/tui/state.test.ts tests/tui/actions.test.ts`
+  - `npm run typecheck`
+  - `git diff --check`
+- Task 3 accepted in root at commit `6425d93` (`fix: preserve tui doctor failure state`).
+- Task 3 root verification passed with:
+  - `npm test -- --run tests/tui/components.test.tsx tests/tui/actions.test.ts`
+  - `npm run build`
   - `npm run typecheck`
   - `git diff --check`

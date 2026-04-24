@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI CLI parity execution is underway in root
+Phase: TUI CLI parity Task 3 is accepted in root; Task 4 is next
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -556,4 +556,7 @@ Task 10 passed fresh in the root repo with:
   - accepted root Task 2 commit: `9f36282` (`feat: add tui parity command payloads`)
   - Task 2 added payload-bearing parity commands, deterministic add/edit/import form helpers, doctor loading/ready/error state, remove-agent submit staging, raw override seeding for edit-agent patch semantics, and array-safe form baselines
   - Task 2 verification passed in root with `npm test -- --run tests/tui/dashboard-model.test.ts tests/tui/state.test.ts tests/tui/actions.test.ts`, `npm run typecheck`, and `git diff --check`
-  - next implementation step: Task 3 modal UI, keyboard wiring, and doctor presentation
+  - accepted root Task 3 commit: `6425d93` (`fix: preserve tui doctor failure state`)
+  - Task 3 added fullscreen parity workflow modals for add/edit/import/doctor, wired normal-mode `n/e/X/i/d`, routed modal keyboard input through explicit single-page form state, and kept resolved command failures inside the modal with preserved inputs plus visible inline errors
+  - Task 3 verification passed in root with `npm test -- --run tests/tui/components.test.tsx tests/tui/actions.test.ts`, `npm run build`, `npm run typecheck`, and `git diff --check`
+  - next implementation step: Task 4 PTY agent-config/import/doctor scenarios

@@ -233,7 +233,16 @@
 - Task 2 form-state note: `src/tui/forms.ts` now owns deterministic add/edit/import form builders, validation, normalization, and array-safe baseline cloning for `platforms[]`.
 - Task 2 reducer note: parity workflows now stage payload-bearing `pendingCommand` intents for add/edit/remove/import/doctor, include doctor loading/ready/error states, and open dirty-form discard confirmation before dropping local edits.
 - Task 2 patch-semantics note: edit-agent now seeds from raw override payload fields instead of merged discovered-agent values, so unchanged edits do not bake inherited defaults into `config.json`; `preserveEnabledByDefault` keeps the CLI unset state distinct from explicit true/false.
-- The next step for this slice is Task 3: modal UI, keyboard wiring, and doctor presentation.
+- TUI CLI parity Task 3 is now accepted in root at commit `6425d93` (`fix: preserve tui doctor failure state`).
+- Task 3 verification in root passed with:
+  - `npm test -- --run tests/tui/components.test.tsx tests/tui/actions.test.ts`
+  - `npm run build`
+  - `npm run typecheck`
+  - `git diff --check`
+- Task 3 modal note: the dashboard now renders fullscreen parity overlays for add-agent, edit-agent, import, remove-agent confirm, discard-dirty-form confirm, and doctor, with dedicated `FormDialog` and `DoctorDialog` components.
+- Task 3 interaction note: normal-mode `n` / `e` / `X` / `i` / `d` are now wired in `App`, modal forms use `Up` / `Down` field movement plus explicit submit rows, and dirty-form `q` follows the discard-confirmation flow instead of exiting immediately.
+- Task 3 failure-handling note: add/edit/import command failures now stay inside the modal with preserved inputs and inline errors, and real resolved doctor failures preserve the original command error instead of degrading to `Doctor report missing`.
+- The next step for this slice is Task 4: PTY agent-config/import/doctor scenarios.
 - A post-bulk-adopt npm release attempt has started for `skillmux@0.1.3`.
 - Local release-prep verification for `0.1.3` passed in root with:
   - `npm run build`

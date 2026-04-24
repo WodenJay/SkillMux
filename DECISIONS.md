@@ -528,3 +528,13 @@ Record key product and implementation decisions so later sessions do not lose th
 - Edit-agent seeding must preserve CLI patch semantics. The reducer therefore seeds from raw user-override fields, not merged effective discovered-agent values, so unchanged edits do not bake inherited defaults into `config.json`.
 - `enabledByDefault` in edit-agent form state must preserve the CLI “unset” case separately from explicit true/false. The accepted contract uses `preserveEnabledByDefault` so the reducer can show an editable state without collapsing inheritance into a write.
 - Array-backed form fields such as `platforms[]` must clone baseline values instead of sharing references between `values` and `initialValues`, otherwise dirty-form discard detection can be invalidated by in-place mutation in later UI work.
+
+### 2026-04-24 TUI CLI parity Task 3
+
+- Task 3 keeps add/edit/import/doctor inside fullscreen dashboard overlays instead of leaving the TUI or introducing a new dashboard focus path.
+- Normal-mode parity shortcuts are fixed as `n` add agent, `e` edit selected override, `X` remove selected override, `i` import, and `d` doctor.
+- Form modals follow the approved interaction contract: `Up` / `Down` move between fields, `Space` toggles booleans and platform selections, and `Enter` submits only from an explicit submit row.
+- Add/edit/import validation and command failures must stay inside the modal with preserved user input and visible inline error text; a status-line-only failure is not sufficient.
+- Dirty add/edit/import forms treat `q` as a close request that goes through the discard-confirmation modal instead of exiting immediately.
+- `dispatchTuiAction()` now carries a small resolved-failure signal so `App` can distinguish successful write results from real command-helper failures without relying on promise rejection shape alone.
+- Doctor stays open across async loading, ready, and error states, and real resolved doctor failures must preserve the original command error instead of degrading to a generic missing-report message.
