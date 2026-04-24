@@ -54,6 +54,14 @@ export type TuiExplorer = {
   waitForExit(timeoutMs?: number): Promise<void>;
   quit(): Promise<void>;
   forceQuit(): Promise<void>;
+  openAddAgent(): Promise<void>;
+  openEditAgent(): Promise<void>;
+  openRemoveAgent(): Promise<void>;
+  openImport(): Promise<void>;
+  openDoctor(): Promise<void>;
+  typeText(value: string): Promise<void>;
+  backspace(): Promise<void>;
+  submitForm(): Promise<void>;
   exitCode(): number | null;
   eventLog(): ReturnType<PtySession["eventLog"]>;
   flushArtifacts(): Promise<void>;
@@ -178,6 +186,32 @@ export async function startExplorer(
     },
     forceQuit() {
       return session.press(keymap.ctrlC);
+    },
+    openAddAgent() {
+      return session.press("n");
+    },
+    openEditAgent() {
+      return session.press("e");
+    },
+    openRemoveAgent() {
+      return session.press("X");
+    },
+    openImport() {
+      return session.press("i");
+    },
+    openDoctor() {
+      return session.press("d");
+    },
+    backspace() {
+      return session.press("\x7f");
+    },
+    submitForm() {
+      return session.press(keymap.enter);
+    },
+    async typeText(value) {
+      for (const char of value) {
+        await session.press(char);
+      }
     },
     exitCode() {
       return session.exitCode();

@@ -16,6 +16,8 @@ export type Sandbox = {
   enableManagedSkill(agentId: string, skillName: string): Promise<string>;
   writeUnmanagedSkill(agentId: string, skillName: string, content?: string): Promise<string>;
   writeManifest(value: unknown): Promise<void>;
+  writeConfig(value: unknown): Promise<void>;
+  createImportSourceDir(skillName: string, content?: string): Promise<string>;
   cleanup(): void;
 };
 
@@ -62,6 +64,19 @@ export async function createSandbox(): Promise<Sandbox> {
         `${JSON.stringify(value, null, 2)}\n`,
         "utf8"
       );
+    },
+    async writeConfig(value) {
+      await fs.writeFile(
+        join(skillmuxHome, "config.json"),
+        `${JSON.stringify(value, null, 2)}\n`,
+        "utf8"
+      );
+    },
+    async createImportSourceDir(skillName, content = `# ${skillName}\n`) {
+      const sourceDir = join(homeDir, "import-sources", skillName);
+      ensureDirectory(sourceDir);
+      await fs.writeFile(join(sourceDir, "SKILL.md"), content, "utf8");
+      return sourceDir;
     },
     cleanup() {
       cleanupTempHomeDir(homeDir);
