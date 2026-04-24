@@ -730,6 +730,39 @@ describe("TUI dashboard components", () => {
     expect(lastFrame()).toContain("find skills");
   });
 
+  it("surfaces the resolved doctor failure inside the doctor modal", async () => {
+    const loadDashboardState = vi.fn().mockResolvedValue(model());
+    const runDoctor = vi.fn().mockRejectedValue(new Error("doctor unavailable"));
+    const dispatchTuiAction = vi.fn(
+      (input: Parameters<typeof realDispatchTuiAction>[0]) =>
+        realDispatchTuiAction({
+          ...input,
+          services: {
+            runDoctor,
+            reload: vi.fn()
+          }
+        })
+    );
+    const { lastFrame, stdin } = render(
+      <App
+        services={{ loadDashboardState, dispatchTuiAction }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("d");
+    await settle();
+    await settle();
+
+    expect(dispatchTuiAction).toHaveBeenCalledTimes(1);
+    expect(runDoctor).toHaveBeenCalledTimes(1);
+    expect(lastFrame()).toContain("Doctor failed: doctor unavailable");
+    expect(lastFrame()).toContain("Doctor");
+    expect(lastFrame()).not.toContain("Doctor report missing");
+  });
+
   it("keeps dirty forms in the discard-confirmation flow when q is pressed", async () => {
     const loadDashboardState = vi.fn().mockResolvedValue(model());
     const { lastFrame, stdin } = render(

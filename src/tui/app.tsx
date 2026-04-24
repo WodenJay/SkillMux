@@ -555,6 +555,23 @@ export function App({
             return;
           }
 
+          if (result.commandSucceeded === false) {
+            const failureMessage = result.statusMessage;
+
+            setState((current) =>
+              current === null
+                ? current
+                : updateTuiState(
+                    updateTuiState(current, {
+                      type: "doctor-result-failed",
+                      errorMessage: failureMessage
+                    }),
+                    { type: "set-status", message: failureMessage }
+                  )
+            );
+            return;
+          }
+
           const doctorReport = result.doctor;
 
           if (doctorReport === undefined) {
