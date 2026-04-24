@@ -19,6 +19,7 @@ import {
   consumeAgentSelectionIntent,
   createInitialTuiState,
   updateTuiState,
+  type TuiFormModal,
   type TuiState
 } from "./state";
 
@@ -90,6 +91,40 @@ function togglePlatform(values: string[], platform: string): string[] {
   return values.includes(platform)
     ? values.filter((entry) => entry !== platform)
     : [...values, platform];
+}
+
+function commandFailureMessage(error: unknown): string {
+  return `Action failed: ${errorReason(error)}`;
+}
+
+function restoreFailedFormModal(modal: TuiFormModal, message: string): TuiFormModal {
+  switch (modal.kind) {
+    case "add-agent":
+      return {
+        kind: "add-agent",
+        form: {
+          ...modal.form,
+          error: message
+        }
+      };
+    case "edit-agent":
+      return {
+        kind: "edit-agent",
+        agentId: modal.agentId,
+        form: {
+          ...modal.form,
+          error: message
+        }
+      };
+    case "import":
+      return {
+        kind: "import",
+        form: {
+          ...modal.form,
+          error: message
+        }
+      };
+  }
 }
 
 function errorReason(error: unknown): string {
@@ -599,17 +634,29 @@ export function App({
           return;
         }
 
-        setState((current) =>
-          current === null
-            ? current
-            : updateTuiState(
-                updateTuiState(current, { type: "set-busy", busy: false }),
-                {
-                  type: "set-status",
-                  message: `Action failed: ${errorReason(error)}`
-                }
-              )
-        );
+        const failedModal = consumed.state.modal;
+        const failureMessage = commandFailureMessage(error);
+
+        if (
+          failedModal === null ||
+          failedModal.kind !== "add-agent" &&
+            failedModal.kind !== "edit-agent" &&
+            failedModal.kind !== "import"
+        ) {
+          setState({
+            ...consumed.state,
+            busy: false,
+            statusMessage: failureMessage
+          });
+          return;
+        }
+
+        setState({
+          ...consumed.state,
+          busy: false,
+          statusMessage: failureMessage,
+          modal: restoreFailedFormModal(failedModal, failureMessage)
+        });
       })
       .finally(() => {
         if (activeActionRequest.current === requestId) {
@@ -675,6 +722,14 @@ export function App({
 
     if (state.modal !== null) {
       if (input === "q") {
+        if (
+          state.modal.kind === "confirm-discard-dirty-form" ||
+          ("form" in state.modal && state.modal.form.dirty)
+        ) {
+          setState(updateTuiState(state, { type: "close" }));
+          return;
+        }
+
         exit();
         return;
       }

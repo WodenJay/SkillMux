@@ -682,6 +682,72 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("[y] confirm   [Esc] cancel");
   });
 
+  it("keeps the import modal open and shows an inline error when command dispatch fails", async () => {
+    const loadDashboardState = vi.fn().mockResolvedValue(model());
+    const pendingImport = deferred<{
+      model: DashboardModel;
+      statusMessage: string;
+    }>();
+    const dispatchTuiAction = vi.fn().mockReturnValue(pendingImport.promise);
+    const { lastFrame, stdin } = render(
+      <App
+        services={{ loadDashboardState, dispatchTuiAction }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("i");
+    await settle();
+    stdin.write("C:\\Users\\me\\skill mux");
+    await settle();
+    stdin.write("\u001B[B");
+    await settle();
+    stdin.write("find skills");
+    await settle();
+    stdin.write("\u001B[B");
+    await settle();
+    stdin.write("\r");
+    await settle();
+
+    expect(dispatchTuiAction).toHaveBeenCalledTimes(1);
+    expect(lastFrame()).toContain("working...");
+
+    pendingImport.reject(new Error("copy failed"));
+    await settle();
+    await settle();
+
+    expect(lastFrame()).toContain("Action failed: copy failed");
+    expect(lastFrame()).toContain("Import skill");
+    expect(lastFrame()).toContain("C:\\Users\\me\\skill mux");
+    expect(lastFrame()).toContain("find skills");
+  });
+
+  it("keeps dirty forms in the discard-confirmation flow when q is pressed", async () => {
+    const loadDashboardState = vi.fn().mockResolvedValue(model());
+    const { lastFrame, stdin } = render(
+      <App
+        services={{ loadDashboardState }}
+        terminalWidth={80}
+        terminalHeight={24}
+      />
+    );
+
+    await settle();
+    stdin.write("n");
+    await settle();
+    stdin.write("DRAFT");
+    await settle();
+    stdin.write("q");
+    await settle();
+    stdin.write("n");
+    await settle();
+
+    expect(lastFrame()).toContain("Add agent");
+    expect(lastFrame()).toContain("DRAFT");
+  });
+
   it("renders doctor loading, empty, issue-list, and error states", () => {
     const loading = renderToString(
       <DoctorDialog
