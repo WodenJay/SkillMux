@@ -15,14 +15,22 @@ const agentOverrideSchema = z
     supportedPlatforms: z.array(supportedPlatformSchema).min(1).optional(),
     homeRelativeRootPath: z.string().min(1).optional(),
     skillsDirectoryPath: z.string().min(1).optional(),
-    enabledByDefault: z.boolean().optional()
+    enabledByDefault: z.boolean().optional(),
+    autoDiscovered: z.literal(true).optional()
   })
   .strict();
 
 export const userConfigSchema = z
   .object({
     version: z.literal(1),
-    agents: z.record(z.string().min(1), agentOverrideSchema)
+    agents: z.record(z.string().min(1), agentOverrideSchema),
+    autoDiscover: z
+      .object({
+        lastRunAt: z.string().nullable(),
+        intervalMs: z.number().int().nonnegative()
+      })
+      .optional(),
+    removedAutoAgentIds: z.array(z.string().min(1)).optional()
   })
   .strict();
 
@@ -32,17 +40,28 @@ export type AgentOverride = {
   homeRelativeRootPath?: string;
   skillsDirectoryPath?: string;
   enabledByDefault?: boolean;
+  autoDiscovered?: true;
 };
 
 export type UserConfig = {
   version: 1;
   agents: Record<string, AgentOverride>;
+  autoDiscover?: {
+    lastRunAt: string | null;
+    intervalMs: number;
+  };
+  removedAutoAgentIds?: string[];
 };
 
 function createEmptyUserConfig(): UserConfig {
   return {
     version: 1,
-    agents: {}
+    agents: {},
+    autoDiscover: {
+      lastRunAt: null,
+      intervalMs: 3600000
+    },
+    removedAutoAgentIds: []
   };
 }
 
