@@ -31,7 +31,9 @@ describe("skillmux discovery", () => {
 
       await expect(loadUserConfig(skillmuxHome)).resolves.toEqual({
         version: 1,
-        agents: {}
+        agents: {},
+        autoDiscover: { lastRunAt: null, intervalMs: 3600000 },
+        removedAutoAgentIds: []
       });
     } finally {
       cleanupTempHomeDir(homeDir);
@@ -184,6 +186,40 @@ describe("skillmux discovery", () => {
         exists: true,
         supportedOnPlatform: true
       });
+    } finally {
+      cleanupTempHomeDir(homeDir);
+    }
+  });
+
+  it("discovers auto-registered agents from unknown dot directories", async () => {
+    const homeDir = createTempHomeDir();
+    try {
+      ensureDirectory(join(homeDir, ".autofound", "skills"));
+      ensureDirectory(join(homeDir, ".claude", "skills"));
+      ensureDirectory(join(homeDir, ".gemini", "skills"));
+      ensureDirectory(join(homeDir, ".agents", "skills"));
+      ensureDirectory(join(homeDir, ".openclaw", "skills"));
+
+      writeSkillmuxConfig(homeDir, {
+        version: 1,
+        agents: {},
+        autoDiscover: { lastRunAt: null, intervalMs: 0 },
+        removedAutoAgentIds: []
+      });
+
+      const agents = await discoverAgents({
+        homeDir,
+        platform: "win32"
+      });
+
+      const autoAgent = agents.find((a) => a.id === "autofound");
+      expect(autoAgent).toBeDefined();
+      expect(autoAgent?.discovery).toBe("custom");
+      expect(autoAgent?.autoDiscovered).toBe(true);
+      expect(autoAgent?.homeRelativeRootPath).toBe(".autofound");
+      expect(autoAgent?.skillsDirectoryPath).toBe("skills");
+      expect(autoAgent?.exists).toBe(true);
+      expect(autoAgent?.supportedOnPlatform).toBe(true);
     } finally {
       cleanupTempHomeDir(homeDir);
     }

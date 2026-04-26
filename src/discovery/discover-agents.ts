@@ -8,6 +8,7 @@ import {
   type BuiltInAgentId,
   type SupportedPlatform
 } from "../config/default-agent-rules";
+import { autoRegisterNewAgents } from "../config/auto-register-agents";
 import { loadUserConfig, type AgentOverride } from "../config/load-user-config";
 import { resolveSkillmuxHome } from "../config/resolve-skillmux-home";
 
@@ -16,6 +17,7 @@ export type DiscoveredAgent = AgentRule & {
   absoluteSkillsDirectoryPath: string;
   exists: boolean;
   supportedOnPlatform: boolean;
+  autoDiscovered?: boolean;
 };
 
 export type DiscoverAgentsOptions = {
@@ -87,6 +89,7 @@ export async function discoverAgents(
   const homeDir = resolve(options.homeDir);
   const skillmuxHome =
     options.skillmuxHome ?? resolveSkillmuxHome(homeDir).skillmuxHome;
+  await autoRegisterNewAgents(homeDir);
   const userConfig = await loadUserConfig(skillmuxHome);
 
   const discoveredAgents: DiscoveredAgent[] = [];
@@ -122,7 +125,8 @@ export async function discoverAgents(
       exists: await pathExists(resolvedPaths.absoluteSkillsDirectoryPath),
       supportedOnPlatform: customRule.supportedPlatforms.some(
         (supportedPlatform) => supportedPlatform === platform
-      )
+      ),
+      autoDiscovered: override.autoDiscovered === true || undefined
     });
   }
 

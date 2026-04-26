@@ -27,7 +27,7 @@ function buildTableOutput(agents: DiscoveredAgent[]): string {
       path: agent.absoluteSkillsDirectoryPath,
       exists: String(agent.exists),
       supported: String(agent.supportedOnPlatform),
-      discovery: agent.discovery
+      discovery: agent.autoDiscovered ? "auto" : agent.discovery
     })),
     [
       { key: "id", label: "Agent" },
