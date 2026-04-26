@@ -366,3 +366,15 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Sync TUI CLI parity Task 3 accepted code back to the root repo
 - [x] Complete fresh root verification for TUI CLI parity Task 3
 - [ ] After `/compact`, start TUI CLI parity Task 4: PTY agent-config/import/doctor scenarios
+
+## Auto-Discover Agent (2026-04-27)
+
+- [x] Write design spec at `docs/superpowers/specs/2026-04-27-skillmux-auto-discover-agent-design.md`
+- [x] Write implementation plan at `docs/superpowers/plans/2026-04-27-skillmux-auto-discover-agent-implementation-plan.md`
+- [x] Task 1: Update core types and config schema (AgentOverride, UserConfig, Zod) — commit `bc90cb0`
+- [x] Task 2: Create autoRegisterNewAgents() module with 9 tests — commit `ff9f767`
+- [x] Task 3: Integrate into discoverAgents(), update agents.ts CLI, add discovery tests — commit `3953118`
+- [x] Task 4: Update config-remove-agent / config-update-agent lifecycle, add tests — commit `ae41565`
+- [x] Task 5: Add autoDiscovered to TUI buildDashboardModel — commit `a5f9439`
+- [x] Fix: skip .skillmux in auto-register; add agents CLI test for "auto" discovery — commit `4a902e7`
+- [x] Task 6: Full verification gate — `npm run build` PASS, `npm run typecheck` PASS, `npm test` PASS (251 tests), `git diff --check` PASS

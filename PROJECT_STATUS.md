@@ -1,7 +1,7 @@
 # PROJECT_STATUS.md
 
 Project: SkillMux
-Phase: TUI CLI parity Task 3 is accepted in root; Task 4 is next
+Phase: TUI CLI parity slice is complete in root; new slice is auto-discover agent
 Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
@@ -560,3 +560,29 @@ Task 10 passed fresh in the root repo with:
   - Task 3 added fullscreen parity workflow modals for add/edit/import/doctor, wired normal-mode `n/e/X/i/d`, routed modal keyboard input through explicit single-page form state, and kept resolved command failures inside the modal with preserved inputs plus visible inline errors
   - Task 3 verification passed in root with `npm test -- --run tests/tui/components.test.tsx tests/tui/actions.test.ts`, `npm run build`, `npm run typecheck`, and `git diff --check`
   - next implementation step: Task 4 PTY agent-config/import/doctor scenarios
+
+## 2026-04-27 Auto-Discover Agent
+
+- Status: **complete** in root; all 6 tasks accepted
+- Written design spec: `docs/superpowers/specs/2026-04-27-skillmux-auto-discover-agent-design.md`
+- Written implementation plan: `docs/superpowers/plans/2026-04-27-skillmux-auto-discover-agent-implementation-plan.md`
+- The auto-discover feature scans `os.homedir()` for `.xxx/skills` directories and auto-registers unknown agents into `config.json` with `autoDiscovered: true`.
+- Accepted implementation commits (root):
+  - `bc90cb0` `feat: extend AgentOverride and UserConfig types for auto-discover`
+  - `ff9f767` `feat: add auto-register agents scanning module`
+  - `3953118` `feat: integrate auto-register into discovery pipeline`
+  - `ae41565` `feat: handle auto-discovered agent lifecycle in CLI commands`
+  - `a5f9439` `feat: add autoDiscovered flag to TUI dashboard model`
+  - `4a902e7` `fix: skip .skillmux in auto-register; add agents CLI test for auto discovery`
+- Known skip list in auto-register: `.skillmux` (SkillMux's own config/store directory)
+- Known built-in skip list: codex, claude, gemini, agents, openclaw
+- Auto-discovered agents are promoted to custom on first user update (edit-agent or TUI form)
+- Removed auto-discovered agents are tracked in `removedAutoAgentIds` to prevent re-registration
+- CLI `skillmux agents` shows `auto` in DISCOVERY column for auto-discovered entries
+- TUI dashboard model exposes `autoDiscovered` flag on agent rows
+- Default cache interval: 1 hour (configurable via `autoDiscover.intervalMs` in config.json)
+- Final verification gate passed:
+  - `npm run build` PASS
+  - `npm run typecheck` PASS
+  - `npm test` PASS (251 tests, 39 files, 0 failures)
+  - `git diff --check` PASS

@@ -538,3 +538,18 @@ Record key product and implementation decisions so later sessions do not lose th
 - Dirty add/edit/import forms treat `q` as a close request that goes through the discard-confirmation modal instead of exiting immediately.
 - `dispatchTuiAction()` now carries a small resolved-failure signal so `App` can distinguish successful write results from real command-helper failures without relying on promise rejection shape alone.
 - Doctor stays open across async loading, ready, and error states, and real resolved doctor failures must preserve the original command error instead of degrading to a generic missing-report message.
+
+## 2026-04-27
+
+### Auto-discover agent
+
+- Auto-discovery runs inside `discoverAgents()` before loading the user config, so every discovery call (CLI `agents`, scan, TUI, etc.) benefits from automatic registration.
+- `.skillmux` is deliberately excluded from auto-registration because it is SkillMux's own config/store directory, not an agent home directory.
+- The `wellKnownNonAgentDirs` set in `auto-register-agents.ts` is explicitly named to signal that other well-known non-agent dot-directories (e.g., `.git`, `.npm`, `.cache`) could be added later, though only `.skillmux` is currently listed.
+- Auto-discovered agents use `autoDiscovered: true` (z.literal) rather than a boolean flag so the distinction is "auto-discovered or not" rather than a three-state flag that could drift.
+- When a user edits or updates an auto-discovered agent, the `autoDiscovered` flag is cleared, promoting the override to a normal custom agent that can be modified freely.
+- Removed auto-discovered agent IDs are tracked in `removedAutoAgentIds` to prevent re-registration on subsequent scans. This list persists in config.json.
+- `loadUserConfig` defaults `autoDiscover` to `{ lastRunAt: null, intervalMs: 3600000 }` and `removedAutoAgentIds` to `[]` when creating a new empty config, so the feature is enabled by default without requiring manual config file setup.
+- The `autoDiscover` object is optional in the Zod schema (`.optional()`) so pre-existing config files without these fields remain valid and will receive defaults at runtime.
+- The scan command test regression was caused by auto-register discovering `.skillmux` alongside test agent directories. This was fixed by adding `.skillmux` to `wellKnownNonAgentDirs` rather than by modifying the scan test to suppress auto-registration globally.
+- The `agents.ts` CLI command test was added retroactively because the original Task 3 spec specified the "auto" DISCOVERY column behavior but the plan did not include a dedicated test for it.

@@ -1,6 +1,6 @@
 # Auto-Discover Agent Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Auto-discover unknown `.xxx/skills` directories in the user's home directory and auto-register them into `config.json` without manual intervention.
 
@@ -48,7 +48,7 @@ export type UserConfig = {
 };
 ```
 
-- [ ] **Step 1: Update `AgentOverride` type** — add `autoDiscovered?: true` field
+- [x] **Step 1: Update `AgentOverride` type** — add `autoDiscovered?: true` field
 
 ```typescript
 // In src/config/load-user-config.ts
@@ -62,7 +62,7 @@ export type AgentOverride = {
 };
 ```
 
-- [ ] **Step 2: Update `UserConfig` type** — add `autoDiscover` and `removedAutoAgentIds`
+- [x] **Step 2: Update `UserConfig` type** — add `autoDiscover` and `removedAutoAgentIds`
 
 ```typescript
 export type UserConfig = {
@@ -76,7 +76,7 @@ export type UserConfig = {
 };
 ```
 
-- [ ] **Step 3: Update Zod schema** — currently `.strict()` on both schemas prevents unknown fields; switch to `.passthrough()` or add the new fields explicitly
+- [x] **Step 3: Update Zod schema** — currently `.strict()` on both schemas prevents unknown fields; switch to `.passthrough()` or add the new fields explicitly
 
 ```typescript
 // agentOverrideSchema — add autoDiscovered as optional
@@ -107,7 +107,7 @@ export const userConfigSchema = z
   .strict();
 ```
 
-- [ ] **Step 4: Update `createEmptyUserConfig()`** to include new fields
+- [x] **Step 4: Update `createEmptyUserConfig()`** to include new fields
 
 ```typescript
 function createEmptyUserConfig(): UserConfig {
@@ -123,12 +123,12 @@ function createEmptyUserConfig(): UserConfig {
 }
 ```
 
-- [ ] **Step 5: Run typecheck to verify**
+- [x] **Step 5: Run typecheck to verify**
 
 Run: `npm run typecheck`
 Expected: PASS
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/config/load-user-config.ts
@@ -143,7 +143,7 @@ git commit -m "feat: extend AgentOverride and UserConfig types for auto-discover
 - Create: `src/config/auto-register-agents.ts`
 - Test: `tests/config/auto-register-agents.test.ts`
 
-- [ ] **Step 1: Write failing tests for `autoRegisterNewAgents`**
+- [x] **Step 1: Write failing tests for `autoRegisterNewAgents`**
 
 File: `tests/config/auto-register-agents.test.ts`
 
@@ -374,12 +374,12 @@ describe("autoRegisterNewAgents", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `npx vitest run --reporter verbose tests/config/auto-register-agents.test.ts`
 Expected: FAIL with "Cannot find module" / autoRegisterNewAgents not defined
 
-- [ ] **Step 3: Write minimal implementation in `src/config/auto-register-agents.ts`**
+- [x] **Step 3: Write minimal implementation in `src/config/auto-register-agents.ts`**
 
 ```typescript
 import { existsSync, readdirSync, statSync } from "node:fs";
@@ -511,12 +511,12 @@ export async function autoRegisterNewAgents(
 }
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `npx vitest run --reporter verbose tests/config/auto-register-agents.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/config/auto-register-agents.ts tests/config/auto-register-agents.test.ts
@@ -532,7 +532,7 @@ git commit -m "feat: add auto-register agents scanning module"
 - Modify: `src/commands/agents.ts` — show `auto` in `DISCOVERY` column for auto-discovered agents
 - Test: `tests/discovery/discover-agents.test.ts` — add scenario with auto-registered agents
 
-- [ ] **Step 1: Add `autoRegisterNewAgents()` call at the start of `discoverAgents()`**
+- [x] **Step 1: Add `autoRegisterNewAgents()` call at the start of `discoverAgents()`**
 
 ```typescript
 // In src/discovery/discover-agents.ts, add import at top
@@ -556,7 +556,7 @@ export async function discoverAgents(
 }
 ```
 
-- [ ] **Step 2: Write test that verifies auto-registered agents appear in discovery results**
+- [x] **Step 2: Write test that verifies auto-registered agents appear in discovery results**
 
 Add to `tests/discovery/discover-agents.test.ts`:
 
@@ -594,7 +594,7 @@ it("discovers auto-registered agents from unknown dot directories", async () => 
 });
 ```
 
-- [ ] **Step 3: Update `agents.ts` to show `auto` in DISCOVERY column**
+- [x] **Step 3: Update `agents.ts` to show `auto` in DISCOVERY column**
 
 Need to pass `autoDiscovered` info through `DiscoveredAgent`. Since auto-registered agents end up as config overrides, we need to detect them. The simplest approach: extend `DiscoveredAgent` with an optional `autoDiscovered` flag.
 
@@ -635,17 +635,17 @@ Then in `src/commands/agents.ts`:
 discovery: agent.autoDiscovered ? "auto" : agent.discovery
 ```
 
-- [ ] **Step 4: Run discover-agents tests**
+- [x] **Step 4: Run discover-agents tests**
 
 Run: `npx vitest run --reporter verbose tests/discovery/discover-agents.test.ts`
 Expected: PASS (existing + new scenario)
 
-- [ ] **Step 5: Run typecheck**
+- [x] **Step 5: Run typecheck**
 
 Run: `npm run typecheck`
 Expected: PASS
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/discovery/discover-agents.ts src/commands/agents.ts tests/discovery/discover-agents.test.ts
@@ -660,7 +660,7 @@ git commit -m "feat: integrate auto-register into discovery pipeline"
 - Modify: `src/commands/config-remove-agent.ts` — append ID to `removedAutoAgentIds` when removing auto-discovered agent
 - Modify: `src/commands/config-update-agent.ts` — clear `autoDiscovered` when user updates an auto-discovered agent
 
-- [ ] **Step 1: Add `removedAutoAgentIds` tracking to `config-remove-agent.ts`**
+- [x] **Step 1: Add `removedAutoAgentIds` tracking to `config-remove-agent.ts`**
 
 When removing an agent that has `autoDiscovered: true`, push its ID to `removedAutoAgentIds`:
 
@@ -688,14 +688,14 @@ const nextConfig: UserConfig = {
 };
 ```
 
-- [ ] **Step 2: Add test for removing auto-discovered agent**
+- [x] **Step 2: Add test for removing auto-discovered agent**
 
 In `tests/commands/config-remove-agent.test.ts`, look for existing test patterns and add a scenario that:
 1. Creates config with an autoDiscovered agent
 2. Calls `runConfigRemoveAgent`
 3. Verifies `removedAutoAgentIds` contains the agent ID
 
-- [ ] **Step 3: Clear `autoDiscovered` flag in `config-update-agent.ts`**
+- [x] **Step 3: Clear `autoDiscovered` flag in `config-update-agent.ts`**
 
 When updating an agent that has `autoDiscovered: true`, set `autoDiscovered: false` so it becomes a normal custom agent:
 
@@ -714,19 +714,19 @@ if (previous.autoDiscovered === true) {
 const changed = JSON.stringify(previous) !== JSON.stringify(agent);
 ```
 
-- [ ] **Step 4: Add test for updating auto-discovered agent**
+- [x] **Step 4: Add test for updating auto-discovered agent**
 
 In `tests/commands/config-update-agent.test.ts`, add a scenario that:
 1. Creates config with an autoDiscovered agent
 2. Calls `runConfigUpdateAgent` with a name change
 3. Verifies `autoDiscovered` is no longer present in the result
 
-- [ ] **Step 5: Run typecheck**
+- [x] **Step 5: Run typecheck**
 
 Run: `npm run typecheck`
 Expected: PASS
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/commands/config-remove-agent.ts src/commands/config-update-agent.ts
@@ -740,7 +740,7 @@ git commit -m "feat: handle auto-discovered agent lifecycle in CLI commands"
 **Files:**
 - Modify: `src/tui/dashboard-model.ts` — pass `autoDiscovered` flag into `TuiAgentRow`
 
-- [ ] **Step 1: Add `autoDiscovered` to `TuiAgentRow`**
+- [x] **Step 1: Add `autoDiscovered` to `TuiAgentRow`**
 
 ```typescript
 export type TuiAgentRow = {
@@ -751,7 +751,7 @@ export type TuiAgentRow = {
 };
 ```
 
-- [ ] **Step 2: Set `autoDiscovered` from the `agentOverride` in `buildAgentRows()`**
+- [x] **Step 2: Set `autoDiscovered` from the `agentOverride` in `buildAgentRows()`**
 
 ```typescript
 // In buildAgentRows(), when constructing the row:
@@ -764,7 +764,7 @@ return {
 };
 ```
 
-- [ ] **Step 3: Add `autoDiscovered` to `BuildDashboardModelInput` type**
+- [x] **Step 3: Add `autoDiscovered` to `BuildDashboardModelInput` type**
 
 ```typescript
 export type BuildDashboardModelInput = {
@@ -774,12 +774,12 @@ export type BuildDashboardModelInput = {
 };
 ```
 
-- [ ] **Step 4: Run typecheck & tests**
+- [x] **Step 4: Run typecheck & tests**
 
 Run: `npm run typecheck && npm test -- --run tests/tui/dashboard-model.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/tui/dashboard-model.ts
@@ -790,42 +790,42 @@ git commit -m "feat: add autoDiscovered flag to TUI dashboard model"
 
 ### Task 6: Full verification gate
 
-- [ ] **Step 1: Run build**
+- [x] **Step 1: Run build**
 
 Run: `npm run build`
 Expected: PASS
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `npm run typecheck`
 Expected: PASS
 
-- [ ] **Step 3: Run existing unit tests**
+- [x] **Step 3: Run existing unit tests**
 
 Run: `npm test`
 Expected: PASS
 
-- [ ] **Step 4: Run new auto-register tests specifically**
+- [x] **Step 4: Run new auto-register tests specifically**
 
 Run: `npx vitest run --reporter verbose tests/config/auto-register-agents.test.ts`
 Expected: PASS
 
-- [ ] **Step 5: Run discover-agents tests specifically**
+- [x] **Step 5: Run discover-agents tests specifically**
 
 Run: `npx vitest run --reporter verbose tests/discovery/discover-agents.test.ts`
 Expected: PASS
 
-- [ ] **Step 6: Run TUI E2E tests if applicable**
+- [x] **Step 6: Run TUI E2E tests if applicable**
 
 Run: `npm run test:tui-e2e`
 Expected: PASS (or pre-existing failures unrelated to this change)
 
-- [ ] **Step 7: Check for whitespace/trailing issues**
+- [x] **Step 7: Check for whitespace/trailing issues**
 
 Run: `git diff --check`
 Expected: PASS
 
-- [ ] **Step 8: Commit any remaining changes**
+- [x] **Step 8: Commit any remaining changes**
 
 ```bash
 git add -A
