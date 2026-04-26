@@ -78,6 +78,42 @@ describe("runConfigUpdateAgent", () => {
     ).rejects.toThrow(/does not exist/i);
   });
 
+  it("clears autoDiscovered flag when an auto-discovered agent is updated", async () => {
+    const homeDir = createTempHomeDir();
+    tempHomeDirs.push(homeDir);
+
+    writeSkillmuxConfig(homeDir, {
+      version: 1,
+      agents: {
+        autofound: {
+          stableName: "Autofound",
+          homeRelativeRootPath: ".autofound",
+          skillsDirectoryPath: "skills",
+          enabledByDefault: true,
+          autoDiscovered: true
+        }
+      },
+      autoDiscover: { lastRunAt: null, intervalMs: 3600000 },
+      removedAutoAgentIds: []
+    });
+
+    const result = await runConfigUpdateAgent({
+      homeDir,
+      id: "autofound",
+      name: "Manual Name"
+    });
+
+    expect(result.changed).toBe(true);
+    expect(result.agent).toMatchObject({
+      stableName: "Manual Name",
+      homeRelativeRootPath: ".autofound",
+      skillsDirectoryPath: "skills",
+      enabledByDefault: true
+    });
+    expect(result.agent).not.toHaveProperty("autoDiscovered");
+    expect(result.config.agents.autofound).not.toHaveProperty("autoDiscovered");
+  });
+
   it("reuses add-agent path and platform validation", async () => {
     const homeDir = createTempHomeDir();
     tempHomeDirs.push(homeDir);

@@ -84,6 +84,36 @@ describe("runConfigRemoveAgent", () => {
     });
   });
 
+  it("appends auto-discovered agent ID to removedAutoAgentIds", async () => {
+    const homeDir = createTempHomeDir();
+    tempHomeDirs.push(homeDir);
+
+    writeSkillmuxConfig(homeDir, {
+      version: 1,
+      agents: {
+        autofound: {
+          stableName: "Autofound",
+          homeRelativeRootPath: ".autofound",
+          skillsDirectoryPath: "skills",
+          enabledByDefault: true,
+          autoDiscovered: true
+        }
+      },
+      autoDiscover: { lastRunAt: null, intervalMs: 3600000 },
+      removedAutoAgentIds: []
+    });
+
+    const result = await runConfigRemoveAgent({
+      homeDir,
+      id: "autofound"
+    });
+
+    expect(result.changed).toBe(true);
+    expect(result.removed).toBe(true);
+    expect(result.config.agents.autofound).toBeUndefined();
+    expect(result.config.removedAutoAgentIds).toEqual(["autofound"]);
+  });
+
   it("shows the removed override through the read-only config command", async () => {
     const homeDir = createTempHomeDir();
     tempHomeDirs.push(homeDir);

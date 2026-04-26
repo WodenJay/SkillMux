@@ -64,11 +64,19 @@ export async function runConfigRemoveAgent(
   const agentId = normalizeAgentId(options.id);
   const removed = agentId in config.agents;
 
+  const removedOverride = config.agents[agentId];
+  const wasAutoDiscovered = removedOverride?.autoDiscovered === true;
+
+  const removedAutoAgentIds = wasAutoDiscovered
+    ? [...(config.removedAutoAgentIds ?? []), agentId]
+    : config.removedAutoAgentIds;
+
   const nextConfig: UserConfig = {
     ...config,
     agents: Object.fromEntries(
       Object.entries(config.agents).filter(([currentAgentId]) => currentAgentId !== agentId)
-    )
+    ),
+    ...(wasAutoDiscovered ? { removedAutoAgentIds } : {})
   };
 
   if (removed) {

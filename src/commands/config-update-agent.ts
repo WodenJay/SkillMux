@@ -130,6 +130,11 @@ export async function runConfigUpdateAgent(
     ...previous,
     ...buildAgentPatch(options)
   };
+
+  if (previous.autoDiscovered === true) {
+    delete agent.autoDiscovered;
+  }
+
   const changed = JSON.stringify(previous) !== JSON.stringify(agent);
 
   const nextConfig: UserConfig = {
