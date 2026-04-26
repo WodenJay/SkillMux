@@ -28,6 +28,7 @@ export type TuiAgentRow = {
   canEditOverride: boolean;
   canRemoveOverride: boolean;
   activationCount?: number;
+  autoDiscovered?: boolean;
   enabledCount: number;
   disabledCount: number;
   unmanagedCount: number;
@@ -351,6 +352,8 @@ function buildAgentRows(input: BuildDashboardModelInput): TuiAgentRow[] {
       ...(agentOverride?.enabledByDefault === undefined
         ? {}
         : { overrideEnabledByDefault: agentOverride.enabledByDefault }),
+      autoDiscovered:
+        agentOverride?.autoDiscovered === true ? true : undefined,
       discovery: agent.discovery,
       exists: agent.exists,
       supported: agent.supportedOnPlatform,

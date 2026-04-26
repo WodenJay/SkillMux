@@ -127,7 +127,8 @@ describe("buildDashboardModel", () => {
       configuredAgentIds: ["codex", "openclaw"],
       agentOverrides: {
         codex: {
-          enabledByDefault: false
+          enabledByDefault: false,
+          autoDiscovered: true
         },
         openclaw: {
           enabledByDefault: true
@@ -171,7 +172,8 @@ describe("buildDashboardModel", () => {
       hasUserOverride: true,
       canEditOverride: true,
       canRemoveOverride: true,
-      overrideEnabledByDefault: false
+      overrideEnabledByDefault: false,
+      autoDiscovered: true
     });
     expect(model.agents.find((agent) => agent.id === "claude")).toMatchObject({
       hasUserOverride: false,
