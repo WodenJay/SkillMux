@@ -66,6 +66,8 @@ export async function autoRegisterNewAgents(
     }
   }
 
+  const wellKnownNonAgentDirs = new Set([".skillmux"]);
+
   const removedIds = new Set(config.removedAutoAgentIds ?? []);
   let changed = false;
 
@@ -80,6 +82,7 @@ export async function autoRegisterNewAgents(
 
   for (const name of entries) {
     if (!isDotDir(name)) continue;
+    if (wellKnownNonAgentDirs.has(name)) continue;
     if (!isValidAgentId(name)) continue;
 
     const agentId = name.slice(1).toLowerCase().replace(/[^a-z0-9]+/g, "-");

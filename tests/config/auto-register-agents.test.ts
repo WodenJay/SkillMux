@@ -193,6 +193,30 @@ describe("autoRegisterNewAgents", () => {
     }
   });
 
+  it("skips .skillmux directory even though it has skills/", async () => {
+    const homeDir = tempHome();
+    try {
+      mkdirSync(join(homeDir, ".myagent", "skills"), { recursive: true });
+      mkdirSync(join(homeDir, ".skillmux", "skills"), { recursive: true });
+
+      writeConfig(homeDir, {
+        version: 1,
+        agents: {},
+        autoDiscover: { lastRunAt: null, intervalMs: 3600000 },
+        removedAutoAgentIds: []
+      });
+
+      await autoRegisterNewAgents(homeDir);
+
+      const config = await loadUserConfig(resolveSkillmuxHome(homeDir).skillmuxHome);
+
+      expect(config.agents).toHaveProperty("myagent");
+      expect(config.agents).not.toHaveProperty("skillmux");
+    } finally {
+      cleanup(homeDir);
+    }
+  });
+
   it("skips non-dot-prefixed directories", async () => {
     const homeDir = tempHome();
     try {
