@@ -81,7 +81,7 @@ agent 目录里通常只保留指向这里的链接。
 
 ## 支持的 agent 目录
 
-内置支持这些常见目录：
+SkillMux 会自动扫描用户 home 下的 `./xxx/skills` 目录并注册为新 agent。以下目录内置支持且无需自动发现：
 
 - `.codex/skills`
 - `.claude/skills`
@@ -89,7 +89,9 @@ agent 目录里通常只保留指向这里的链接。
 - `.agents/skills`
 - `.openclaw/skills`
 
-如果你的环境不在这些目录里，也可以通过 `skillmux config add-agent` 注册自定义 agent。
+当你安装了一个 SkillMux 不认识的新 agent（比如 `.cursor/skills`），它会在下次运行 `agents`、`scan` 或 `tui` 时自动注册到 `config.json`，标记为 `autoDiscovered`。
+
+如果你的环境既不在内置列表、也没被自动发现，才需要手动 `skillmux config add-agent` 注册。
 
 ## 快速开始
 
@@ -99,13 +101,13 @@ agent 目录里通常只保留指向这里的链接。
 skillmux agents
 ```
 
-如果你的 agent 不在内置列表里，先加进去：
+如果你的 agent 不在内置列表里，通常 SkillMux 会自动发现它。只有当自动发现未能识别到你的 agent 目录时，才需要手动添加：
 
 ```bash
 skillmux config add-agent --id antigravity --root .gemini/antigravity --name "Gemini Antigravity"
 ```
 
-如果之后不再需要这个自定义 agent 规则，也可以删掉：
+如果之后不再需要这个自定义 agent 规则，也可以删掉（自动发现的 agent 移除后不会被再次自动注册）：
 
 ```bash
 skillmux config remove-agent --id antigravity
@@ -169,7 +171,11 @@ skillmux doctor
 
 ### `skillmux agents`
 
-查看当前识别到的 agent 目录。
+查看当前识别到的 agent 目录，每行会标注发现方式：
+
+- `builtin`：内置 agent
+- `auto`：自动发现的 agent
+- `custom`：手动注册的 agent
 
 ```bash
 skillmux agents
@@ -352,6 +358,7 @@ skillmux config remove-agent --id antigravity --json
 说明：
 
 - 只会删除 `~/.skillmux/config.json` 里的该 agent override
+- 如果是自动发现的 agent，移除后会被记录到 `removedAutoAgentIds`，不会被再次自动注册
 - 不会删除 `manifest.json`
 - 不会删除任何本地 skill、symlink 或 junction
 
