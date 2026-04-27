@@ -47,14 +47,15 @@ export function AgentList({
         <Text dimColor>{emptyMessage}</Text>
       ) : (
         agents.map((agent) => {
-          const selected = agent.id === selectedAgentId && focused;
-          const prefix = selected ? ">" : " ";
+          const isSelected = agent.id === selectedAgentId;
+          const isActive = isSelected && focused;
+          const prefix = isActive ? ">" : " ";
 
           return (
             <Text key={agent.id}>
-              <Text backgroundColor={selected ? theme.bg.selection : undefined}>
+              <Text backgroundColor={isSelected ? theme.bg.selection : undefined}>
                 <Text color={statusColor(agent, theme)}>{statusLabel(agent)}</Text>
-                <Text color={selected ? theme.fg.emphasis : theme.fg.default}>
+                <Text color={isSelected ? theme.fg.emphasis : theme.fg.default}>
                   {" "}
                   {prefix} {agent.name}
                 </Text>

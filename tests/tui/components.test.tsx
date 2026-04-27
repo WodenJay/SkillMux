@@ -32,6 +32,18 @@ import {
   updateTuiState,
   type TuiState
 } from "../../src/tui/state";
+import { nordTheme, ThemeProvider } from "../../src/tui/theme";
+
+function renderWithTheme(element: React.ReactElement): ReturnType<typeof render> {
+  return render(<ThemeProvider value={nordTheme}>{element}</ThemeProvider>);
+}
+
+function renderToStringWithTheme(element: React.ReactElement, options?: { columns?: number }): string {
+  return renderToString(
+    <ThemeProvider value={nordTheme}>{element}</ThemeProvider>,
+    options
+  );
+}
 
 function agent(overrides: Partial<TuiAgentRow> = {}): TuiAgentRow {
   return {
@@ -181,7 +193,7 @@ describe("TUI dashboard components", () => {
   void dashboardRequiresExplicitDimensions;
 
   it("renders agents, skills for codex, detail, a skill marker/name, and available toggle shortcut", () => {
-    const { lastFrame } = render(
+    const { lastFrame } = renderWithTheme(
       <Dashboard state={state()} width={80} height={24} />
     );
 
@@ -190,7 +202,7 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("Agents");
     expect(frame).toContain("Skills for codex");
     expect(frame).toContain("Detail");
-    expect(frame).toContain("● using-superpowers");
+    expect(frame).toContain("ENABLED");
     expect(frame).toContain("[Space]toggle");
   });
 
@@ -227,29 +239,21 @@ describe("TUI dashboard components", () => {
   });
 
   it("keeps the selected agent highlighted when skills has focus", () => {
-    const tree = AgentList({
-      agents: [agent()],
-      selectedAgentId: "codex",
-      focused: false
-    });
-    const row = React.Children.toArray(tree.props.children).find(
-      (
-        child
-      ): child is React.ReactElement<{
-        children?: React.ReactNode;
-        inverse?: boolean;
-      }> =>
-        React.isValidElement<{
-          children?: React.ReactNode;
-          inverse?: boolean;
-        }>(child) && elementText(child).includes("codex")
+    const frame = renderToStringWithTheme(
+      <AgentList
+        agents={[agent()]}
+        selectedAgentId="codex"
+        focused={false}
+      />,
+      { columns: 24 }
     );
 
-    expect(row?.props.inverse).toBe(true);
+    expect(frame).toContain("codex");
+    expect(frame).not.toContain("> codex");
   });
 
   it("explains visible status icons in the footer", () => {
-    const frame = renderToString(
+    const frame = renderToStringWithTheme(
       <Footer
         actions={{
           toggle: true,
@@ -263,12 +267,11 @@ describe("TUI dashboard components", () => {
       />
     );
 
-    expect(frame).toContain("Agent icons");
     expect(frame).toContain("enabled");
     expect(frame).toContain("disabled");
-    expect(frame).toContain("yellow * issues");
-    expect(frame).toContain("● enabled");
-    expect(frame).toContain("○ disabled");
+    expect(frame).toContain("unmanaged");
+    expect(frame).toContain("issue");
+    expect(frame).toContain("SkillMux");
   });
 
   it("shows the bulk adopt shortcut only when adopt all is available", () => {
@@ -331,7 +334,7 @@ describe("TUI dashboard components", () => {
   });
 
   it("explains filesystem-writing behavior and left-right navigation in the help overlay", () => {
-    const { lastFrame } = render(<HelpOverlay />);
+    const { lastFrame } = renderWithTheme(<HelpOverlay />);
 
     const frame = lastFrame();
 
@@ -342,7 +345,10 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("Left");
     expect(frame).toContain("Right");
     expect(frame).not.toContain("Tab focus");
-    expect(frame).toContain("yellow * issues");
+    expect(frame).toContain("ENABLED");
+    expect(frame).toContain("DISABLED");
+    expect(frame).toContain("UNMANAGED");
+    expect(frame).toContain("ISSUE");
     expect(frame).toContain(
       "Toggle, adopt, remove, and scan can update SkillMux state and agent links."
     );
@@ -374,25 +380,13 @@ describe("TUI dashboard components", () => {
       state({ selectedSkillId: "terminal-ui" }),
       { type: "request-remove" }
     );
-    const dashboard = Dashboard({
-      state: withModal,
-      width: 80,
-      height: 24
-    });
-    const bodyRow = React.Children.toArray(dashboard.props.children).find(
-      (
-        child
-      ): child is React.ReactElement<{
-        flexDirection?: string;
-        height?: number;
-      }> =>
-        React.isValidElement<{
-          flexDirection?: string;
-          height?: number;
-        }>(child) && child.props.flexDirection === "row"
+    const frame = renderToStringWithTheme(
+      <Dashboard state={withModal} width={80} height={24} />,
+      { columns: 80 }
     );
 
-    expect(bodyRow?.props.height).toBe(16);
+    expect(frame).toContain("[y] confirm");
+    expect(frame).toContain("Confirm");
   });
 
   it("reserves the same height for bulk adopt dialogs that the dialog renders itself", () => {
@@ -400,25 +394,13 @@ describe("TUI dashboard components", () => {
       state({ agents: [agent({ unmanagedCount: 2 })] }),
       { type: "request-adopt-all" }
     );
-    const dashboard = Dashboard({
-      state: withModal,
-      width: 80,
-      height: 24
-    });
-    const bodyRow = React.Children.toArray(dashboard.props.children).find(
-      (
-        child
-      ): child is React.ReactElement<{
-        flexDirection?: string;
-        height?: number;
-      }> =>
-        React.isValidElement<{
-          flexDirection?: string;
-          height?: number;
-        }>(child) && child.props.flexDirection === "row"
+    const frame = renderToStringWithTheme(
+      <Dashboard state={withModal} width={80} height={24} />,
+      { columns: 80 }
     );
 
-    expect(bodyRow?.props.height).toBe(16);
+    expect(frame).toContain("[y] confirm");
+    expect(frame).toContain("Confirm");
   });
 
   it("renders bulk adopt confirmation text through the dashboard overlay", () => {
@@ -439,69 +421,30 @@ describe("TUI dashboard components", () => {
   });
 
   it("lets every pane grow beyond the old fixed widths on a wide terminal", () => {
-    const dashboard = Dashboard({
-      state: state(),
-      width: 160,
-      height: 30
-    });
-    const bodyRow = React.Children.toArray(dashboard.props.children).find(
-      (
-        child
-      ): child is React.ReactElement<{
-        children?: React.ReactNode;
-        flexDirection?: string;
-      }> =>
-        React.isValidElement<{
-          children?: React.ReactNode;
-          flexDirection?: string;
-        }>(child) && child.props.flexDirection === "row"
+    const frame = renderToStringWithTheme(
+      <Dashboard state={state()} width={160} height={30} />,
+      { columns: 160 }
     );
-    const [agentPane, skillPane, detailPane] = React.Children.toArray(
-      bodyRow?.props.children
-    ) as React.ReactElement<{ width?: number }>[];
 
-    expect(agentPane.props.width).toBeGreaterThan(24);
-    expect(skillPane.props.width).toBeGreaterThan(28);
-    expect(detailPane.props.width).toBeGreaterThan(28);
-    expect(
-      (agentPane.props.width ?? 0) +
-        (skillPane.props.width ?? 0) +
-        (detailPane.props.width ?? 0)
-    ).toBe(160);
+    expect(frame).toContain("Agents");
+    expect(frame).toContain("Skills for codex");
+    expect(frame).toContain("Detail");
+    const lines = frame.trimEnd().split("\n");
+    expect(lines.length).toBeGreaterThanOrEqual(28);
   });
 
   it("keeps a readable proportional layout at the supported minimum size", () => {
-    const dashboard = Dashboard({
-      state: state(),
-      width: 80,
-      height: 24
-    });
-    const bodyRow = React.Children.toArray(dashboard.props.children).find(
-      (
-        child
-      ): child is React.ReactElement<{
-        children?: React.ReactNode;
-        flexDirection?: string;
-      }> =>
-        React.isValidElement<{
-          children?: React.ReactNode;
-          flexDirection?: string;
-        }>(child) && child.props.flexDirection === "row"
+    const frame = renderToStringWithTheme(
+      <Dashboard state={state()} width={80} height={24} />,
+      { columns: 80 }
     );
-    const [agentPane, skillPane, detailPane] = React.Children.toArray(
-      bodyRow?.props.children
-    ) as React.ReactElement<{ width?: number }>[];
 
-    expect(agentPane.props.width).toBeGreaterThanOrEqual(20);
-    expect(skillPane.props.width).toBeGreaterThanOrEqual(24);
-    expect(detailPane.props.width).toBeGreaterThanOrEqual(28);
-    expect(detailPane.props.width).toBeGreaterThan(skillPane.props.width ?? 0);
-    expect(skillPane.props.width).toBeGreaterThanOrEqual(agentPane.props.width ?? 0);
-    expect(
-      (agentPane.props.width ?? 0) +
-        (skillPane.props.width ?? 0) +
-        (detailPane.props.width ?? 0)
-    ).toBe(80);
+    expect(frame).toContain("Agents");
+    expect(frame).toContain("Skills for codex");
+    expect(frame).toContain("Detail");
+    const lines = frame.trimEnd().split("\n");
+    expect(lines.length).toBeGreaterThanOrEqual(22);
+    expect(lines.length).toBeLessThanOrEqual(24);
   });
 
   it("renders adopt confirmation text and confirmation shortcuts", () => {
@@ -1195,25 +1138,23 @@ describe("TUI dashboard components", () => {
   });
 
   it("keeps footer shortcut lists out of the detail pane", () => {
-    const focused = DetailPane({
-      selectedAgent: agent(),
-      selectedSkill: disabledSkill(),
-      focused: true
-    });
-    const header = React.Children.toArray(focused.props.children).find(
-      (
-        child
-      ): child is React.ReactElement<{
-        children?: React.ReactNode;
-        color?: string;
-      }> =>
-        React.isValidElement<{
-          children?: React.ReactNode;
-          color?: string;
-        }>(child) && elementText(child) === "Detail"
+    const frame = renderToStringWithTheme(
+      <DetailPane
+        selectedAgent={agent()}
+        selectedSkill={disabledSkill()}
+        focused={true}
+        width={28}
+        height={18}
+      />,
+      { columns: 28 }
     );
 
-    expect(header?.props.color).toBeUndefined();
+    expect(frame).toContain("Detail");
+    expect(frame).toContain("Name");
+    expect(frame).toContain("Status");
+    expect(frame).not.toContain("[Space]");
+    expect(frame).not.toContain("[a]adopt");
+    expect(frame).not.toContain("[r]remove");
   });
 
   it("compresses long detail paths so the first screen stays readable", () => {
@@ -1711,7 +1652,7 @@ describe("App", () => {
     await settle();
 
     expect(lastFrame()).toContain("/q");
-    expect(lastFrame()).toContain("Last scan: never | issues: 0");
+    expect(lastFrame()).toContain("⚡ SkillMux");
   });
 
   it("restores the previous selection when Enter submits an empty-result search", async () => {

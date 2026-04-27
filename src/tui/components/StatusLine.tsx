@@ -35,6 +35,18 @@ export function StatusLine({ busy, statusMessage, model }: StatusLineProps) {
     issueCount += agent.issueCount;
   }
 
+  if (statusMessage !== null) {
+    return (
+      <Box height={1}>
+        <Text bold color={theme.fg.emphasis}>
+          ⚡ SkillMux
+        </Text>
+        <Text color={theme.fg.muted}> · </Text>
+        <Text color={theme.status.warning}>{statusMessage}</Text>
+      </Box>
+    );
+  }
+
   return (
     <Box height={1}>
       <Text bold color={theme.fg.emphasis}>

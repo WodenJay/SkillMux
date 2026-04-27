@@ -5,8 +5,8 @@ import { createPtySession } from "../pty-session";
 const cleanups: Array<() => void | Promise<void>> = [];
 const cursorHide = "\u001B[?25l";
 const cursorShow = "\u001B[?25h";
-const enabledMarker = "\u25CF using-superpowers";
-const skillMarkers = "Skill markers: \u25CF enabled  \u25CB disabled  ? unmanaged  ! issue";
+const enabledMarker = "ENABLED using-superpowers";
+const skillMarkers = "enabled \u00b7 disabled \u00b7 unmanaged \u00b7 issue";
 
 afterEach(async () => {
   while (cleanups.length > 0) {

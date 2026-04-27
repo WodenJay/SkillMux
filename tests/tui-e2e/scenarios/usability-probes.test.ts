@@ -5,7 +5,7 @@ import { startExplorer } from "../explorer";
 const cleanups: Array<() => void | Promise<void>> = [];
 const cursorHide = "\u001B[?25l";
 const cursorShow = "\u001B[?25h";
-const enabledMarker = "\u25CF using-superpowers";
+const enabledMarker = "ENABLED using-superpowers";
 
 async function waitForDashboardRestored(
   explorer: Awaited<ReturnType<typeof startExplorer>>,
@@ -80,7 +80,7 @@ describe("tui explorer usability probes", () => {
     await explorer.search("find");
     await explorer.waitForText("find-skills");
     await explorer.submitSearch();
-    await explorer.waitForText("Skill markers:");
+    await explorer.waitForText("enabled");
 
     await explorer.previousRowBy("k");
     await explorer.waitForText("using-superpowers");

@@ -157,11 +157,13 @@ export function Dashboard({
 
   return (
     <Box flexDirection="column" width={width} height={height}>
-      <StatusLine
-        busy={state.busy}
-        statusMessage={state.statusMessage}
-        model={state.model}
-      />
+      <Box height={1}>
+        <StatusLine
+          busy={state.busy}
+          statusMessage={state.statusMessage}
+          model={state.model}
+        />
+      </Box>
       {largeModal ? (
         <Box
           flexDirection="column"
@@ -192,7 +194,7 @@ export function Dashboard({
           </Box>
         </Box>
       ) : (
-        <>
+        <Box flexDirection="column">
           <Text color={theme.border.default}>
             {horizontalBorder("\u251C", "\u252C", "\u2524", agentWidth, skillWidth, detailWidth)}
           </Text>
@@ -226,10 +228,7 @@ export function Dashboard({
               height={contentHeight}
             />
           </Box>
-          <Text color={theme.border.default}>
-            {horizontalBorder("\u2514", "\u2534", "\u2518", agentWidth, skillWidth, detailWidth)}
-          </Text>
-        </>
+        </Box>
       )}
       {state.modal?.kind === "help" ? <HelpOverlay /> : null}
       {state.modal?.kind === "confirm-adopt" ||
