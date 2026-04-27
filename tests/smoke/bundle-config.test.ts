@@ -13,4 +13,16 @@ describe("bundle configuration", () => {
       })
     );
   });
+
+  it("serializes vitest workers to avoid PTY contention", async () => {
+    const { default: vitestConfig } = await import("../../vitest.config");
+    const testConfig = vitestConfig.test ?? {};
+
+    expect(testConfig).toEqual(
+      expect.objectContaining({
+        fileParallelism: false,
+        maxWorkers: 1
+      })
+    );
+  });
 });

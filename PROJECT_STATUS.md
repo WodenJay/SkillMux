@@ -24,6 +24,22 @@ Active development worktree: `(none)`
 - Implementation plan has 9 tasks covering theme system, 8 component rewrites, and final polish
 - Next step: user selects execution mode (subagent-driven vs inline)
 
+## 2026-04-27 Pre-plan Baseline Stabilization (SkillMux-4zl)
+
+- Status: **complete in worktree `feature/tui-redesign-4zl`**
+- Root-cause evidence:
+  - before building, PTY scenarios failed because `tests/tui-e2e/pty-session.ts` spawns `dist/cli.js` and `dist` was absent in a fresh worktree (`node dist/cli.js tui` failed with `MODULE_NOT_FOUND`)
+  - after build (`npm run build`), single PTY scenario passed (`tests/tui-e2e/scenarios/smoke.test.ts`)
+  - full `npm test` still intermittently failed under default parallel workers with 30s test timeouts across PTY scenario files
+  - forcing serialized run (`npx vitest run --configLoader runner --maxWorkers 1`) made the same suite pass end-to-end
+- Accepted infra fix:
+  - serialize Vitest workers globally in `vitest.config.ts` with `fileParallelism: false` and `maxWorkers: 1`
+  - add regression coverage in `tests/smoke/bundle-config.test.ts` so PTY-safe worker settings are enforced
+- Verification in worktree:
+  - `npx vitest run --configLoader runner tests/smoke/bundle-config.test.ts` PASS
+  - `npx vitest run --configLoader runner tests/tui-e2e/scenarios/smoke.test.ts` PASS
+  - `npm test` PASS (39 files, 252 tests)
+
 ## Current TUI Design Status
 
 - A new TUI parity slice is now approved in conversation: the TUI should cover the current local-management CLI surface instead of forcing users back to the shell for agent configuration, import, and doctor workflows.

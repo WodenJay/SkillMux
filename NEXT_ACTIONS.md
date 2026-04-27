@@ -406,3 +406,13 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [ ] Implement Task 7: Footer Bordered Section
 - [ ] Implement Task 8: Modal Dialogs Bordered Popups
 - [ ] Implement Task 9: Final Polish & Integration Test
+
+## Pre-plan blocker fix (SkillMux-4zl)
+
+- [x] Reproduce baseline PTY failures in the isolated worktree and capture concrete error evidence
+- [x] Verify the dist-artifact dependency by building once and re-running a previously failing PTY scenario
+- [x] Prove parallel-worker contention by comparing default `npm test` vs serialized `--maxWorkers 1`
+- [x] Add a minimal Vitest worker-serialization config fix for Windows PTY stability
+- [x] Add regression coverage asserting PTY-safe Vitest worker settings
+- [x] Re-run one previously failing scenario file and full `npm test` to confirm stability
+- [x] Commit the blocker fix on `feature/tui-redesign-4zl`

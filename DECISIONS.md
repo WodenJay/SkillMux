@@ -558,6 +558,13 @@ Record key product and implementation decisions so later sessions do not lose th
 - `dispatchTuiAction()` now carries a small resolved-failure signal so `App` can distinguish successful write results from real command-helper failures without relying on promise rejection shape alone.
 - Doctor stays open across async loading, ready, and error states, and real resolved doctor failures must preserve the original command error instead of degrading to a generic missing-report message.
 
+### 2026-04-27 Pre-plan blocker fix (SkillMux-4zl)
+
+- PTY E2E tests in this repo depend on a built `dist` bundle because `tests/tui-e2e/pty-session.ts` spawns `dist/cli.js`; a fresh worktree without `npm run build` can produce misleading readiness timeouts (`Skills for codex`) that are not product regressions.
+- Even with a valid build, Windows PTY scenarios are unstable under parallel Vitest workers because each scenario needs exclusive PTY/session resources and contention pushes tests over the fixed 30s timeout budget.
+- The accepted baseline stabilization is infrastructure-level serialization (`fileParallelism: false`, `maxWorkers: 1`) in `vitest.config.ts` instead of broad timeout inflation or product-behavior changes.
+- The worker-serialization requirement is now protected by a smoke test in `tests/smoke/bundle-config.test.ts` to prevent accidental reintroduction of parallel PTY contention.
+
 ## 2026-04-27
 
 ### Auto-discover agent
