@@ -335,7 +335,7 @@ git commit -m "feat: upgrade StatusLine to rich stats bar with counts"
 - Modify: `src/tui/components/Dashboard.tsx`
 - Modify: `src/tui/app.tsx` (wrap with ThemeProvider)
 
-- [ ] **Step 1: Add ThemeProvider to app.tsx**
+- [x] **Step 1: Add ThemeProvider to app.tsx**
 
 In `src/tui/app.tsx`, at the top of the file (line 2), add the import:
 
@@ -622,12 +622,12 @@ export function Dashboard({
 }
 ```
 
-- [ ] **Step 3: Run typecheck**
+- [x] **Step 3: Run typecheck**
 
 Run: `npx tsc --noEmit`
 Expected: No errors
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```
 git add src/tui/components/Dashboard.tsx src/tui/app.tsx
@@ -988,7 +988,7 @@ git commit -m "feat: DetailPane uses bold accent labels for key-value pairs"
 **Files:**
 - Modify: `src/tui/components/Footer.tsx`
 
-- [ ] **Step 1: Rewrite Footer.tsx with theme**
+- [x] **Step 1: Rewrite Footer.tsx with theme**
 
 Replace `src/tui/components/Footer.tsx` entirely:
 
@@ -1067,12 +1067,12 @@ export function Footer({ actions, search }: FooterProps) {
 }
 ```
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `npx tsc --noEmit`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```
 git add src/tui/components/Footer.tsx

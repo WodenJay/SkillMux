@@ -398,13 +398,13 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Write implementation plan at `docs/superpowers/plans/2026-04-27-tui-redesign.md`
 - [x] Select execution mode: subagent-driven (recommended) or inline
 - [x] Implement Task 1: Theme System (`src/tui/theme.ts`)
-- [ ] Implement Task 2: Rich Stats Bar (StatusLine)
-- [ ] Implement Task 3: Dashboard Box Borders & ThemeProvider
-- [ ] Implement Task 4: AgentList Theme Colors & Selection
+- [x] Implement Task 2: Rich Stats Bar (StatusLine)
+- [x] Implement Task 3: Dashboard Box Borders & ThemeProvider
+- [x] Implement Task 4: AgentList Theme Colors & Selection
 - [ ] Implement Task 5: SkillList Colored Label Tags
 - [ ] Implement Task 6: DetailPane Styled Key-Value Pairs
-- [ ] Implement Task 7: Footer Bordered Section
-- [ ] Implement Task 8: Modal Dialogs Bordered Popups
+- [x] Implement Task 7: Footer Bordered Section
+- [x] Implement Task 8: Modal Dialogs Bordered Popups
 - [ ] Implement Task 9: Final Polish & Integration Test
 
 ## Pre-plan blocker fix (SkillMux-4zl)

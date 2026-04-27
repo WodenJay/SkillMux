@@ -8,7 +8,13 @@ Active development worktree: `(none)`
 
 ## 2026-04-27 TUI Visual Redesign
 
-- Status: **in progress** — Task 1 (Theme System) complete in worktree `feature/tui-redesign-4zl`
+- Status: **in progress** — Tasks 1-4, 7-8 complete in worktree `feature/tui-redesign-4zl`; Tasks 5-6, 9 remain
+- Task 1 (Theme System): `src/tui/theme.ts` — theme context, Nord colors, color-level detection, `useTheme()`/`ThemeProvider`
+- Task 2 (Rich Stats Bar): `src/tui/components/StatusLine.tsx` — agent/stats bar with theme colors
+- Task 3 (Box Borders & ThemeProvider): `src/tui/app.tsx` wrapped in `<ThemeProvider>`, `Dashboard.tsx` with box-drawing borders `├─┬─┤` and focus-aware `│` separators
+- Task 4 (AgentList Theme): `src/tui/components/AgentList.tsx` — theme status colors, background selection highlight, `>` prefix when selected+focused
+- Task 7 (Footer Bordered Section): `src/tui/components/Footer.tsx` — theme colors, compact shortcut chips, colored legend
+- Task 8 (Modal Dialogs Bordered Popups): `FormDialog.tsx`, `ConfirmDialog.tsx`, `DoctorDialog.tsx`, `HelpOverlay.tsx` — all use useTheme, selection highlights, status colors, marker legend
 - Written design spec: `docs/superpowers/specs/2026-04-27-tui-redesign-design.md`
 - Written implementation plan: `docs/superpowers/plans/2026-04-27-tui-redesign.md`
 - Accepted design decisions:
