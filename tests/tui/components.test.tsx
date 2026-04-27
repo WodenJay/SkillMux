@@ -6,7 +6,7 @@ import { vi } from "vitest";
 import { App } from "../../src/tui/app";
 import { dispatchTuiAction as realDispatchTuiAction } from "../../src/tui/actions";
 import { AgentList } from "../../src/tui/components/AgentList";
-import { Dashboard } from "../../src/tui/components/Dashboard";
+import { Dashboard, horizontalBorder } from "../../src/tui/components/Dashboard";
 import { ConfirmDialog } from "../../src/tui/components/ConfirmDialog";
 import { DetailPane } from "../../src/tui/components/DetailPane";
 import { Footer } from "../../src/tui/components/Footer";
@@ -1271,6 +1271,44 @@ describe("TUI dashboard components", () => {
     expect(noSelection).not.toContain("No skills for this agent");
     expect(noMatches).toContain("No matching skills");
     expect(noMatches).not.toContain("No skills for this agent");
+  });
+
+  it("horizontalBorder builds a border line whose character count matches the sum of widths plus junction chars", () => {
+    const result = horizontalBorder(
+      "\u2514",
+      "\u2534",
+      "\u2518",
+      20,
+      24,
+      36
+    );
+
+    expect(result.length).toBe(84);
+    expect(result.startsWith("\u2514")).toBe(true);
+    expect(result.endsWith("\u2518")).toBe(true);
+    const midCount = [...result].filter((c) => c === "\u2534").length;
+    expect(midCount).toBe(2);
+  });
+
+  it("horizontalBorder renders the correct border line with bottom corners and dash spacing for a three-pane layout", () => {
+    const result = horizontalBorder(
+      "\u251C",
+      "\u252C",
+      "\u2524",
+      20,
+      24,
+      28
+    );
+
+    expect(result).toBe(
+      "\u251C" +
+        "\u2500".repeat(20) +
+        "\u252C" +
+        "\u2500".repeat(24) +
+        "\u252C" +
+        "\u2500".repeat(28) +
+        "\u2524"
+    );
   });
 });
 

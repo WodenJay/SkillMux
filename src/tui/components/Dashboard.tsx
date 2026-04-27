@@ -41,6 +41,24 @@ const detailMinimumWidth = 28;
 const largeModalWidth = 72;
 const largeModalHeight = 14;
 
+export function horizontalBorder(
+  left: string,
+  mid: string,
+  right: string,
+  ...widths: number[]
+): string {
+  const h = "\u2500";
+  let result = left;
+  for (let i = 0; i < widths.length; i++) {
+    result += h.repeat(widths[i]);
+    if (i < widths.length - 1) {
+      result += mid;
+    }
+  }
+  result += right;
+  return result;
+}
+
 function paneWidths(width: number): {
   agentWidth: number;
   skillWidth: number;
@@ -176,7 +194,7 @@ export function Dashboard({
       ) : (
         <>
           <Text color={theme.border.default}>
-            {"\u251C"}{"\u2500".repeat(agentWidth)}{"\u252C"}{"\u2500".repeat(skillWidth)}{"\u252C"}{"\u2500".repeat(adjustedDetailWidth)}{"\u2524"}
+            {horizontalBorder("\u251C", "\u252C", "\u2524", agentWidth, skillWidth, detailWidth)}
           </Text>
           <Box flexDirection="row" width={width} height={contentHeight}>
             <AgentList
@@ -209,7 +227,7 @@ export function Dashboard({
             />
           </Box>
           <Text color={theme.border.default}>
-            {"\u251C"}{"\u2500".repeat(agentWidth)}{"\u2534"}{"\u2500".repeat(skillWidth)}{"\u2534"}{"\u2500".repeat(adjustedDetailWidth)}{"\u2524"}
+            {horizontalBorder("\u2514", "\u2534", "\u2518", agentWidth, skillWidth, detailWidth)}
           </Text>
         </>
       )}
