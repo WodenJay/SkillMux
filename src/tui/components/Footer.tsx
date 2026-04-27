@@ -27,10 +27,10 @@ export function Footer({ actions, search }: FooterProps) {
   ].filter((shortcut): shortcut is string => shortcut !== null);
 
   const legendParts = [
-    { label: "enabled", color: theme.status.success },
-    { label: "disabled", color: theme.fg.muted },
-    { label: "unmanaged", color: theme.status.warning },
-    { label: "issue", color: theme.status.error }
+    { symbol: "\u25CF", label: "enabled", color: theme.status.success },
+    { symbol: "\u25CB", label: "disabled", color: theme.fg.muted },
+    { symbol: "?", label: "unmanaged", color: theme.status.warning },
+    { symbol: "!", label: "issue", color: theme.status.error }
   ];
 
   if (search !== null) {
@@ -44,7 +44,7 @@ export function Footer({ actions, search }: FooterProps) {
         <Text dimColor>
           {legendParts.map((p, i) => (
             <Text key={p.label}>
-              <Text color={p.color}>{p.label}</Text>
+              <Text color={p.color}>{p.symbol} {p.label}</Text>
               {i < legendParts.length - 1 ? "  " : ""}
             </Text>
           ))}
@@ -62,7 +62,7 @@ export function Footer({ actions, search }: FooterProps) {
       <Text dimColor>
         {legendParts.map((p, i) => (
           <Text key={p.label}>
-            <Text color={p.color}>{p.label}</Text>
+            <Text color={p.color}>{p.symbol} {p.label}</Text>
             {i < legendParts.length - 1 ? " \u00b7 " : ""}
           </Text>
         ))}

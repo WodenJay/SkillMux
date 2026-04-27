@@ -14,10 +14,11 @@ export type SkillListProps = {
 };
 
 function statusLabel(skill: TuiSkillRow): string {
-  if (skill.kind === "enabled") return "ENABLED";
-  if (skill.kind === "disabled") return "DISABLED";
-  if (skill.kind === "unmanaged") return "UNMANAGED";
-  return skill.severity === "error" ? "ERROR" : "WARNING";
+  if (skill.kind === "enabled") return "\u25CF";
+  if (skill.kind === "disabled") return "\u25CB";
+  if (skill.kind === "unmanaged") return "?";
+  if (skill.severity === "error") return "!";
+  return "*";
 }
 
 function statusColor(

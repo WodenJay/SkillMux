@@ -22,15 +22,15 @@ export function HelpOverlay() {
         <Text color={theme.fg.default}>: / filters the focused list, Enter keeps the result, Esc cancels.</Text>
       </Text>
       <Text>
-        <Text bold color={theme.accent.primary}>Markers</Text>
+        <Text bold color={theme.accent.primary}>Skill markers</Text>
         <Text color={theme.fg.default}>: </Text>
-        <Text bold color={theme.status.success}>ENABLED</Text>
-        <Text color={theme.fg.default}> </Text>
-        <Text color={theme.fg.muted}>DISABLED</Text>
-        <Text color={theme.fg.default}> </Text>
-        <Text color={theme.status.warning}>UNMANAGED</Text>
-        <Text color={theme.fg.default}> </Text>
-        <Text color={theme.status.error}>ISSUE</Text>
+        <Text color={theme.status.success}>{"\u25CF"} enabled</Text>
+        <Text color={theme.fg.default}>  </Text>
+        <Text color={theme.fg.muted}>{"\u25CB"} disabled</Text>
+        <Text color={theme.fg.default}>  </Text>
+        <Text color={theme.status.warning}>? unmanaged</Text>
+        <Text color={theme.fg.default}>  </Text>
+        <Text color={theme.status.error}>! issue</Text>
       </Text>
       <Text>
         <Text bold color={theme.accent.primary}>Safety</Text>

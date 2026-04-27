@@ -202,7 +202,7 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("Agents");
     expect(frame).toContain("Skills for codex");
     expect(frame).toContain("Detail");
-    expect(frame).toContain("ENABLED");
+    expect(frame).toContain("\u25CF");
     expect(frame).toContain("[Space]toggle");
   });
 
@@ -345,10 +345,10 @@ describe("TUI dashboard components", () => {
     expect(frame).toContain("Left");
     expect(frame).toContain("Right");
     expect(frame).not.toContain("Tab focus");
-    expect(frame).toContain("ENABLED");
-    expect(frame).toContain("DISABLED");
-    expect(frame).toContain("UNMANAGED");
-    expect(frame).toContain("ISSUE");
+    expect(frame).toContain("\u25CF");
+    expect(frame).toContain("\u25CB");
+    expect(frame).toContain("?");
+    expect(frame).toContain("!");
     expect(frame).toContain(
       "Toggle, adopt, remove, and scan can update SkillMux state and agent links."
     );

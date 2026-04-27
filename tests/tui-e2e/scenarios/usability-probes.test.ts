@@ -5,7 +5,7 @@ import { startExplorer } from "../explorer";
 const cleanups: Array<() => void | Promise<void>> = [];
 const cursorHide = "\u001B[?25l";
 const cursorShow = "\u001B[?25h";
-const enabledMarker = "ENABLED using-superpowers";
+const enabledMarker = "\u25CF using-superpowers";
 
 async function waitForDashboardRestored(
   explorer: Awaited<ReturnType<typeof startExplorer>>,
