@@ -1,5 +1,6 @@
 import { Box, Text } from "ink";
 import type { TuiAgentRow } from "../dashboard-model";
+import { useTheme } from "../theme";
 
 export type AgentListProps = {
   agents: TuiAgentRow[];
@@ -10,28 +11,17 @@ export type AgentListProps = {
   height?: number;
 };
 
-function statusMarker(agent: TuiAgentRow): string {
-  if (!agent.supported) {
-    return "!";
-  }
-
-  if (!agent.exists) {
-    return "?";
-  }
-
-  return "*";
+function statusColor(agent: TuiAgentRow, theme: ReturnType<typeof useTheme>): string {
+  if (!agent.supported) return theme.status.error;
+  if (!agent.exists || agent.issueCount > 0) return theme.status.warning;
+  return theme.status.success;
 }
 
-function statusColor(agent: TuiAgentRow): string | undefined {
-  if (!agent.supported) {
-    return "red";
-  }
-
-  if (!agent.exists || agent.issueCount > 0) {
-    return "yellow";
-  }
-
-  return "green";
+function statusLabel(agent: TuiAgentRow): string {
+  if (!agent.supported) return "!";
+  if (!agent.exists) return "?";
+  if (agent.issueCount > 0) return "*";
+  return "*";
 }
 
 export function AgentList({
@@ -42,6 +32,7 @@ export function AgentList({
   width = 24,
   height = 18
 }: AgentListProps) {
+  const theme = useTheme();
   const emptyMessage =
     searchQuery !== undefined && searchQuery.trim().length > 0
       ? "No matching agents"
@@ -49,20 +40,25 @@ export function AgentList({
 
   return (
     <Box flexDirection="column" width={width} height={height}>
-      <Text bold color={focused ? "cyan" : undefined}>
+      <Text bold color={focused ? theme.fg.emphasis : theme.fg.muted}>
         Agents
       </Text>
       {agents.length === 0 ? (
         <Text dimColor>{emptyMessage}</Text>
       ) : (
         agents.map((agent) => {
-          const selected = agent.id === selectedAgentId;
-          const selectionPrefix = selected ? ">" : " ";
+          const selected = agent.id === selectedAgentId && focused;
+          const prefix = selected ? ">" : " ";
 
           return (
-            <Text key={agent.id} inverse={selected}>
-              <Text color={statusColor(agent)}>{statusMarker(agent)}</Text>
-              <Text>{selectionPrefix} {agent.name}</Text>
+            <Text key={agent.id}>
+              <Text backgroundColor={selected ? theme.bg.selection : undefined}>
+                <Text color={statusColor(agent, theme)}>{statusLabel(agent)}</Text>
+                <Text color={selected ? theme.fg.emphasis : theme.fg.default}>
+                  {" "}
+                  {prefix} {agent.name}
+                </Text>
+              </Text>
             </Text>
           );
         })
