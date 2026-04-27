@@ -1,5 +1,6 @@
 import { Box, Text } from "ink";
 import type { TuiSkillRow } from "../dashboard-model";
+import { useTheme } from "../theme";
 
 export type SkillListProps = {
   agentId: string | null;
@@ -12,28 +13,25 @@ export type SkillListProps = {
   height?: number;
 };
 
-function markerColor(skill: TuiSkillRow): string {
-  if (skill.kind === "enabled") {
-    return "green";
-  }
-
-  if (skill.kind === "issue") {
-    return skill.severity === "error" ? "red" : "yellow";
-  }
-
-  if (skill.kind === "unmanaged") {
-    return "yellow";
-  }
-
-  return "gray";
+function statusLabel(skill: TuiSkillRow): string {
+  if (skill.kind === "enabled") return "ENABLED";
+  if (skill.kind === "disabled") return "DISABLED";
+  if (skill.kind === "unmanaged") return "UNMANAGED";
+  return skill.severity === "error" ? "ERROR" : "WARNING";
 }
 
-function skillLabel(skill: TuiSkillRow): string {
-  if (skill.kind === "issue") {
-    return skill.issueCode;
-  }
+function statusColor(
+  skill: TuiSkillRow,
+  theme: ReturnType<typeof useTheme>
+): string {
+  if (skill.kind === "enabled") return theme.status.success;
+  if (skill.kind === "disabled") return theme.fg.muted;
+  if (skill.kind === "unmanaged") return theme.status.warning;
+  return skill.severity === "error" ? theme.status.error : theme.status.warning;
+}
 
-  return skill.name;
+function rowLabel(skill: TuiSkillRow): string {
+  return skill.kind === "issue" ? skill.issueCode : skill.name;
 }
 
 export function SkillList({
@@ -46,6 +44,8 @@ export function SkillList({
   width = 28,
   height = 18
 }: SkillListProps) {
+  const theme = useTheme();
+
   const emptyMessage =
     loadingAgentName !== null
       ? `Loading skills for ${loadingAgentName}...`
@@ -57,7 +57,7 @@ export function SkillList({
 
   return (
     <Box flexDirection="column" width={width} height={height}>
-      <Text bold color={focused ? "cyan" : undefined}>
+      <Text bold color={focused ? theme.fg.emphasis : theme.fg.muted}>
         Skills for {agentId ?? "none"}
       </Text>
       {skills.length === 0 ? (
@@ -67,9 +67,24 @@ export function SkillList({
           const selected = skill.id === selectedSkillId;
 
           return (
-            <Text key={skill.id} inverse={focused && selected}>
-              <Text color={markerColor(skill)}>{skill.marker}</Text>
-              <Text> {skillLabel(skill)}</Text>
+            <Text key={skill.id}>
+              <Text
+                backgroundColor={
+                  focused && selected ? theme.bg.selection : undefined
+                }
+              >
+                <Text bold color={statusColor(skill, theme)}>
+                  {statusLabel(skill)}
+                </Text>
+                <Text
+                  color={
+                    focused && selected ? theme.fg.emphasis : theme.fg.default
+                  }
+                >
+                  {" "}
+                  {rowLabel(skill)}
+                </Text>
+              </Text>
             </Text>
           );
         })
