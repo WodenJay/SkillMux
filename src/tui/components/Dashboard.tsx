@@ -6,6 +6,7 @@ import {
   getVisibleSkills,
   type TuiState
 } from "../state";
+import { useTheme } from "../theme";
 import { AgentList } from "./AgentList";
 import { ConfirmDialog, confirmDialogHeight } from "./ConfirmDialog";
 import { DoctorDialog } from "./DoctorDialog";
@@ -70,6 +71,7 @@ export function Dashboard({
   height,
   modalInteraction
 }: DashboardProps) {
+  const theme = useTheme();
   const interaction = modalInteraction ?? {
     fieldIndex: 0,
     platformIndex: 0,
@@ -128,6 +130,12 @@ export function Dashboard({
   const { agentWidth, skillWidth, detailWidth } = paneWidths(width);
   const modalWidth = Math.min(width - 4, largeModalWidth);
   const modalHeight = Math.min(bodyHeight, largeModalHeight);
+  const adjustedDetailWidth = Math.max(0, detailWidth - 2);
+  const contentHeight = Math.max(0, bodyHeight - 2);
+  const separatorBorder1 =
+    state.focus === "agents" ? theme.border.focused : theme.border.default;
+  const separatorBorder2 =
+    state.focus === "skills" ? theme.border.focused : theme.border.default;
 
   return (
     <Box flexDirection="column" width={width} height={height}>
@@ -166,34 +174,44 @@ export function Dashboard({
           </Box>
         </Box>
       ) : (
-        <Box flexDirection="row" width={width} height={bodyHeight}>
-          <AgentList
-            agents={visibleAgents}
-            selectedAgentId={state.model.selectedAgentId}
-            focused={state.focus === "agents"}
-            searchQuery={state.search?.panel === "agents" ? state.search.query : undefined}
-            width={agentWidth}
-            height={bodyHeight}
-          />
-          <SkillList
-            agentId={state.model.selectedAgentId}
-            skills={visibleSkills}
-            selectedSkillId={state.model.selectedSkillId}
-            focused={state.focus === "skills"}
-            searchQuery={state.search?.panel === "skills" ? state.search.query : undefined}
-            loadingAgentName={loadingAgent?.name ?? null}
-            width={skillWidth}
-            height={bodyHeight}
-          />
-          <DetailPane
-            selectedAgent={selectedAgent}
-            selectedSkill={selectedSkill}
-            focused={state.focus === "detail"}
-            loadingAgentName={loadingAgent?.name ?? null}
-            width={detailWidth}
-            height={bodyHeight}
-          />
-        </Box>
+        <>
+          <Text color={theme.border.default}>
+            {"\u251C"}{"\u2500".repeat(agentWidth)}{"\u252C"}{"\u2500".repeat(skillWidth)}{"\u252C"}{"\u2500".repeat(adjustedDetailWidth)}{"\u2524"}
+          </Text>
+          <Box flexDirection="row" width={width} height={contentHeight}>
+            <AgentList
+              agents={visibleAgents}
+              selectedAgentId={state.model.selectedAgentId}
+              focused={state.focus === "agents"}
+              searchQuery={state.search?.panel === "agents" ? state.search.query : undefined}
+              width={agentWidth}
+              height={contentHeight}
+            />
+            <Text color={separatorBorder1}>{"\u2502"}</Text>
+            <SkillList
+              agentId={state.model.selectedAgentId}
+              skills={visibleSkills}
+              selectedSkillId={state.model.selectedSkillId}
+              focused={state.focus === "skills"}
+              searchQuery={state.search?.panel === "skills" ? state.search.query : undefined}
+              loadingAgentName={loadingAgent?.name ?? null}
+              width={skillWidth}
+              height={contentHeight}
+            />
+            <Text color={separatorBorder2}>{"\u2502"}</Text>
+            <DetailPane
+              selectedAgent={selectedAgent}
+              selectedSkill={selectedSkill}
+              focused={state.focus === "detail"}
+              loadingAgentName={loadingAgent?.name ?? null}
+              width={adjustedDetailWidth}
+              height={contentHeight}
+            />
+          </Box>
+          <Text color={theme.border.default}>
+            {"\u251C"}{"\u2500".repeat(agentWidth)}{"\u2534"}{"\u2500".repeat(skillWidth)}{"\u2534"}{"\u2500".repeat(adjustedDetailWidth)}{"\u2524"}
+          </Text>
+        </>
       )}
       {state.modal?.kind === "help" ? <HelpOverlay /> : null}
       {state.modal?.kind === "confirm-adopt" ||

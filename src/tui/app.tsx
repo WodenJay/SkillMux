@@ -22,6 +22,7 @@ import {
   type TuiFormModal,
   type TuiState
 } from "./state";
+import { resolveTheme, ThemeProvider } from "./theme";
 
 export type AppServices = {
   loadDashboardState: (
@@ -1239,6 +1240,8 @@ export function App({
     }
   });
 
+  const theme = useMemo(() => resolveTheme(), []);
+
   if (loadError !== null) {
     return <Text color="red">{loadError}</Text>;
   }
@@ -1247,20 +1250,24 @@ export function App({
     return <Text>loading dashboard...</Text>;
   }
 
-  return sizeBridgeEnabled ? (
-    <BridgedDashboardViewport
-      state={state}
-      terminalWidth={terminalWidth}
-      terminalHeight={terminalHeight}
-      bridgePath={sizeBridgePath}
-      modalInteraction={modalInteraction}
-    />
-  ) : (
-    <LiveDashboardViewport
-      state={state}
-      terminalWidth={terminalWidth}
-      terminalHeight={terminalHeight}
-      modalInteraction={modalInteraction}
-    />
+  return (
+    <ThemeProvider value={theme}>
+      {sizeBridgeEnabled ? (
+        <BridgedDashboardViewport
+          state={state}
+          terminalWidth={terminalWidth}
+          terminalHeight={terminalHeight}
+          bridgePath={sizeBridgePath}
+          modalInteraction={modalInteraction}
+        />
+      ) : (
+        <LiveDashboardViewport
+          state={state}
+          terminalWidth={terminalWidth}
+          terminalHeight={terminalHeight}
+          modalInteraction={modalInteraction}
+        />
+      )}
+    </ThemeProvider>
   );
 }
