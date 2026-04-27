@@ -210,7 +210,7 @@ git commit -m "feat: add Nord theme system with color level detection"
 - Modify: `src/tui/components/StatusLine.tsx`
 - Modify: `src/tui/app.tsx:130-140` (add model to StatusLine props)
 
-- [ ] **Step 1: Update StatusLine props and implementation**
+- [x] **Step 1: Update StatusLine props and implementation**
 
 Replace `src/tui/components/StatusLine.tsx` entirely:
 
@@ -292,7 +292,7 @@ export function StatusLine({ busy, statusMessage, model }: StatusLineProps) {
 }
 ```
 
-- [ ] **Step 2: Update Dashboard.tsx to pass model to StatusLine**
+- [x] **Step 2: Update Dashboard.tsx to pass model to StatusLine**
 
 In `src/tui/components/Dashboard.tsx`, change the StatusLine call at line 134-139 from:
 
@@ -315,12 +315,12 @@ to:
       />
 ```
 
-- [ ] **Step 3: Run typecheck**
+- [x] **Step 3: Run typecheck**
 
 Run: `npx tsc --noEmit`
 Expected: No errors
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```
 git add src/tui/components/StatusLine.tsx src/tui/components/Dashboard.tsx
@@ -641,7 +641,7 @@ git commit -m "feat: add box-drawing borders and ThemeProvider to Dashboard"
 **Files:**
 - Modify: `src/tui/components/AgentList.tsx`
 
-- [ ] **Step 1: Rewrite AgentList.tsx with theme**
+- [x] **Step 1: Rewrite AgentList.tsx with theme**
 
 Replace `src/tui/components/AgentList.tsx` entirely:
 
@@ -716,122 +716,12 @@ export function AgentList({
 }
 ```
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `npx tsc --noEmit`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
-
-```
-git add src/tui/components/AgentList.tsx
-git commit -m "feat: AgentList uses theme colors and background selection highlight"
-```
-
----
-
-### Task 5: SkillList — Colored Label Tags
-
-**Files:**
-- Modify: `src/tui/components/SkillList.tsx`
-
-- [ ] **Step 1: Rewrite SkillList.tsx with label tags**
-
-Replace `src/tui/components/SkillList.tsx` entirely:
-
-```typescript
-import { Box, Text } from "ink";
-import type { TuiSkillRow } from "../dashboard-model";
-import { useTheme } from "../theme";
-
-export type SkillListProps = {
-  agentId: string | null;
-  skills: TuiSkillRow[];
-  selectedSkillId: string | null;
-  focused: boolean;
-  searchQuery?: string;
-  loadingAgentName?: string | null;
-  width?: number;
-  height?: number;
-};
-
-function statusLabel(skill: TuiSkillRow): string {
-  if (skill.kind === "enabled") return "ENABLED";
-  if (skill.kind === "disabled") return "DISABLED";
-  if (skill.kind === "unmanaged") return "UNMANAGED";
-  if (skill.severity === "error") return "ERROR";
-  return "WARNING";
-}
-
-function statusColor(skill: TuiSkillRow, theme: ReturnType<typeof useTheme>): string {
-  if (skill.kind === "enabled") return theme.status.success;
-  if (skill.kind === "disabled") return theme.fg.muted;
-  if (skill.kind === "unmanaged") return theme.status.warning;
-  if (skill.severity === "error") return theme.status.error;
-  return theme.status.warning;
-}
-
-function skillName(skill: TuiSkillRow): string {
-  if (skill.kind === "issue") return skill.issueCode;
-  return skill.name;
-}
-
-export function SkillList({
-  agentId,
-  skills,
-  selectedSkillId,
-  focused,
-  searchQuery,
-  loadingAgentName = null,
-  width = 28,
-  height = 18
-}: SkillListProps) {
-  const theme = useTheme();
-  const emptyMessage =
-    loadingAgentName !== null
-      ? `Loading skills for ${loadingAgentName}...`
-      : agentId === null
-      ? "Select an agent"
-      : searchQuery !== undefined && searchQuery.trim().length > 0
-        ? "No matching skills"
-        : "No skills for this agent";
-
-  return (
-    <Box flexDirection="column" width={width} height={height}>
-      <Text bold color={focused ? theme.fg.emphasis : theme.fg.muted}>
-        Skills for {agentId ?? "none"}
-      </Text>
-      {skills.length === 0 ? (
-        <Text dimColor>{emptyMessage}</Text>
-      ) : (
-        skills.map((skill) => {
-          const selected = skill.id === selectedSkillId && focused;
-          const label = statusLabel(skill);
-          const labelColor = statusColor(skill, theme);
-
-          return (
-            <Text key={skill.id}>
-              <Text backgroundColor={selected ? theme.bg.selection : undefined}>
-                <Text bold color={labelColor}>{label}</Text>
-                <Text color={selected ? theme.fg.emphasis : theme.fg.default}>
-                  {"  "}{skillName(skill)}
-                </Text>
-              </Text>
-            </Text>
-          );
-        })
-      )}
-    </Box>
-  );
-}
-```
-
-- [ ] **Step 2: Run typecheck**
-
-Run: `npx tsc --noEmit`
-Expected: No errors
-
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```
 git add src/tui/components/SkillList.tsx
@@ -845,7 +735,7 @@ git commit -m "feat: SkillList uses colored label tags instead of symbol markers
 **Files:**
 - Modify: `src/tui/components/DetailPane.tsx`
 
-- [ ] **Step 1: Rewrite DetailPane.tsx with theme**
+- [x] **Step 1: Rewrite DetailPane.tsx with theme**
 
 Replace `src/tui/components/DetailPane.tsx` entirely:
 
@@ -969,12 +859,12 @@ export function DetailPane({
 }
 ```
 
-- [ ] **Step 2: Run typecheck**
+- [x] **Step 2: Run typecheck**
 
 Run: `npx tsc --noEmit`
 Expected: No errors
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```
 git add src/tui/components/DetailPane.tsx
@@ -1089,7 +979,7 @@ git commit -m "feat: Footer uses theme colors and compact shortcut layout"
 - Modify: `src/tui/components/DoctorDialog.tsx`
 - Modify: `src/tui/components/HelpOverlay.tsx`
 
-- [ ] **Step 1: Rewrite FormDialog.tsx — bordered with theme**
+- [x] **Step 1: Rewrite FormDialog.tsx — bordered with theme**
 
 Replace `src/tui/components/FormDialog.tsx` entirely:
 
@@ -1302,7 +1192,7 @@ export function FormDialog({
 }
 ```
 
-- [ ] **Step 2: Rewrite ConfirmDialog.tsx — bordered with theme**
+- [x] **Step 2: Rewrite ConfirmDialog.tsx — bordered with theme**
 
 Replace `src/tui/components/ConfirmDialog.tsx` entirely:
 
@@ -1363,7 +1253,7 @@ export function ConfirmDialog({ modal }: ConfirmDialogProps) {
 }
 ```
 
-- [ ] **Step 3: Rewrite DoctorDialog.tsx — bordered with theme**
+- [x] **Step 3: Rewrite DoctorDialog.tsx — bordered with theme**
 
 Replace `src/tui/components/DoctorDialog.tsx` entirely:
 
@@ -1461,7 +1351,7 @@ export function DoctorDialog({
 }
 ```
 
-- [ ] **Step 4: Rewrite HelpOverlay.tsx — bordered with theme**
+- [x] **Step 4: Rewrite HelpOverlay.tsx — bordered with theme**
 
 Replace `src/tui/components/HelpOverlay.tsx` entirely:
 
@@ -1509,12 +1399,12 @@ export function HelpOverlay() {
 }
 ```
 
-- [ ] **Step 5: Run typecheck on all changed files**
+- [x] **Step 5: Run typecheck on all changed files**
 
 Run: `npx tsc --noEmit`
 Expected: No errors across all files
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```
 git add src/tui/components/FormDialog.tsx src/tui/components/ConfirmDialog.tsx src/tui/components/DoctorDialog.tsx src/tui/components/HelpOverlay.tsx
@@ -1528,7 +1418,7 @@ git commit -m "feat: modal dialogs use bordered popups with theme colors"
 **Files:**
 - Modify: `src/tui/app.tsx` (verify ThemeProvider is correctly placed)
 
-- [ ] **Step 1: Verify app.tsx wraps correctly with ThemeProvider**
+- [x] **Step 1: Verify app.tsx wraps correctly with ThemeProvider**
 
 Check `src/tui/app.tsx` — ensure the main render return is:
 
@@ -1544,22 +1434,22 @@ Check `src/tui/app.tsx` — ensure the main render return is:
 
 And that `React, useMemo` are imported.
 
-- [ ] **Step 2: Run full typecheck**
+- [x] **Step 2: Run full typecheck**
 
 Run: `npx tsc --noEmit`
 Expected: No errors
 
-- [ ] **Step 3: Run unit/component tests**
+- [x] **Step 3: Run unit/component tests**
 
 Run: `npx vitest run --configLoader runner`
 Expected: All existing tests still pass
 
-- [ ] **Step 4: Run TUI E2E regression tests**
+- [x] **Step 4: Run TUI E2E regression tests**
 
 Run: `node scripts/run-tui-e2e.mjs regression`
 Expected: Regression tests pass (rendering may look slightly different due to new borders — review output)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```
 git add -A

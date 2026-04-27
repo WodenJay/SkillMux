@@ -8,13 +8,27 @@ Active development worktree: `(none)`
 
 ## 2026-04-27 TUI Visual Redesign
 
-- Status: **in progress** — Tasks 1-4, 7-8 complete in worktree `feature/tui-redesign-4zl`; Tasks 5-6, 9 remain
-- Task 1 (Theme System): `src/tui/theme.ts` — theme context, Nord colors, color-level detection, `useTheme()`/`ThemeProvider`
-- Task 2 (Rich Stats Bar): `src/tui/components/StatusLine.tsx` — agent/stats bar with theme colors
-- Task 3 (Box Borders & ThemeProvider): `src/tui/app.tsx` wrapped in `<ThemeProvider>`, `Dashboard.tsx` with box-drawing borders `├─┬─┤` and focus-aware `│` separators
-- Task 4 (AgentList Theme): `src/tui/components/AgentList.tsx` — theme status colors, background selection highlight, `>` prefix when selected+focused
-- Task 7 (Footer Bordered Section): `src/tui/components/Footer.tsx` — theme colors, compact shortcut chips, colored legend
-- Task 8 (Modal Dialogs Bordered Popups): `FormDialog.tsx`, `ConfirmDialog.tsx`, `DoctorDialog.tsx`, `HelpOverlay.tsx` — all use useTheme, selection highlights, status colors, marker legend
+- Status: **complete** — all 9 tasks done in worktree `feature-tui-redesign-4zl`
+- Task 1 (Theme System): **done** (commit `5625ba9`)
+- Task 2 (Rich Stats Bar): **done** (commit `8853756`)
+- Task 3 (Dashboard Box Borders & ThemeProvider): **done** (commit `0f13dc1`)
+- Task 4 (AgentList Theme Colors & Selection): **done** (commit `b6e6c68`)
+- Task 5 (SkillList Colored Label Tags): **done** (commit `fd6cc55`)
+- Task 6 (DetailPane Styled Key-Value Pairs): **done** (commit `ca4b097`)
+- Task 7 (Footer Bordered Section): **done** (commit `db95df8`)
+- Task 8 (Modal Dialogs Bordered Popups): **done** (commit `6a13304`)
+- Task 9 (Final Polish & Integration Test): **done** (commit `267c044`)
+- Verification gate passed:
+  - `npm test`: 259 tests, 40 files, 0 failures
+  - `npm run test:tui-e2e`: 22 tests, 10 files, 0 failures
+  - `npx tsc --noEmit`: no errors
+- Key changes in Task 9:
+  - Fixed StatusLine to show status messages when not busy (regression from old behavior)
+  - Fixed AgentList to highlight selected agent even when Skills panel has focus
+  - Fixed Dashboard to use explicit Box wrapper instead of React fragment for proper Ink Yoga layout
+  - Updated all component tests for new label tags (ENABLED/DISABLED/UNMANAGED/ISSUE), new help/footer text, and new StatusLine stats bar
+  - Updated PTY E2E smoke/usability-probes scenarios for new UI text
+- Next step: Sync accepted redesign back to root repo
 - Written design spec: `docs/superpowers/specs/2026-04-27-tui-redesign-design.md`
 - Written implementation plan: `docs/superpowers/plans/2026-04-27-tui-redesign.md`
 - Accepted design decisions:
@@ -28,28 +42,7 @@ Active development worktree: `(none)`
   - **Footer:** Bordered section with shortcut chips in theme colors
 - Visual companion was attempted but not working on this Windows environment; design was done in terminal
 - Implementation plan has 9 tasks covering theme system, 8 component rewrites, and final polish
-- Task 1 completed with strict TDD:
-  - added `src/tui/theme.ts` with Nord constants, semantic `Theme` slots, `nordTheme` + `fallbackTheme`, env-based color-level detection, `resolveTheme()`, and `ThemeContext` / `useTheme()` / `ThemeProvider`
-  - added `src/tui/theme.test.ts` with 5 env-resolution cases (`truecolor`, `24bit`, `256color`, `16-color`, `NO_COLOR`)
-  - updated `vitest.config.ts` include globs to cover `src/**/*.test.ts(x)` so the new test path executes
-  - verification in worktree passed: `npx vitest run src/tui/theme.test.ts --configLoader runner`, `npx tsc --noEmit`
-- Next step: implement Task 2 (Rich Stats Bar / `StatusLine`)
-
-## 2026-04-27 Pre-plan Baseline Stabilization (SkillMux-4zl)
-
-- Status: **complete in worktree `feature/tui-redesign-4zl`**
-- Root-cause evidence:
-  - before building, PTY scenarios failed because `tests/tui-e2e/pty-session.ts` spawns `dist/cli.js` and `dist` was absent in a fresh worktree (`node dist/cli.js tui` failed with `MODULE_NOT_FOUND`)
-  - after build (`npm run build`), single PTY scenario passed (`tests/tui-e2e/scenarios/smoke.test.ts`)
-  - full `npm test` still intermittently failed under default parallel workers with 30s test timeouts across PTY scenario files
-  - forcing serialized run (`npx vitest run --configLoader runner --maxWorkers 1`) made the same suite pass end-to-end
-- Accepted infra fix:
-  - serialize Vitest workers globally in `vitest.config.ts` with `fileParallelism: false` and `maxWorkers: 1`
-  - add regression coverage in `tests/smoke/bundle-config.test.ts` so PTY-safe worker settings are enforced
-- Verification in worktree:
-  - `npx vitest run --configLoader runner tests/smoke/bundle-config.test.ts` PASS
-  - `npx vitest run --configLoader runner tests/tui-e2e/scenarios/smoke.test.ts` PASS
-  - `npm test` PASS (39 files, 252 tests)
+- Next step: user selects execution mode (subagent-driven vs inline)
 
 ## Current TUI Design Status
 

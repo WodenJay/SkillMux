@@ -510,6 +510,19 @@ Record key product and implementation decisions so later sessions do not lose th
 
 ### 2026-04-23
 
+### TUI Visual Redesign Task 9 — Final Polish & Integration
+
+- All 9 TUI redesign tasks are complete in worktree `feature-tui-redesign-4zl`.
+- Final verification gate passed: `npm test` (259 tests), `npm run test:tui-e2e` (22 tests), `npx tsc --noEmit`.
+- Key Task 9 findings and fixes:
+  - **StatusLine regression:** Old behavior always showed `statusMessage` (even when not busy). New StatusLine only showed it when busy. Fixed by showing `⚡ SkillMux · <statusMessage>` when not busy but statusMessage is set (height stays at 1).
+  - **AgentList selection regression:** Selected agent was not highlighted when Skills panel had focus. Fixed by separating `isSelected` (for background highlight) from `isActive` (for `>` prefix).
+  - **Dashboard fragment issue:** React `<>` fragment wrapping the top border + content row inside the outer `Box` caused Yoga layout to drop the StatusLine from the rendered frame. Fixed by replacing fragment with explicit `<Box flexDirection="column">` wrapper.
+  - **Test updates:** Updated assertions for new colored label tags (ENABLED/DISABLED/UNMANAGED/ISSUE), new footer/help text, new StatusLine stats bar. Converted 6 tests from direct function calls to proper `render()`/`renderToString()` with ThemeProvider wrapping.
+  - **PTY E2E updates:** Updated `enabledMarker` and `skillMarkers` constants in smoke and usability-probes scenarios.
+- Commit: `267c044` `chore: final integration polish for TUI redesign`
+- Next step: Sync accepted redesign back to root repo and close the worktree.
+
 - The next npm release after the completed bulk-adopt slice should be `skillmux@0.1.3`; registry check before publish returned `0.1.2`.
 - Release publication must not be claimed from local verification alone. A successful `npm publish` plus a fresh registry check are both required.
 - For manual publish in this environment, use a temporary npm `userconfig` with the token, publish with `--access public`, then delete the temp auth file immediately after verification.

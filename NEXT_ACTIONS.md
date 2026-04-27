@@ -396,23 +396,13 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Present full design for user approval → **Approved**
 - [x] Write design spec at `docs/superpowers/specs/2026-04-27-tui-redesign-design.md`
 - [x] Write implementation plan at `docs/superpowers/plans/2026-04-27-tui-redesign.md`
-- [x] Select execution mode: subagent-driven (recommended) or inline
+- [x] Select execution mode: subagent-driven (worktree `feature-tui-redesign-4zl`, bead SkillMux-4zl)
 - [x] Implement Task 1: Theme System (`src/tui/theme.ts`)
 - [x] Implement Task 2: Rich Stats Bar (StatusLine)
-- [x] Implement Task 3: Dashboard Box Borders & ThemeProvider
-- [x] Implement Task 4: AgentList Theme Colors & Selection
-- [ ] Implement Task 5: SkillList Colored Label Tags
-- [ ] Implement Task 6: DetailPane Styled Key-Value Pairs
-- [x] Implement Task 7: Footer Bordered Section
+- [x] Implement Task 3: Dashboard Box Borders & ThemeProvider — commit `0f13dc1` in worktree `feature-tui-redesign-4zl`
+- [x] Implement Task 4: AgentList Theme Colors & Selection — commit `b6e6c68` in worktree `feature-tui-redesign-4zl`
+- [x] Implement Task 5: SkillList Colored Label Tags — commit `fd6cc55` in worktree `feature-tui-redesign-4zl`
+- [x] Implement Task 6: DetailPane Styled Key-Value Pairs — commit `ca4b097` in worktree `feature-tui-redesign-4zl`
+- [x] Implement Task 7: Footer Bordered Section — commit `db95df8` in worktree `feature-tui-redesign-4zl`
 - [x] Implement Task 8: Modal Dialogs Bordered Popups
-- [ ] Implement Task 9: Final Polish & Integration Test
-
-## Pre-plan blocker fix (SkillMux-4zl)
-
-- [x] Reproduce baseline PTY failures in the isolated worktree and capture concrete error evidence
-- [x] Verify the dist-artifact dependency by building once and re-running a previously failing PTY scenario
-- [x] Prove parallel-worker contention by comparing default `npm test` vs serialized `--maxWorkers 1`
-- [x] Add a minimal Vitest worker-serialization config fix for Windows PTY stability
-- [x] Add regression coverage asserting PTY-safe Vitest worker settings
-- [x] Re-run one previously failing scenario file and full `npm test` to confirm stability
-- [x] Commit the blocker fix on `feature/tui-redesign-4zl`
+- [x] Implement Task 9: Final Polish & Integration Test
