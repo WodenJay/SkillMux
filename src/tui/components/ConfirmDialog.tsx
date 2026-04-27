@@ -1,5 +1,6 @@
 import { Box, Text } from "ink";
 import type { TuiModal } from "../state";
+import { useTheme } from "../theme";
 
 export type ConfirmDialogProps = {
   modal: Extract<
@@ -51,21 +52,21 @@ function confirmationDetails(modal: ConfirmDialogProps["modal"]): string | null 
 }
 
 export function ConfirmDialog({ modal }: ConfirmDialogProps) {
+  const theme = useTheme();
+  const isRemove = modal.kind === "confirm-remove" || modal.kind === "confirm-remove-agent";
+  const titleColor = isRemove ? theme.status.warning : theme.status.info;
+
   return (
     <Box flexDirection="column" height={confirmDialogHeight}>
-      <Text
-        bold
-        color={
-          modal.kind === "confirm-remove" || modal.kind === "confirm-remove-agent"
-            ? "yellow"
-            : "cyan"
-        }
-      >
+      <Text bold color={titleColor}>
         Confirm
       </Text>
-      <Text>{confirmationText(modal)}</Text>
-      {confirmationDetails(modal) === null ? null : <Text>{confirmationDetails(modal)}</Text>}
-      <Text>[y] confirm   [Esc] cancel</Text>
+      <Text color={theme.fg.default}>{confirmationText(modal)}</Text>
+      {confirmationDetails(modal) === null ? null : <Text dimColor>{confirmationDetails(modal)}</Text>}
+      <Text>
+        <Text bold color={theme.status.success}>[y] confirm</Text>
+        <Text dimColor>   [Esc] cancel</Text>
+      </Text>
     </Box>
   );
 }

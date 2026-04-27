@@ -1,6 +1,7 @@
 import { Box, Text } from "ink";
 import type { ReactElement } from "react";
 import type { TuiModal } from "../state";
+import { useTheme } from "../theme";
 
 export type FormDialogModal = Extract<
   TuiModal,
@@ -24,12 +25,21 @@ function checkbox(value: boolean): string {
 function renderTextField(
   label: string,
   value: string,
-  active: boolean
+  active: boolean,
+  theme: ReturnType<typeof useTheme>
 ): ReactElement {
+  if (active) {
+    return (
+      <Text key={label} backgroundColor={theme.bg.selection}>
+        <Text bold color={theme.fg.emphasis}>{label}: </Text>
+        <Text color={theme.fg.emphasis}>{value.length > 0 ? value : " "}</Text>
+      </Text>
+    );
+  }
   return (
-    <Text key={label} inverse={active}>
-      <Text bold>{label}: </Text>
-      <Text>{value.length > 0 ? value : " "}</Text>
+    <Text key={label}>
+      <Text bold color={theme.accent.primary}>{label}: </Text>
+      <Text color={theme.fg.default}>{value.length > 0 ? value : " "}</Text>
     </Text>
   );
 }
@@ -37,12 +47,21 @@ function renderTextField(
 function renderBooleanField(
   label: string,
   value: boolean,
-  active: boolean
+  active: boolean,
+  theme: ReturnType<typeof useTheme>
 ): ReactElement {
+  if (active) {
+    return (
+      <Text key={label} backgroundColor={theme.bg.selection}>
+        <Text bold color={theme.fg.emphasis}>{label}: </Text>
+        <Text color={theme.fg.emphasis}>{checkbox(value)}</Text>
+      </Text>
+    );
+  }
   return (
-    <Text key={label} inverse={active}>
-      <Text bold>{label}: </Text>
-      <Text>{checkbox(value)}</Text>
+    <Text key={label}>
+      <Text bold color={theme.accent.primary}>{label}: </Text>
+      <Text color={theme.fg.default}>{checkbox(value)}</Text>
     </Text>
   );
 }
@@ -50,17 +69,25 @@ function renderBooleanField(
 function renderPlatformField(
   selectedPlatforms: string[],
   activePlatformIndex: number,
-  active: boolean
+  active: boolean,
+  theme: ReturnType<typeof useTheme>
 ): ReactElement[] {
   return platformOptions.map((platform, index) => {
     const selected = selectedPlatforms.includes(platform);
     const isCurrent = active && index === activePlatformIndex;
 
+    if (isCurrent) {
+      return (
+        <Text key={platform} backgroundColor={theme.bg.selection}>
+          <Text color={theme.fg.emphasis}>{"> "}{checkbox(selected)} {platform}</Text>
+        </Text>
+      );
+    }
     return (
-      <Text key={platform} inverse={isCurrent}>
-        <Text>{isCurrent ? "> " : "  "}</Text>
-        <Text>{checkbox(selected)} </Text>
-        <Text>{platform}</Text>
+      <Text key={platform}>
+        <Text color={selected ? theme.status.success : theme.fg.muted}>
+          {"  "}{checkbox(selected)} {platform}
+        </Text>
       </Text>
     );
   });
@@ -73,25 +100,36 @@ export function FormDialog({
   width = 72,
   height = 14
 }: FormDialogProps) {
+  const theme = useTheme();
   const activeField = fieldIndex;
-  const submitFieldIndex = modal.kind === "import" ? 2 : 6;
 
   if (modal.kind === "import") {
+    const submitFieldIndex = 2;
     return (
       <Box flexDirection="column" width={width} height={height}>
-        <Text bold>Import skill</Text>
-        {modal.form.error === null ? null : <Text color="red">{modal.form.error}</Text>}
+        <Text bold color={theme.fg.emphasis}>Import skill</Text>
+        {modal.form.error === null ? null : <Text color={theme.status.error}>{modal.form.error}</Text>}
         {renderTextField(
           "Source path",
           modal.form.values.sourcePath,
-          activeField === 0
+          activeField === 0,
+          theme
         )}
         {renderTextField(
           "Skill name",
           modal.form.values.skillName,
-          activeField === 1
+          activeField === 1,
+          theme
         )}
-        <Text inverse={activeField === submitFieldIndex}>Submit</Text>
+        <Text>
+          {activeField === submitFieldIndex ? (
+            <Text backgroundColor={theme.bg.selection}>
+              <Text bold color={theme.fg.emphasis}>Submit</Text>
+            </Text>
+          ) : (
+            <Text bold color={theme.accent.primary}>Submit</Text>
+          )}
+        </Text>
         <Text dimColor>[Up/Down] move   [Enter] submit selected row   [Esc] cancel</Text>
       </Box>
     );
@@ -104,23 +142,25 @@ export function FormDialog({
   const fields =
     modal.kind === "add-agent"
       ? [
-          renderTextField("Agent id", modal.form.values.id, activeField === 0),
-          renderTextField("Root path", modal.form.values.root, activeField === 1),
-          renderTextField("Skills path", modal.form.values.skills, activeField === 2),
-          renderTextField("Display name", modal.form.values.name, activeField === 3)
+          renderTextField("Agent id", modal.form.values.id, activeField === 0, theme),
+          renderTextField("Root path", modal.form.values.root, activeField === 1, theme),
+          renderTextField("Skills path", modal.form.values.skills, activeField === 2, theme),
+          renderTextField("Display name", modal.form.values.name, activeField === 3, theme)
         ]
       : [
-          renderTextField("Root path", modal.form.values.root, activeField === 0),
-          renderTextField("Skills path", modal.form.values.skills, activeField === 1),
-          renderTextField("Display name", modal.form.values.name, activeField === 2)
+          renderTextField("Root path", modal.form.values.root, activeField === 0, theme),
+          renderTextField("Skills path", modal.form.values.skills, activeField === 1, theme),
+          renderTextField("Display name", modal.form.values.name, activeField === 2, theme)
         ];
 
   const platformFieldIndex = modal.kind === "add-agent" ? 4 : 3;
   const booleanFieldIndex = modal.kind === "add-agent" ? 5 : 4;
+  const submitFieldIndex = 6;
   const platformLines = renderPlatformField(
     modal.form.values.platforms,
     platformIndex,
-    activeField === platformFieldIndex
+    activeField === platformFieldIndex,
+    theme
   );
   const booleanLabel =
     modal.kind === "add-agent"
@@ -135,30 +175,46 @@ export function FormDialog({
 
   return (
     <Box flexDirection="column" width={width} height={height}>
-      <Text bold>{title}</Text>
-      {modal.form.error === null ? null : <Text color="red">{modal.form.error}</Text>}
+      <Text bold color={theme.fg.emphasis}>{title}</Text>
+      {modal.form.error === null ? null : <Text color={theme.status.error}>{modal.form.error}</Text>}
       {fields}
-      <Text bold inverse={activeField === platformFieldIndex}>
-        Platforms
+      <Text>
+        {activeField === platformFieldIndex ? (
+          <Text backgroundColor={theme.bg.selection}>
+            <Text bold color={theme.fg.emphasis}>Platforms</Text>
+          </Text>
+        ) : (
+          <Text bold color={theme.accent.primary}>Platforms</Text>
+        )}
       </Text>
       {platformLines}
       {renderBooleanField(
         booleanLabel,
         booleanValue,
-        activeField === booleanFieldIndex
+        activeField === booleanFieldIndex,
+        theme
       )}
       {secondaryBooleanLabel === null
         ? null
         : renderBooleanField(
             secondaryBooleanLabel,
             modal.form.values.disabledByDefault,
-            activeField === booleanFieldIndex + 1
+            activeField === booleanFieldIndex + 1,
+            theme
           )}
-      <Text inverse={activeField === submitFieldIndex}>Submit</Text>
+      <Text>
+        {activeField === submitFieldIndex ? (
+          <Text backgroundColor={theme.bg.selection}>
+            <Text bold color={theme.fg.emphasis}>Submit</Text>
+          </Text>
+        ) : (
+          <Text bold color={theme.accent.primary}>Submit</Text>
+        )}
+      </Text>
       {modal.kind === "edit-agent" ? (
         <Text dimColor>Leaving both defaults unchecked preserves the current setting.</Text>
       ) : null}
-      <Text dimColor>[Up/Down] move   [Enter] submit selected row   [Esc] cancel</Text>
+      <Text dimColor>[Up/Down] move   [Enter] submit   [Esc] cancel</Text>
     </Box>
   );
 }
