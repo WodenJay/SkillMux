@@ -1163,20 +1163,18 @@ describe("TUI dashboard components", () => {
       <StatusLine
         busy
         statusMessage="working..."
-        lastScanAt={null}
-        issueCount={0}
+        model={model()}
       />
     );
     const loading = render(
       <StatusLine
         busy
         statusMessage="loading agent..."
-        lastScanAt={null}
-        issueCount={0}
+        model={model()}
       />
     );
     const fallback = render(
-      <StatusLine busy statusMessage={null} lastScanAt={null} issueCount={0} />
+      <StatusLine busy statusMessage={null} model={model()} />
     );
 
     expect(working.lastFrame()).toContain("working...");

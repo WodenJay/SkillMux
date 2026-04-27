@@ -134,8 +134,7 @@ export function Dashboard({
       <StatusLine
         busy={state.busy}
         statusMessage={state.statusMessage}
-        lastScanAt={state.model.lastScanAt}
-        issueCount={state.model.issueCount}
+        model={state.model}
       />
       {largeModal ? (
         <Box
