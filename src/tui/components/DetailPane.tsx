@@ -1,5 +1,6 @@
 import { Box, Text } from "ink";
 import type { TuiAgentRow, TuiSkillRow } from "../dashboard-model";
+import { useTheme } from "../theme";
 
 export type DetailPaneProps = {
   selectedAgent: TuiAgentRow | null;
@@ -17,34 +18,18 @@ type DetailLine = {
 };
 
 function compactPath(value: string, maxLength: number): string {
-  if (value.length <= maxLength) {
-    return value;
-  }
-
+  if (value.length <= maxLength) return value;
   const separator = value.includes("\\") ? "\\" : "/";
   const parts = value.split(/[\\/]+/).filter((part) => part.length > 0);
   let suffix = parts.at(-1) ?? value;
-
   for (let index = parts.length - 2; index >= 0; index -= 1) {
     const candidate = `${parts[index]}${separator}${suffix}`;
-
-    if (`...${separator}${candidate}`.length > maxLength) {
-      break;
-    }
-
+    if (`...${separator}${candidate}`.length > maxLength) break;
     suffix = candidate;
   }
-
   const shortened = `...${separator}${suffix}`;
-
-  if (shortened.length <= maxLength) {
-    return shortened;
-  }
-
-  if (maxLength <= 3) {
-    return ".".repeat(maxLength);
-  }
-
+  if (shortened.length <= maxLength) return shortened;
+  if (maxLength <= 3) return ".".repeat(maxLength);
   return `...${suffix.slice(-(maxLength - 3))}`;
 }
 
@@ -57,7 +42,6 @@ function detailLines(skill: TuiSkillRow): DetailLine[] {
       { label: "Link", value: skill.activationLinkPath, compact: true }
     ];
   }
-
   if (skill.kind === "disabled") {
     return [
       { label: "Name", value: skill.name, compact: false },
@@ -70,7 +54,6 @@ function detailLines(skill: TuiSkillRow): DetailLine[] {
       }
     ];
   }
-
   if (skill.kind === "unmanaged") {
     return [
       { label: "Name", value: skill.name, compact: false },
@@ -79,7 +62,6 @@ function detailLines(skill: TuiSkillRow): DetailLine[] {
       { label: "Path", value: skill.path, compact: true }
     ];
   }
-
   return [
     { label: "Status", value: "issue", compact: false },
     { label: "Code", value: skill.issueCode, compact: false },
@@ -97,21 +79,23 @@ export function DetailPane({
   width = 28,
   height = 18
 }: DetailPaneProps) {
+  const theme = useTheme();
+
   return (
     <Box flexDirection="column" width={width} height={height}>
-      <Text bold>
+      <Text bold color={theme.fg.emphasis}>
         Detail
       </Text>
       {selectedAgent === null ? (
         <Text dimColor>Select an agent</Text>
       ) : (
-        <Text dimColor>Agent: {selectedAgent.name}</Text>
+        <Text color={theme.fg.muted}>Agent: {selectedAgent.name}</Text>
       )}
       {selectedSkill === null ? (
         loadingAgentName !== null ? (
           <Text dimColor>Loading details for {loadingAgentName}...</Text>
         ) : (
-        <Text dimColor>Select a skill row</Text>
+          <Text dimColor>Select a skill row</Text>
         )
       ) : (
         detailLines(selectedSkill).map(({ label, value, compact }) => {
@@ -120,8 +104,10 @@ export function DetailPane({
 
           return (
             <Text key={label}>
-            <Text dimColor>{label}: </Text>
-            <Text>{renderedValue}</Text>
+              <Text bold color={theme.accent.primary}>
+                {label}:{" "}
+              </Text>
+              <Text color={theme.fg.default}>{renderedValue}</Text>
             </Text>
           );
         })
