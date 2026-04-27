@@ -8,7 +8,7 @@ Active development worktree: `(none)`
 
 ## 2026-04-27 TUI Visual Redesign
 
-- Status: **design approved, plan written** — awaiting execution mode selection
+- Status: **in progress** — Task 1 (Theme System) complete in worktree `feature/tui-redesign-4zl`
 - Written design spec: `docs/superpowers/specs/2026-04-27-tui-redesign-design.md`
 - Written implementation plan: `docs/superpowers/plans/2026-04-27-tui-redesign.md`
 - Accepted design decisions:
@@ -22,7 +22,12 @@ Active development worktree: `(none)`
   - **Footer:** Bordered section with shortcut chips in theme colors
 - Visual companion was attempted but not working on this Windows environment; design was done in terminal
 - Implementation plan has 9 tasks covering theme system, 8 component rewrites, and final polish
-- Next step: user selects execution mode (subagent-driven vs inline)
+- Task 1 completed with strict TDD:
+  - added `src/tui/theme.ts` with Nord constants, semantic `Theme` slots, `nordTheme` + `fallbackTheme`, env-based color-level detection, `resolveTheme()`, and `ThemeContext` / `useTheme()` / `ThemeProvider`
+  - added `src/tui/theme.test.ts` with 5 env-resolution cases (`truecolor`, `24bit`, `256color`, `16-color`, `NO_COLOR`)
+  - updated `vitest.config.ts` include globs to cover `src/**/*.test.ts(x)` so the new test path executes
+  - verification in worktree passed: `npx vitest run src/tui/theme.test.ts --configLoader runner`, `npx tsc --noEmit`
+- Next step: implement Task 2 (Rich Stats Bar / `StatusLine`)
 
 ## 2026-04-27 Pre-plan Baseline Stabilization (SkillMux-4zl)
 

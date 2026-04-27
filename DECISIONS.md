@@ -553,6 +553,7 @@ Record key product and implementation decisions so later sessions do not lose th
 - **16-color fallback** — for terminals without truecolor/256-color support, semantic slots map to ANSI 16 named colors.
 - Written design spec: `docs/superpowers/specs/2026-04-27-tui-redesign-design.md`
 - Written implementation plan: `docs/superpowers/plans/2026-04-27-tui-redesign.md`
+- Theme Task 1 tests live at `src/tui/theme.test.ts`; Vitest include globs now cover `src/**/*.test.ts(x)` so the plan's required command `npx vitest run src/tui/theme.test.ts --configLoader runner` executes directly.
 - Add/edit/import validation and command failures must stay inside the modal with preserved user input and visible inline error text; a status-line-only failure is not sufficient.
 - Dirty add/edit/import forms treat `q` as a close request that goes through the discard-confirmation modal instead of exiting immediately.
 - `dispatchTuiAction()` now carries a small resolved-failure signal so `App` can distinguish successful write results from real command-helper failures without relying on promise rejection shape alone.

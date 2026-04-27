@@ -396,8 +396,8 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Present full design for user approval → **Approved**
 - [x] Write design spec at `docs/superpowers/specs/2026-04-27-tui-redesign-design.md`
 - [x] Write implementation plan at `docs/superpowers/plans/2026-04-27-tui-redesign.md`
-- [ ] Select execution mode: subagent-driven (recommended) or inline
-- [ ] Implement Task 1: Theme System (`src/tui/theme.ts`)
+- [x] Select execution mode: subagent-driven (recommended) or inline
+- [x] Implement Task 1: Theme System (`src/tui/theme.ts`)
 - [ ] Implement Task 2: Rich Stats Bar (StatusLine)
 - [ ] Implement Task 3: Dashboard Box Borders & ThemeProvider
 - [ ] Implement Task 4: AgentList Theme Colors & Selection

@@ -35,7 +35,7 @@
 - Create: `src/tui/theme.ts`
 - Test: `src/tui/theme.test.ts` (create)
 
-- [ ] **Step 1: Create `src/tui/theme.ts` — Nord palette constants**
+- [x] **Step 1: Create `src/tui/theme.ts` — Nord palette constants**
 
 ```typescript
 // src/tui/theme.ts
@@ -60,7 +60,7 @@ const nord14 = "#a3be8c";
 const nord15 = "#b48ead";
 ```
 
-- [ ] **Step 2: Add semantic color slots type and Nord theme object**
+- [x] **Step 2: Add semantic color slots type and Nord theme object**
 
 ```typescript
 // (append to same file after constants)
@@ -91,7 +91,7 @@ const fallbackTheme: Theme = {
 };
 ```
 
-- [ ] **Step 3: Add color level detection and theme resolution**
+- [x] **Step 3: Add color level detection and theme resolution**
 
 ```typescript
 // (append to same file)
@@ -114,7 +114,7 @@ export function resolveTheme(): Theme {
 }
 ```
 
-- [ ] **Step 4: Add React context and hook**
+- [x] **Step 4: Add React context and hook**
 
 ```typescript
 // (append to same file)
@@ -128,12 +128,12 @@ export function useTheme(): Theme {
 export const ThemeProvider = ThemeContext.Provider;
 ```
 
-- [ ] **Step 5: Run tests to verify the module works**
+- [x] **Step 5: Run tests to verify the module works**
 
 Run: `npx vitest run src/tui/theme.test.ts 2>&1`
 Expected: FAIL (no test file yet — but TS compiles)
 
-- [ ] **Step 6: Create `src/tui/theme.test.ts`**
+- [x] **Step 6: Create `src/tui/theme.test.ts`**
 
 ```typescript
 // src/tui/theme.test.ts
@@ -185,17 +185,17 @@ describe("resolveTheme", () => {
 });
 ```
 
-- [ ] **Step 7: Run tests and verify they pass**
+- [x] **Step 7: Run tests and verify they pass**
 
 Run: `npx vitest run src/tui/theme.test.ts --configLoader runner`
 Expected: PASS (5 tests)
 
-- [ ] **Step 8: Run typecheck**
+- [x] **Step 8: Run typecheck**
 
 Run: `npx tsc --noEmit`
 Expected: No errors
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```
 git add src/tui/theme.ts src/tui/theme.test.ts
