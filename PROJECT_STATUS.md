@@ -6,6 +6,24 @@ Stable area: `C:\Users\wudon\Desktop\SkillMux\`
 Canonical worktree: `(none)`
 Active development worktree: `(none)`
 
+## 2026-04-27 TUI Visual Redesign
+
+- Status: **design approved, plan written** — awaiting execution mode selection
+- Written design spec: `docs/superpowers/specs/2026-04-27-tui-redesign-design.md`
+- Written implementation plan: `docs/superpowers/plans/2026-04-27-tui-redesign.md`
+- Accepted design decisions:
+  - **Theme:** Nord palette (icy blue) with 16-color fallback detection
+  - **Borders:** Full box-drawing borders on all panels (┌─┐├┤└─┘┴┬)
+  - **Header:** Rich stats bar (agent count, enabled/disabled/unmanaged/issue counts)
+  - **Selection:** Colored background highlight using Nord accent blue
+  - **Skill markers:** Colored label tags (ENABLED/DISABLED/UNMANAGED/ISSUE) instead of symbols
+  - **Modals:** Dimmed overlay + bordered popup dialogs
+  - **Detail pane:** Styled key-value pairs with bold accent labels
+  - **Footer:** Bordered section with shortcut chips in theme colors
+- Visual companion was attempted but not working on this Windows environment; design was done in terminal
+- Implementation plan has 9 tasks covering theme system, 8 component rewrites, and final polish
+- Next step: user selects execution mode (subagent-driven vs inline)
+
 ## Current TUI Design Status
 
 - A new TUI parity slice is now approved in conversation: the TUI should cover the current local-management CLI surface instead of forcing users back to the shell for agent configuration, import, and doctor workflows.

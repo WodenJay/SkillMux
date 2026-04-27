@@ -534,6 +534,25 @@ Record key product and implementation decisions so later sessions do not lose th
 - Task 3 keeps add/edit/import/doctor inside fullscreen dashboard overlays instead of leaving the TUI or introducing a new dashboard focus path.
 - Normal-mode parity shortcuts are fixed as `n` add agent, `e` edit selected override, `X` remove selected override, `i` import, and `d` doctor.
 - Form modals follow the approved interaction contract: `Up` / `Down` move between fields, `Space` toggles booleans and platform selections, and `Enter` submits only from an explicit submit row.
+
+### 2026-04-27 TUI Visual Redesign
+
+- The current TUI is functionally complete but visually rough — raw ANSI colors, no borders, no visual depth. A visual-only redesign (no interaction or behavior changes) was approved.
+- Design followed the brainstorming hard gate: explore → clarify → propose → present → spec → plan.
+- Browser visual companion was attempted but did not work on this Windows setup; all design discussion happened in terminal text.
+- **Color theme: Nord** (`#2e3440` bg, `#d8dee9` fg, `#81a1c1` accent). Chosen over Tokyo Night, Gruvbox, and Catppuccin for its icy professional calmness.
+- **Borders: Full box-drawing characters** (`┌─┐├┤└─┘┴┬`) on all panels. Chosen over subtle separators and background-only depth for a polished, professional look.
+- **Header: Rich stats bar** showing agent count, enabled/disabled/unmanaged/issue counts, and last scan time. Chosen over simple title bar and no-header options.
+- **Selection: Colored background highlight** using Nord accent blue (`#81a1c1`) instead of raw `inverse`. Chosen for visual quality while maintaining across-terminal-tiers compatibility.
+- **Skill markers: Colored label tags** (`ENABLED`/`DISABLED`/`UNMANAGED`/`ISSUE`) instead of `●`/`○`/`?`/`!` symbols. Chosen over polished symbols and Nerd Font icons for clarity and accessibility without Nerd Font dependency.
+- **Modals: Dimmed overlay + bordered popup** with dashboard backdrop visible underneath. Chosen over clean centered card and simple layout for clear visual depth and focus trapping.
+- **Detail pane: Styled key-value pairs** with bold accent labels. Chosen over info cards and minimal inline text for balance of polish and space efficiency.
+- **Footer: Bordered section with shortcut chips** in theme colors + compact legend. Chosen over simple text line and no-footer options.
+- **No Nerd Font dependency** — all characters are standard Unicode (box-drawing) or plain ASCII text labels.
+- **No behavior changes** — all keybindings, navigation, data flow, and state management remain identical.
+- **16-color fallback** — for terminals without truecolor/256-color support, semantic slots map to ANSI 16 named colors.
+- Written design spec: `docs/superpowers/specs/2026-04-27-tui-redesign-design.md`
+- Written implementation plan: `docs/superpowers/plans/2026-04-27-tui-redesign.md`
 - Add/edit/import validation and command failures must stay inside the modal with preserved user input and visible inline error text; a status-line-only failure is not sufficient.
 - Dirty add/edit/import forms treat `q` as a close request that goes through the discard-confirmation modal instead of exiting immediately.
 - `dispatchTuiAction()` now carries a small resolved-failure signal so `App` can distinguish successful write results from real command-helper failures without relying on promise rejection shape alone.

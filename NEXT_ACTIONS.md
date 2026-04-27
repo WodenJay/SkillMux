@@ -378,3 +378,31 @@ Track the next concrete actions. Mark done items with `[x]`.
 - [x] Task 5: Add autoDiscovered to TUI buildDashboardModel — commit `a5f9439`
 - [x] Fix: skip .skillmux in auto-register; add agents CLI test for "auto" discovery — commit `4a902e7`
 - [x] Task 6: Full verification gate — `npm run build` PASS, `npm run typecheck` PASS, `npm test` PASS (251 tests), `git diff --check` PASS
+
+## TUI Visual Redesign (2026-04-27)
+
+- [x] Invoke `$brainstorming` for TUI redesign ideation
+- [x] Load `$tui-design` and `$terminal-ui` skills
+- [x] Explore current TUI codebase thoroughly
+- [x] Attempt browser visual companion (not working on this setup — fell back to terminal)
+- [x] Clarify color theme preference → **Nord**
+- [x] Clarify border style → **Full box borders**
+- [x] Clarify header design → **Rich stats bar**
+- [x] Clarify selection style → **Colored bar highlight**
+- [x] Clarify skill markers → **Colored label tags (ENABLED/DISABLED/UNMANAGED/ISSUE)**
+- [x] Clarify modal style → **Dimmed overlay + bordered popup**
+- [x] Clarify detail pane style → **Styled key-value pairs**
+- [x] Clarify footer style → **Bordered footer with shortcut chips**
+- [x] Present full design for user approval → **Approved**
+- [x] Write design spec at `docs/superpowers/specs/2026-04-27-tui-redesign-design.md`
+- [x] Write implementation plan at `docs/superpowers/plans/2026-04-27-tui-redesign.md`
+- [ ] Select execution mode: subagent-driven (recommended) or inline
+- [ ] Implement Task 1: Theme System (`src/tui/theme.ts`)
+- [ ] Implement Task 2: Rich Stats Bar (StatusLine)
+- [ ] Implement Task 3: Dashboard Box Borders & ThemeProvider
+- [ ] Implement Task 4: AgentList Theme Colors & Selection
+- [ ] Implement Task 5: SkillList Colored Label Tags
+- [ ] Implement Task 6: DetailPane Styled Key-Value Pairs
+- [ ] Implement Task 7: Footer Bordered Section
+- [ ] Implement Task 8: Modal Dialogs Bordered Popups
+- [ ] Implement Task 9: Final Polish & Integration Test
